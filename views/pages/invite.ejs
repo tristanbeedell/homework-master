@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>
+		<%= guild.name%> | Homework Master
+	</title>
+	<% include ../partials/head %>
+</head>
+
+<body>
+	<div class="header">
+		<h1>You've been invited!</h1>
+	</div>
+	<div class="content">
+		<div class="post invite" onclick="openInNewTab('<%= invite.url%>')">
+			<div class="title">
+				<%= group.school_name%>
+				year
+				<%= group.year%>
+			</div>
+			<div class="author">
+				created by:
+				<%= creator.username%>
+			</div>
+			<div class="message">
+				<%= invite.memberCount-1%> members so far!
+				<p>
+					<%= group.invite%>
+				</p>
+			</div>
+		</div>
+	</div>
+	<% include ../partials/menu %>
+</body>
+
+</html>

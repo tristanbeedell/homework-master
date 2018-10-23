@@ -1,0 +1,22 @@
+<form method="post" id="login">
+	<label for="guild">Discord Server:</label>
+	<select name="guild" id="guild">
+		<% bot.guilds.forEach(guild => {%>
+		<option value="<%= guild.id %>">
+			<%= guild.name %>
+		</option>
+		<% }) %>
+	</select>
+	<label for="name">
+		Name:
+		<span class="error"></span>
+	</label>
+	<input type="text" name="name" id="name" onchange="validateMember(this)">
+	<label for="password">
+		Password:
+		<span class="error"></span>
+	</label>
+	<input type="password" name="password" id="password" onchange="validatePassword(this)">
+	<br>
+	<input class="link" type="submit" value="OK">
+</form>

@@ -1,0 +1,57 @@
+<div id="logout-modal" class="modal">
+	<div class="modal-content slide-down">
+		<span class="close">&times;</span>
+		<div class="link" id="/logout">Logout</div>
+	</div>
+</div>
+
+<div class="menu">
+	<div class="menu-item">
+		<div class="menu-container" id="home-menu">
+			<div class="menu-tag-container">
+				<div class="menu-tag-content">Home</div>
+			</div>
+			<div class="menu-content">
+				<div class="link" id="/">home</div>
+			</div>
+		</div>
+	</div>
+	<div class="menu-item">
+		<div class="menu-container" id="account-menu">
+			<div class="menu-tag-container">
+				<div class="menu-tag-content">
+					<%= session.user ? session.user.name : "logged out" %>
+				</div>
+			</div>
+			<div class="menu-content">
+				<% if (session.user) { %>
+				<div class="link" id="/guilds/<%= bot.guilds.get(session.user.guild_id).name.replace(/ /g, '_') %>/members/<%= session.user.name.replace(/ /g, '_') %>">My Profile</div>
+				<div class="link" id="/guilds/<%= bot.guilds.get(session.user.guild_id).name.replace(/ /g, '_') %>%>">My Group</div>
+				<div class="important-link logout-modal">Log Out</div>
+				<% } else {%>
+				<div class="link" id="/login">login</div>
+				<div class="link" id="/join">join</div>
+				<%}%>
+			</div>
+		</div>
+	</div>
+	<div class="menu-item">
+		<div class="menu-container" id="help-menu">
+			<div class="menu-tag-container">
+				<div class="menu-tag-content">
+					Help
+				</div>
+			</div>
+			<div class="menu-content">
+				<div class="link" id="/FAQ">FAQ</div>
+				<div class="link" id="/contact">contact</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="page-wipe">
+	<div class="loader-container">
+		loading
+	</div>
+</div>

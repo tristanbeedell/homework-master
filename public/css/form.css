@@ -1,0 +1,45 @@
+form {
+  display: grid;
+  grid-template-columns: 10em 1fr;
+  grid-gap: 1em;
+  margin: 1em;
+  padding: 1em;
+  background-color: beige;
+}
+
+input {
+  height: min-content;
+}
+
+input:focus {
+  outline: 2px solid gold;
+}
+
+form label {
+  text-align: right;
+}
+
+.error {
+  color: red;
+  font-size: small;
+  display: block;
+}
+
+@media (max-width: 500px) {
+  form {
+    grid-template-columns: 1fr;
+    width: 75vw;
+  }
+
+  form label {
+    text-align: center;
+  }
+
+  tbody {
+    width: 75vw;
+  }
+}
+
+tbody {
+  background-color: azure;
+}

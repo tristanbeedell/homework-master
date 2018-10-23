@@ -1,0 +1,19 @@
+<form method="post">
+	<label for="guild">Group</label>
+	<select name="guild" id="guild">
+		<% bot.guilds.forEach(guild => {%>
+		<option value="0">
+			choose your school
+		</option>
+		<option value="<%= guild.id %>" <% if (query.choice==guild.id) {%>
+			selected="selected"
+			<%}%>>
+			<%= guild.name %>
+		</option>
+		<% }) %>
+	</select>
+	<label for="pin">Group Pin</label>
+	<input type="password" name="pin" id="pin"></input>
+	<br>
+	<input type="submit" class="link" value="OK">
+</form>
