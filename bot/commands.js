@@ -3,7 +3,7 @@ const RichEmbed = Discord.RichEmbed;
 const url = require('url');
 
 let commands = {};
-let urlname = 'https://homework-staging.herokuapp.com'
+const urlname = process.env.SERVER_URL;
 
 class Command {
 	constructor(name, instructions, func, adminOnly = false) {
@@ -19,7 +19,7 @@ class Command {
 	}
 }
 
-new Command("!help", "prints out all the commands and what they do", (data) => {
+new Command("help", "prints out all the commands and what they do", (msg) => {
 	let reply = "";
 	// for each command in the commands object
 	for (var key in commands) {
@@ -29,22 +29,22 @@ new Command("!help", "prints out all the commands and what they do", (data) => {
 			reply += "`" + key + '`\t' + commands[key].instructions + '\n';
 		}
 	}
-	data.msg.channel.send(reply);
+	return reply;
 });
 
-new Command("!profile", "shows everyone your profile on the site.", (data) => {
-
-	let profileUrl = `${urlname}/guilds/${data.msg.guild.name}/members/${getName(data.msg.member)}`.replace(/ /g, "_");
-
-	const embed = new RichEmbed()
-		.setURL(profileUrl)
-		.setAuthor(getName(data.msg.member), data.msg.author.avatarURL)
-		.setTitle(`${getName(data.msg.member)}'s Profile`)
-		.setColor(0xFFFFFF)
-	if (process.env.NODE_ENV == 'production') {
-		embed.setDescription(`localhost:5000/guilds/${data.msg.guild.name}/members/${getName(data.msg.member)}`.replace(/ /g, "_"));
+new Command("profile", "shows everyone your profile on the site.", (msg) => {
+	let profileUrl = `${urlname}/guilds/${msg.guild.name}/members/${getName(msg.member)}`.replace(/ /g, "_");
+	let embed;
+	if (process.env.NODE_ENV != 'production') {
+		embed = new RichEmbed()
+			.setURL(profileUrl)
+			.setAuthor(getName(msg.member), msg.author.avatarURL)
+			.setTitle(`${getName(msg.member)}'s Profile`)
+			.setColor(0xFFFFFF)
+	} else {
+		embed = profileUrl
 	}
-	data.msg.channel.send(embed);
+	return embed
 });
 
 function getName(member) {

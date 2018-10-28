@@ -4,16 +4,16 @@
 <head>
 	<% include ../partials/head %>
 	<title>
-		<%= nickname%>'s Profile | Homework Master
+		<%= name%>'s Profile | Homework Master
 	</title>
 </head>
 
 <body>
 	<div class="header">
 		<h1>
-			<img src="<%= discordMember.user.avatarURL %>" class="profilePic"></img>
+			<img src="<%= member.user.avatarURL %>" class="profilePic"></img>
 			<div id="usernameContainer">
-				<%= nickname%>
+				<%= name%>
 			</div>
 		</h1>
 	</div>

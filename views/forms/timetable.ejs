@@ -1,0 +1,42 @@
+<form method="post" id="signup">
+	<% let prevDiv, prevSet %>
+	<% subjects.forEach((set) => { %>
+
+	<% if (set.division != prevDiv){ %>
+	<% if (prevDiv != ''){ %>
+	</select>
+	<%}%>
+	<% prevDiv = set.division %>
+	<label for="<%= set.division%>">
+		<%= set.division%>
+	</label>
+	<select name="classes[<%= set.division%>]" id="<%= set.division%>" onchange="updateTable('<%= set.division%>', this.value)">
+		<option value="none">
+			Choose Class
+		</option>
+		<% }%>
+
+		<% if (set.name != prevSet) {%>
+		<%prevSet = set.name%>
+		<option value="<%= set.name%>">
+			<%= set.name%> -
+			<%= set.subject%>
+			<%}%>
+			|
+			<%= set.teacher%>
+			<% if (set.name != prevSet) {%>
+		</option>
+		<%}%>
+
+		<% }) %>
+		Please check that your timetable matches.
+		<input class="important-link signup-modal" type="button" value="OK">
+</form>
+
+<div id="signup-modal" class="modal">
+	<div class="signup-modal slide-down">
+		<div>You are about to create your account.</div>
+		<span class="close">&times;</span>
+		<div class="link" type="submit" for="signup">continue</div>
+	</div>
+</div>

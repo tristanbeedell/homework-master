@@ -7,9 +7,9 @@ function updateTable(subject, selected) {
 			use(this);
 		}
 	};
-	xhttp.open("POST", "timetabledata", true);
+	xhttp.open("GET", `timetabledata?set=${selected}&sub=${subject}`, true);
 	xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	xhttp.send(`set=${selected}&sub=${subject}`);
+	xhttp.send();
 }
 
 function use(data) {

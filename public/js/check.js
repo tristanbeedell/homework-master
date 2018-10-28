@@ -1,37 +1,38 @@
-function check(callback) {
+function check(id, callback) {
 	allIsValid = true
+	requireNewCheck()
 	let password = document.getElementById("password");
 	let newpassword = document.getElementById("newpassword");
 	let checkPassword = document.getElementById("checkPassword");
-
-	throwErrorIf(newpassword.value.length < 5 ? "Use a longer password." : "", newpassword);
-	throwErrorIf(newpassword.value != checkPassword.value ? "Passwords do not match." : "", checkPassword);
 
 	var url = new URL(window.location.href);
 	var memberid = url.searchParams.get("member");
 	var guild = url.searchParams.get("guild");
 	let body = `password=${password.value}&member=${memberid}&guild=${guild}`;
 	ajaxValidate("checkNewUserPassword", body, valid => {
-		throwErrorIf(valid != "true" ? "Invalid" : "", password)
+		throwErrorIf(valid != "true" ? "Hmmm, something doesn't look right... Make sure you used the link" : "", password)
 		if (callback) {
 			callback(allIsValid)
 		}
 	})
+	if (id == 'password') { return }
+	throwErrorIf(newpassword.value.length < 5 ? "Use a longer password." : "", newpassword);
+	if (id == 'newpassword') { return }
+	throwErrorIf(newpassword.value != checkPassword.value ? "Passwords do not match." : "", checkPassword);
+
 }
 
 function throwErrorIf(error, ele) {
 	if (error != "") {
 		allIsValid = false;
+		alert(error)
 	}
-	ele.previousElementSibling.getElementsByClassName("error")[0].innerHTML = error;
 }
 
 function signup(formID) {
-	check(valid => {
+	check('all', valid => {
 		if (allIsValid) {
 			document.getElementById(formID).submit();
-		} else {
-			alert("there is an error!")
 		}
 	});
 }

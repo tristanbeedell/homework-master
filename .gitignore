@@ -6,7 +6,7 @@ npm-debug.log
 *.env
 *.dev
 .DS_Store
-test
+_test.js
 
 # Docker
 Dockerfile

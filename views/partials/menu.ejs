@@ -20,13 +20,13 @@
 		<div class="menu-container" id="account-menu">
 			<div class="menu-tag-container">
 				<div class="menu-tag-content">
-					<%= session.user ? session.user.name : "logged out" %>
+					<%= session.user ? name : "logged out" %>
 				</div>
 			</div>
 			<div class="menu-content">
-				<% if (session.user) { %>
-				<div class="link" id="/guilds/<%= bot.guilds.get(session.user.guild_id).name.replace(/ /g, '_') %>/members/<%= session.user.name.replace(/ /g, '_') %>">My Profile</div>
-				<div class="link" id="/guilds/<%= bot.guilds.get(session.user.guild_id).name.replace(/ /g, '_') %>%>">My Group</div>
+				<% if (session.user) {%>
+				<div class="link" id="/guilds/<%= guild.name.replace(/ /g, '_') %>/members/<%= name.replace(/ /g, '_') %>">My Profile</div>
+				<div class="link" id="/guilds/<%= guild.name.replace(/ /g, '_') %>">My Group</div>
 				<div class="important-link logout-modal">Log Out</div>
 				<% } else {%>
 				<div class="link" id="/login">login</div>
