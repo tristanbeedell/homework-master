@@ -1,10 +1,12 @@
 <form method="post">
-	<label for="guild">Group</label>
+	<label for="guild">Group
+		<span class="error">
+			<%= query.chosenguild === 'false' ? 'choose your group' : '' %></label>
 	<select name="guild" id="guild">
-		<% bot.guilds.forEach(guild => {%>
 		<option value="0">
 			choose your school
 		</option>
+		<% bot.guilds.forEach(guild => {%>
 		<option value="<%= guild.id %>" <% if (query.choice==guild.id) {%>
 			selected="selected"
 			<%}%>>
@@ -12,7 +14,8 @@
 		</option>
 		<% }) %>
 	</select>
-	<label for="pin">Group Pin</label>
+	<label for="pin">Group Pin <span class="error">
+			<%= query.validpin === 'false' ? 'invalid' : '' %></span></label>
 	<input type="password" name="pin" id="pin"></input>
 	<br>
 	<input type="submit" class="link" value="OK">

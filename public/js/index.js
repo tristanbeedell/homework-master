@@ -43,7 +43,9 @@ window.onload = function () {
 			link.callback = link.onclick
 			link.onclick = ((event) => {
 				pageSwipe(0.3)
-				if (event.target.type != "submit" && !link.callback) {
+				if (event.target.getAttribute('type') == "submit") {
+					document.getElementById(event.target.getAttribute('for')).submit();
+				} else if (!link.callback) {
 					redirect(event.target.id, 0.3);
 				} else {
 					link.callback();

@@ -3,7 +3,7 @@
 
 <head>
 	<title>
-		<%= guild.name%> | Homework Master
+		<%= invite.guild.name%> | Homework Master
 	</title>
 	<% include ../partials/head %>
 </head>
@@ -17,11 +17,11 @@
 			<div class="title">
 				<%= group.school_name%>
 				year
-				<%= group.year%>
+				<%= group.year%> <br> click to open discord
 			</div>
 			<div class="author">
 				created by:
-				<%= creator.username%>
+				<%= invite.guild.owner.nickname || invite.guild.owner.user.username%>
 			</div>
 			<div class="message">
 				<%= invite.memberCount-1%> members so far!

@@ -1,45 +1,19 @@
 <form method="post" id="signup">
-	<label for="nickname">Name: </label>
-	<input type="text" name="nickname" id="nickname" value="<%= discordMember.nickname %>">
-
-	<label for="password">Password Given:
-		<span class="error"></span>
-	</label>
-	<input type="password" name="password" id="password" onchange="check(); requireNewCheck()">
+	<label for="nickname">Your Name: </label>
+	<input type="text" name="nickname" id="nickname" placeholder="<%= query.name %>">
 
 	<label for="newpassword">New Password:
 		<span class="error"></span>
 	</label>
-	<input type="password" name="newpassword" id="newpassword" onchange="check(); requireNewCheck()">
+	<input type="password" name="newpassword" id="newpassword" onchange="check('newpassword')" placeholder="make it secure!">
 
 	<label for="checkPassword">Check Password:
 		<span class="error"></span>
 	</label>
-	<input type="password" name="checkPassword" id="checkPassword" onchange="check(); requireNewCheck()">
-	<% if (message) { %>
-	<br>
-	<span class="error">
-		<%= message%></span>
-	<% } %>
-	<% subjects.divs.forEach((div) => { %>
-	<label for="<%= div.name%>">
-		<%= div.name%>
-	</label>
-	<select name="classes[<%= div.name%>]" id="<%= div.name%>" onchange="updateTable('<%= div.name%>', this.value)">
-		<option value="none">
-			Choose Class
-		</option>
-		<% subjects.sets.forEach( set => { %>
-		<% if (set.div == div.name) { %>
-		<option value="<%= set.name%>">
-			<%= set.name%>
-		</option>
-		<% } %>
-		<% }) %>
-	</select>
-	<% }) %>
+	<input type="password" name="checkPassword" id="checkPassword" onchange="check('checkPassword')">
 	<input type="hidden" name="guild" value="<%= guild%>">
 	<input type="hidden" name="member" value="<%= member%>">
-	Please check that your timetable matches.
+	<input type="hidden" name="password" id="password" value="<%= query.password%>" placeholder="(sent by the bot in DM)">
+	<br>
 	<input type="button" value="OK" onclick="signup('signup')">
 </form>

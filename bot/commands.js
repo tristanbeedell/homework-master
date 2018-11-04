@@ -1,161 +1,225 @@
 const Discord = require('discord.js');
+const { getBot } = require('../modules/discord');
 const RichEmbed = Discord.RichEmbed;
 const url = require('url');
 
-let commands = {};
-let urlname = 'https://homework-staging.herokuapp.com'
+let commands = [];
+const urlname = process.env.WEBSITE_URL;
 
 class Command {
-	constructor(name, instructions, func, adminOnly = false) {
+	constructor(rule, name, instructions, func, adminOnly = false) {
+		this.rule = rule;
 		this.name = name;
 		this.instructions = instructions;
 		this.func = func;
 		this.adminOnly = adminOnly;
-		this.add();
-	}
-
-	add() {
-		commands[this.name] = this;
+		commands.push(this)
 	}
 }
 
-new Command("!help", "prints out all the commands and what they do", (data) => {
-	let reply = "";
+new Command(/^ *help/i, "`help`", "prints out the commands", ({ msg, dest }) => {
+	let reply = new RichEmbed()
+		.setTitle(`COMMANDS`)
+		.setDescription(`
+			Proceed a mention of this bot (@${getBot().user.tag}) with these commands
+			Replace all \`<...>\` appropiately
+		`);
 	// for each command in the commands object
-	for (var key in commands) {
+	commands.forEach(command => {
 		// do not list admin only commands
-		if (!commands[key].adminOnly) {
+		if (!command.adminOnly) {
 			// add command to reply in a new line
-			reply += "`" + key + '`\t' + commands[key].instructions + '\n';
+			reply.addField(command.name, command.instructions);
+		}
+	})
+	if (dest) {
+		dest.send(reply)
+	} else {
+		msg.channel.send(reply)
+	}
+});
+
+new Command(/^ *(<@\d+> ?'?s?|my) +profile/i, "`<@user> profile`", "returns selected profile", ({ msg, dest, tokens }) => {
+	let id = tokens.match(/^ *(<@(\d+)> ?'?s?|my)/)[2]
+	let selected = msg.guild.members.get(id)
+	member = selected || msg.member
+	let profileUrl = `${urlname}/guilds/${msg.guild.name}/members/${member.displayName}`.replace(/ /g, "_");
+	let embed;
+	embed = new RichEmbed()
+		.setTitle(`${member.displayName}'s Profile`)
+		.setURL(profileUrl)
+		.setAuthor(member.displayName, member.user.avatarURL)
+		.setColor(0xFFFFFF)
+	if (dest) {
+		dest.send(embed)
+	} else {
+		msg.channel.send(embed)
+	}
+});
+
+new Command(/^ *(DM|message|send) +<@\d+>/i, "`message`, `DM` or `send <@user> ...`", 'sends the command\'s outcome to `<@user>`', async ({ msg, tokens, selected }) => {
+	let id = tokens.match(/<@(\d+)>/)[1]
+	let dest = msg.guild.members.get(id)
+	let next = tokens.slice(tokens.indexOf('>') + 1)
+	respond({ msg, tokens: next, dest, selected })
+})
+
+new Command(/^ *report/i, "`report <@user> for <reason>`", ' Reports `<@user>`. This may lead to consequenses', ({ msg, tokens }) => {
+	let mention = tokens.match(/<@(\d+)>/)
+	if (!mention) {
+		msg.channel.send(`:thinking_face: that make sure you properly @ mention a user.`)
+		return;
+	}
+	let id = mention[1]
+	let member = msg.guild.members.get(id)
+	if (!member) {
+		msg.channel.send(`:thinking_face: the member ${mention[1]} does not exist`)
+		return;
+	}
+	let reason = '';
+	if (tokens.match(/for +`(.*)`/)) {
+		reason = tokens.match(/for +`(.*)`/)[1]
+	}
+	let severity = '';
+	['S', 'W', 'A', 'T'].some((abr) => {
+		let abrRole = msg.guild.roles.find(role => role.name == abr);
+		if (!member.roles.some(role => role == abrRole)) {
+			member.addRole(abrRole)
+		}
+		severity = abrRole;
+		return !member.roles.some(role => role == abrRole)
+	})
+	let report = new RichEmbed()
+		.setTitle(`YOU HAVE BEEN REPORTED`)
+		.addField("REPORTER", msg.author)
+		.addField("REASON", reason || 'not given')
+		.addField("SEVERITY", swat[severity.name].name)
+		.addField("SANCTIONS", swat[severity.name].sanctions)
+		.setColor(severity.color)
+		.setFooter('Wasn\'t you? Contact the staff.')
+	member.send(report)
+})
+
+new Command(/^ *(ma?ke?|create)?( *a? *)?poll/i,
+	'`make a poll titled: <name> with choices: <name>, <name>, ...`', 'creates a poll max 5 choices',
+	async ({ msg, tokens, dest }) => {
+		let reply = new RichEmbed()
+		let title = tokens.match(/titled?: *`([^`]*)`/i)
+		if (title) {
+			title = title[1];
+			reply.setTitle(title)
+		}
+		let choices = tokens.match(/choi(c|s)es:? *`([^`]*)`(?:, *`([^`]*)`(?:, *`([^`]*)`(?:, *`([^`]*)`(?:, *`([^`]*)`)?)?)?)?/i)
+		if (choices) {
+			choices = choices.splice(2)
+		} else {
+			msg.channel.send('error: no choices');
+			return
+		}
+		let emojis = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫']
+		index = 0;
+		choices = choices.filter(word => word);
+		choices.forEach(choice => {
+			reply.addField(choice, emojis[index], true)
+			index++;
+		})
+
+		let time;
+		if (!tokens.match(/time:?/i)) {
+			time = 10000 // 10 seconds
+		} else {
+			let timeStr = tokens.match(/time:?\s*(`([^`]\d*)(s|m)`)/i)
+			if (timeStr) { time = parseInt(timeStr[2]) * (timeStr[3] == 's' ? 1000 : timeStr[3] == 'm' ? 60000 : 0) }
+			if (!time || time < 1000) {
+				msg.channel.send('Invalid time');
+				return;
+			}
+			reply.setDescription(timeStr[1])
+		}
+		let poll
+		if (msg.editable) {
+			poll = await msg.edit(reply)
+		} else {
+			poll = await send(reply, msg, dest)
+		}
+		poll.pin()
+		setTimeout(() => {
+			poll.delete()
+			let embed = poll.embeds[0]
+			let outcome = new RichEmbed()
+				.setTitle(`poll \`${embed.title}\` ended`)
+			embed.fields.forEach(field => {
+				reaction = poll.reactions.find(react => react.emoji == field.value)
+				if (reaction) {
+					votes = reaction.count
+				} else {
+					votes = 0;
+				}
+				outcome.addField(`\`${field.name}\` got ${votes} votes`, '\u200B')
+			})
+			poll.channel.send(outcome)
+		}, time)
+	})
+
+new Command(/^ *(say)? *`.*`/, 'say <text>', 'all words to be taken literally must be wrapped in backticks', ({ msg, tokens, dest }) => {
+	reply = msg.author + ' says '
+	let quote = tokens.match(/`.*`/)
+	reply += quote[0]
+	if (dest) {
+		dest.send(reply)
+	} else {
+		msg.channel.send(reply)
+	}
+})
+
+function respond({ msg, tokens, dest, selected }) {
+	let command
+	for (i in commands) {
+		let rule = commands[i].rule
+		if (tokens && tokens.match(rule)) {
+			command = commands[i];
 		}
 	}
-	data.msg.channel.send(reply);
-});
-
-new Command("!profile", "shows everyone your profile on the site.", (data) => {
-
-	let profileUrl = `${urlname}/guilds/${data.msg.guild.name}/members/${getName(data.msg.member)}`.replace(/ /g, "_");
-
-	const embed = new RichEmbed()
-		.setURL(profileUrl)
-		.setAuthor(getName(data.msg.member), data.msg.author.avatarURL)
-		.setTitle(`${getName(data.msg.member)}'s Profile`)
-		.setColor(0xFFFFFF)
-	if (process.env.NODE_ENV == 'production') {
-		embed.setDescription(`localhost:5000/guilds/${data.msg.guild.name}/members/${getName(data.msg.member)}`.replace(/ /g, "_"));
-	}
-	data.msg.channel.send(embed);
-});
-
-function getName(member) {
-	if (member.nickname) {
-		return member.nickname
+	if (command) {
+		if (command.adminOnly && !msg.member.hasPermission("ADMINISTRATOR")) {
+			msg.channel.send(":rolling_eyes: You must be an admin in order to execute this command!")
+		} else {
+			command.func({ msg, tokens, dest, selected })
+		}
 	} else {
-		return member.user.username
+		msg.channel.send(`No instruction was found in: \`${tokens}\``)
+	}
+}
+
+let swat = {
+	'S': {
+		name: 'State',
+		sanctions: 'None yet, but be careful.'
+	},
+	'W': {
+		name: 'Warning',
+		sanctions: 'You cannot boost people\'s status with reactions.'
+	},
+	'A': {
+		name: 'Action',
+		sanctions: `You cannot embed files.
+		You cannot speak in voice chats.
+		You cannot trigger push notifications with @everyone.`
+	},
+	'T': {
+		name: 'Transfer',
+		sanctions: 'You cannot interact with the server.'
+	}
+}
+
+module.exports = respond
+
+function send(content, msg, dest) {
+	if (dest) {
+		return dest.send(content)
+	} else {
+		return msg.channel.send(content)
 	}
 }
 
 // TODO: make the whole server setup automated
-// TODO: report button
-
-// new Command("!add", "adds all listed to the rotor; `!add, @user1, @user2`", (data) => {
-// 	let msg = data.msg;
-// 	//cycle through all users listed
-// 	data.args.forEach(mention => {
-// 		//get the wanted member
-// 		let member
-// 		if (mention == "me") {
-// 			member = msg.member;
-// 		} else {
-// 			member = msg.guild.members.get(mention.slice(mention.indexOf("!") + 1, mention.indexOf(">")));
-// 		}
-//
-// 		//check that the member exists
-// 		if (member == null) {
-// 			msg.channel.send("`" + mention + "` is invalid");
-// 		} else {
-// 			// check that the user isn't already on the rotor
-// 			rotored = false;
-// 			for (let user = 0; user < data.theClass.rotor.length; user++) {
-// 				//if already in the rotor
-// 				if (data.theClass.rotor[user] == member.id) {
-// 					rotored = true;
-// 				}
-// 			}
-// 			if (rotored == false) {
-// 				//add the user to the rotor and respond
-// 				classes[msg.channel.parentID].rotor.push(msg.author.id);
-// 				msg.channel.send(member.toString() + ' added to rotor');
-// 			} else {
-// 				// respond anyway
-// 				msg.channel.send(member.nickname + ' is already on the rotor.');
-// 			}
-// 		}
-// 	});
-// 	//save the updated rotor
-// 	jsonfile.writeFile(file, classes, { spaces: 4 }, function (err) {
-// 		if (err) console.error(err)
-// 		msg.channel.send("all done!");
-// 	})
-// });
-//
-// new Command("!next", "says who is next in line", (data) => {
-// 	//if only 1 person is in the rotor, no one is next
-// 	if (data.theClass.rotor.length == 1) {
-// 		data.msg.channel.send("nobady has lined up to help!");
-// 	} else {
-// 		// respond with the correct username
-// 		user = data.client.users.get(data.theClass.rotor[1])
-// 		data.msg.channel.send(user.username + " is next");
-// 	}
-// });
-//
-// new Command("!rotor", "prints out the rotor", (data) => {
-// 	// if the rotor is empty, respond apropriately
-// 	if (data.theClass.rotor.length == 0) {
-// 		data.msg.channel.send('we searched and searched for someone to help, but the homework was just too boring. Sign up to the rotor now!')
-// 	} else {
-// 		// the 0th user is 'up now'
-// 		user = data.client.users.get(data.theClass.rotor[0])
-// 		let reply = "up now:\t`" + user.username + '`\n';
-// 		//loop through the rest of the rotor and number them
-// 		for (person = 1; person < data.theClass.rotor.length; person++) {
-// 			user = data.client.users.get(data.theClass.rotor[person])
-// 			reply += person.toString() + ':\t`' + user.username + '`\n';
-// 		}
-// 		data.msg.channel.send(reply);
-// 	}
-// });
-//
-// new Command("!new", "Adds a new homework and assigns the next person on the rotor to do it. [write `!new, {detail or hw link}`]", (data) => {
-// 	msg = data.msg;
-// 	// if the rotor is empty respond appropriately
-// 	if (data.theClass.rotor.length == 0) {
-// 		data.msg.channel.send(':crying_cat_face: We searched and searched for someone to help, but the homework was just too boring. Sign up to the rotor now!')
-// 	} else {
-// 		currentWorker = data.theClass.rotor.splice(0, 1);
-// 		data.theClass.rotor.push(currentWorker[0]);
-// 		newWorker = data.client.users.get(data.theClass.rotor[0]);
-// 		data.msg.channel.send(newWorker.toString() + ' you have to ' + data.args[0] + '. Please share your work in #submit');
-//
-// 		if (data.args.length > 0) {
-// 			classes[msg.channel.parentID].current = data.args[0];
-// 		} else {
-// 			classes[msg.channel.parentID].current = "do the homework";
-// 		}
-// 		jsonfile.writeFile(file, classes, { spaces: 4 }, function (err) {
-// 			if (err) console.error(err)
-// 		})
-// 	}
-// });
-//
-// new Command("!current", "Says who's turn it is", (data) => {
-// 	msg = data.msg;
-// 	data.theClass = classes[msg.channel.parentID];
-// 	user = data.client.users.get(data.theClass.rotor[0]);
-// 	msg.channel.send("`" + user.username + "` will `" + data.theClass.current + "` :pray:");
-// });
-
-module.exports = {
-	commands: commands
-}
