@@ -3,8 +3,7 @@ const RichEmbed = require('discord.js').RichEmbed;
 const discord = require('../modules/discord')
 const bot = discord.getBot();
 //import all commands I made for the bot
-const commandsScript = require('./commands.js');
-const commands = commandsScript.commands;
+const respond = require('./commands.js');
 // connect to database
 const pool = require('../modules/database').getDB();
 const bcrypt = require("bcrypt"); //for pin encryption
@@ -16,30 +15,10 @@ bot.on('message', msg => {
 		return;
 	} else if (msg.channel.type == "dm") {
 		createUser.dmRespond(msg)
-	} else if (msg.mentions.users.first() == bot.user) {
-		respond(msg)
+	} else if (msg.mentions.users.some((mem) => mem == bot.user)) {
+		let mentionLoc = msg.content.indexOf(bot.user.toString())
+		let tokens = msg.content.slice(mentionLoc + bot.user.toString().length).slice(2)
+
+		respond({ msg, tokens })
 	}
-	if (msg.content == 'yeet') { createUser.newMember(msg.member) }
 });
-
-function respond(msg) {
-	let mentionLoc = msg.content.indexOf(bot.user.toString())
-	let commandWords = msg.content.slice(mentionLoc + 21).split(' ').splice(1)
-
-	command = commands[commandWords[0]];
-
-	if (command) {
-		if (command.adminOnly && !msg.member.hasPermission("ADMINISTRATOR")) {
-			msg.channel.send(":rolling_eyes: You must be an admin in order to execute this command!")
-		} else {
-			let reply = command.func(msg);
-			msg.channel.send(reply)
-		}
-	} else {
-		msg.channel.send(`:thinking_face: Invalid. Use ${bot.user.toString()} help if you need help.`)
-	}
-}
-
-function parseMessage(content) {
-
-}

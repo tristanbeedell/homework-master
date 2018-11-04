@@ -27,18 +27,6 @@
 	</div>
 	<% include ../partials/menu %>
 
-	<% if (session.user && session.user.name == nickname) { %>
-	<div id="delete-account-modal" class="modal">
-		<div class="modal-content slide-down">
-			<div>Are you sure?<br>You will be kicked from
-				<%= discordMember.guild.name%> on discord and your classes will be wiped. Any ranks achieved will also be removed.</div>
-			<span class="close">&times;</span>
-			<button class="link" onclick="deleteAccount()">I understand and would like to continue.</button>
-		</div>
-	</div>
-
-	<script src="/js/my_profile.js"></script>
-	<% } %>
 </body>
 
 </html>

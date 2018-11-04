@@ -7,11 +7,11 @@ const token = process.env.DISCORD_BOT_SECRET;
 
 let bot;
 
-function initBot(callback) {
+function initBot(callback, _token) {
 	bot = new Discord.Client();
-	bot.login(token).catch(console.error);
+	bot.login(_token || token).catch(console.error);
 	bot.on("ready", () => {
-		console.warn("connected to discord".yellow);
+		console.warn(`connected to '${bot.user.tag}' on discord`.yellow);
 		callback(bot)
 	});
 }

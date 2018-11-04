@@ -1,6 +1,5 @@
 module.exports = { getSignup, postPasswordIsValid, signup }
 
-const { getName } = require('../modules/discordFunctions')
 const { getBot } = require("../modules/discord")
 const db = require("../modules/database")
 const bcrypt = require('bcrypt')
@@ -17,17 +16,17 @@ async function getSignup(req, res) {
 	try {
 		let { guild, member } = getGuildAndMember(guild_id, member_id)
 	} catch (err) {
-		res.send(err + '<br> Oof! Looks like there was an error! <a href="/contact">Contact tristan</a>');
+		res.status(404).send(err + '<br> Oof! Looks like there was an error! <a href="/contact">Contact tristan</a>');
 		return;
 	}
 
 	// check the user hasn't already signed up
-	let user = db.userSignedUp(guild_id, member_id)
+	let user = await db.userSignedUp(guild_id, member_id)
 	if (user.exists && user.complete) {
-		res.redirect(`/guilds/${guild.name}/members/${getName(member)}`.replace(/ /, '_'));
+		res.redirect(`/guilds/${guild.name}/members/${member.displayName}`.replace(/ /, '_'));
 		return;
 	} else if (user.exists && !user.complete) {
-		res.redirect(`/signup/timetable`.replace(/ /, '_'));
+		res.redirect(`/signup/timetable`);
 		return;
 	}
 
@@ -38,7 +37,13 @@ async function getSignup(req, res) {
     AND guild_id = '${guild_id}'
   `).catch(console.error)
 	if (preuser.rowCount < 1) {
-		res.redirect('/unavaliable')
+		res.status(403).send('oof! this discord account hasn\'t been verified over DM')
+		return;
+	}
+
+	let valid = await checkNewUserPassword(req)
+	if (!valid) {
+		res.status(403).send('oof! You are forbidden from seeing this page')
 		return;
 	}
 
@@ -60,13 +65,15 @@ function getGuildAndMember(guild_id, member_id) {
 
 async function checkNewUserPassword(req) {
 	pool = db.getDB();
-	let passwordGiven = req.body.password;
-	let member_id = req.body.member;
-	let guild_id = req.body.guild;
+	let passwordGiven = req.query.password || req.body.password;
+	let member_id = req.query.member || req.body.member;
+	let guild_id = req.query.guild || req.body.guild;
 	let valid = false;
 	let passwords = await pool.query(`
     SELECT password FROM pre_users WHERE member_id = '${member_id}' AND guild_id = '${guild_id}';
-  `).catch(console.error)
+  `).catch(() => {
+		valid = false;
+	})
 	db.getFirst(passwords,
 		(err, pass) => {
 			valid = checkValidity(err, pass, passwordGiven)
@@ -77,7 +84,7 @@ async function checkNewUserPassword(req) {
 
 async function postPasswordIsValid(req, res) {
 	let valid = await checkNewUserPassword(req)
-	res.send(valid.toString())
+	res.status(valid ? 200 : 400).end()
 }
 
 function checkValidity(err, p, passwordGiven) {

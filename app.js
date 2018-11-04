@@ -17,6 +17,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.set("public", path.join(__dirname, "public"));
 app.use(express.static('public'))
+app.use(express.static('favicon_package_v0.16'))
 app.use(session({
 	secret: "keyboard cat",
 	resave: true,
@@ -25,23 +26,24 @@ app.use(session({
 app.use(require('./middleware/userExists'))
 
 // enable ssl redirect for https connections only
-if (process.env.NODE_ENV != 'production') {
-	app.use(sslRedirect());
-}
+app.use(sslRedirect());
 // my modules
 const { initBot, getBot } = require("./modules/discord")
 const { initDB, getDB } = require('./modules/database')
-const discordFuncs = require("./modules/discordFunctions")
+const members = require("./modules/member")
+const guilds = require("./modules/guild")
 
 // my controllers
 const signup = require('./controllers/signup')
 const timetable = require('./controllers/timetable')
 const profile = require('./controllers/profile')
+const login = require('./controllers/login')
 
 // initialise bot, database, then listen on webpage
 const port = process.env.PORT;
 initBot(err => {
 	initDB()
+	// run the bot
 	require('./bot/index.js');
 	// listen to the webpage
 	app.listen(port, (err) => {
@@ -100,3 +102,6 @@ app.get('/signup/timetabledata', timetable.getTimetable);
 app.post('/signup/timetable', timetable.giveClasses);
 app.get('/guilds/:guildName/members/:memberName', profile);
 app.get('/guilds/:guildName/', (req, res) => { res.send('// TODO: guild profile') });
+app.get('/login', login.getForm)
+app.post('/login', login.login)
+app.post("/validateLogin", login.validate)

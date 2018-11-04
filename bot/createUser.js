@@ -1,7 +1,7 @@
 const RichEmbed = require('discord.js').RichEmbed;
 const pool = require('../modules/database').getDB();
 const bcrypt = require("bcrypt");
-const urlname = process.env.SERVER_URL;
+const urlname = process.env.WEBSITE_URL;
 
 module.exports = { newMember, dmRespond }
 
@@ -42,18 +42,11 @@ function sendSetupLink(msg, group) {
 	let password = createPreUser(msg.author.id, group.guild_id);
 	let setupURL = `${urlname}/signup?guild=${group.guild_id}&member=${msg.author.id}&password=${password}`;
 	let embed;
-	if (process.env.NODE_ENV != 'production') {
-		embed = new RichEmbed()
-			.setURL(setupURL)
-			.setTitle("SET UP")
-			.setColor(0xFF00FF)
-			.addField("Give your classes, and you'll be put into chat and voice rooms with everyone else in those classes! ")
-	} else {
-		embed = new RichEmbed()
-			.setTitle(setupURL)
-			.setColor(0xFF00FF)
-			.addField("Give your classes, and you'll be put into chat and voice rooms with everyone else in those classes! ")
-	}
+	embed = new RichEmbed()
+		.setURL(setupURL)
+		.setTitle("SET UP")
+		.setColor(0xFF00FF)
+		.addField("Give your classes, and you'll be put into chat and voice rooms with everyone else in those classes! ")
 
 	msg.channel.send(embed);
 }

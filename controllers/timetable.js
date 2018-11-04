@@ -1,14 +1,14 @@
 module.exports = { giveClasses, getTimetable, getTimetableForm }
 
 const { getDB } = require('../modules/database');
-const discord = require('../modules/discordFunctions');
+const members = require('../modules/member');
 const giveRoles = require('../modules/createClass');
 
 async function getTimetableForm(req, res) {
 	let pool = getDB();
 	// ensure that the user has signed up
 	if (!req.session.user) {
-		res.redirect('back')
+		res.redirect('/login')
 		return;
 	}
 	// get the sets and their divisions
@@ -36,6 +36,11 @@ async function getTimetableForm(req, res) {
 
 
 function getTimetable(req, res) {
+	//if the user isn't logged in, they cannot see the timetable data
+	if (!req.session.user) {
+		res.status(403).send('oof! log in to see this data!')
+		return;
+	}
 	let pool = getDB()
 	pool.query(`
 		SELECT
@@ -75,9 +80,8 @@ async function giveClasses(req, res) {
 	let pool = getDB();
 	// store the user in their session
 	req.session.user = Object.assign(req.session.user, req.body);
-	let member = discord.getDiscordMember(req.session.user.guild_id, req.session.user.member_id);
+	let member = members.get(req.session.user.guild_id, req.session.user.member_id);
 	// give the user access to their classes.
-	await giveRoles(member, req.body.classes);
 	// save new user's classes to database
 	await saveClasses(req.session.user);
 	// remove the pre-user
@@ -86,10 +90,10 @@ async function giveClasses(req, res) {
     AND guild_id = '${req.session.user.guild_id}';
   `).catch(console.error);
 
-	member.send("All done! If you want me again then type `!help` in the server");
-	let guild = member.guild;
-	// res.redirect(`/guilds/${guild.name}/members/${discord.getName(member)}`.replace(/ /g, '_'));
 	res.redirect(`/`);
+
+	await giveRoles(member, req.body.classes)
+	member.send("All done! If you want me again then type `!help` in the server");
 }
 
 function saveClasses(user) {

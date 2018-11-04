@@ -5,13 +5,13 @@ const assert = require('assert');
 const colors = require('colors');
 let pool;
 
-function initDB() {
+function initDB(connectionString) {
 	if (pool) {
 		console.warn('already connected to db'.red)
 	}
 	// connect to database through an ssl connection
 	pool = new Pool({
-		connectionString: process.env.DATABASE_URL,
+		connectionString: connectionString || process.env.DATABASE_URL,
 		ssl: true
 	});
 	// handle any errors

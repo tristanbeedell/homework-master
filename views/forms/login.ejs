@@ -1,3 +1,4 @@
+<div class='error'></div>
 <form method="post" id="login">
 	<label for="guild">Discord Server:</label>
 	<select name="guild" id="guild">
@@ -9,14 +10,12 @@
 	</select>
 	<label for="name">
 		Name:
-		<span class="error"></span>
 	</label>
-	<input type="text" name="name" id="name" onchange="validateMember(this)">
+	<input type="text" name="name" id="name">
 	<label for="password">
 		Password:
-		<span class="error"></span>
 	</label>
-	<input type="password" name="password" id="password" onchange="validatePassword(this)">
+	<input type="password" name="password" id="password" onchange="validateLogin()">
 	<br>
-	<input class="link" type="submit" value="OK">
+	<input type="button" value="OK" onclick="login()">
 </form>
