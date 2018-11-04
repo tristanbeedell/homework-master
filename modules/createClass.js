@@ -7,49 +7,72 @@ const colors = require('colors')
 async function giveRoles(member, chosenSubjects) {
 	// get the guild of the member
 	let guild = member.guild;
+	updatePunishRoles(guild);
 	let roles = [];
 	// iterate through the classes
 	for (let division in chosenSubjects) {
 		let set = chosenSubjects[division];
 		if (set == 'none') { continue }
 		// get or create the role
-		let role = await getOrMakeRole(guild, set)
+		let role = await getOrMakeRole(guild, set);
+		role.setColor('88c65a')
 		// give that role to the member if they do not already have it
 		if (!member.roles.some((hasRole) => hasRole.id == role.id)) {
 			roles.push(role);
 		}
-		// get data for that set from database
-		let rooms = await getChannelData(set, division)
-		// get or create a category
-		for (var i = 0; i < rooms.rows.length; i++) {
-			room = rooms.rows[i]
-			console.log(room)
-			let pool = database.getDB();
-
-			let cat = guild.channels.get(room.catagory_id)
-			if (!cat) {
-				cat = await createOrGetCat(guild, room.subject)
-				pool.query(`
-					UPDATE subject
-					SET catagory_id = '${cat.id}'
-					WHERE name = '${room.subject}' AND group_id = group_id('${guild.id}');
-				`).catch(console.error)
-			}
-			console.log(`catagory: ${cat.name}`)
-			let channel = guild.channels.get(room.channel_id)
-			if (!channel) {
-				channel = await createChannels(role, cat, room)
-				pool.query(`
-					UPDATE timetable
-					SET channel_id = '${channel.id}'
-					WHERE set_id = ${room.set_id} AND subject_id = ${room.sub_id} AND teacher_id = ${room.tea_id};
-				`).catch(console.error)
-			}
-			console.log(`channel: ${channel.name}`)
-		}
+		updateClasses(role, set, division)
 	}
 	// give the member the role
 	return member.addRoles(roles);
+}
+
+async function updateClasses(role, set, division) {
+	let pool = database.getDB();
+	let guild = role.guild;
+	// get data for that set from database
+	let rooms = await getChannelData(set, division)
+	// get or create a category
+	for (var i = 0; i < rooms.rows.length; i++) {
+		room = rooms.rows[i]
+
+		let cat = guild.channels.get(room.catagory_id)
+		if (!cat) {
+			cat = await createOrGetCat(guild, room.subject)
+			pool.query(`
+			UPDATE subject
+			SET catagory_id = '${cat.id}'
+			WHERE name = '${room.subject}' AND group_id = group_id('${guild.id}');
+		`).catch(console.error)
+		}
+		let channel = guild.channels.get(room.channel_id)
+		if (!channel) {
+			channel = await createChannels(role, cat, room, 'text')
+			pool.query(`
+			UPDATE timetable
+			SET channel_id = '${channel.id}'
+			WHERE set_id = ${room.set_id} AND subject_id = ${room.sub_id} AND teacher_id = ${room.tea_id};
+		`).catch(console.error)
+		}
+		if (channel.parent != cat) {
+			console.log(`moved ${channel.name} into ${cat.name}`)
+			channel.setParent(cat)
+		}
+		let name = `${role.name}-${room.teacher}`.toLowerCase().replace(/ /g, '-');
+		if (channel.name != name) {
+			console.log(`update ${channel.name} to ${name}`)
+			channel.setName(name)
+		}
+	}
+}
+async function updatePunishRoles(guild) {
+	S = await getOrMakeRole(guild, 'S')
+	S.setColor('71a947')
+	W = await getOrMakeRole(guild, 'W')
+	W.setColor('acb351')
+	A = await getOrMakeRole(guild, 'A')
+	A.setColor('b58b52')
+	T = await getOrMakeRole(guild, 'T')
+	T.setColor('a22f2f')
 }
 
 async function createOrGetCat(guild, division) {
@@ -116,26 +139,24 @@ async function getChannelData(set, division) {
 	return rooms;
 }
 
-function createChannels(role, cat, room) {
+function createChannels(role, cat, room, type) {
 	let guild = role.guild;
-	let name = `${room.subject}-with-${room.teacher}`.toLowerCase().replace(/ /g, '-');
-
+	let name = `${role.name}-${room.teacher}`.toLowerCase().replace(/ /g, '-');
 	let channels = [];
-	['text', 'voice'].forEach(type => {
-		function matchesText(channel) {
-			return channel.name == name && channel.type == type && channel.parent && channel.parent.name == room.division
-		}
-		exists = guild.channels.some(matchesText)
-		if (!exists) {
-			channels = createChannel(role, name, cat, type)
-		}
-	})
+
+	function matchesText(channel) {
+		return channel.name == name && channel.type == type && channel.parent && channel.parent.name == room.division
+	}
+	exists = guild.channels.some(matchesText)
+	if (!exists) {
+		channels = createChannel(role, name, cat, type)
+	}
 	return channels
 }
 
 async function createChannel(role, name, cat, type) {
 	let guild = role.guild
-
+	let S = await getOrMakeRole(guild, 'S')
 	let W = await getOrMakeRole(guild, 'W')
 	let A = await getOrMakeRole(guild, 'A')
 	let T = await getOrMakeRole(guild, 'T')

@@ -81,7 +81,6 @@ async function giveClasses(req, res) {
 	// store the user in their session
 	req.session.user = Object.assign(req.session.user, req.body);
 	let member = members.get(req.session.user.guild_id, req.session.user.member_id);
-	// give the user access to their classes.
 	// save new user's classes to database
 	await saveClasses(req.session.user);
 	// remove the pre-user
@@ -89,9 +88,8 @@ async function giveClasses(req, res) {
     WHERE member_id = '${req.session.user.member_id}'
     AND guild_id = '${req.session.user.guild_id}';
   `).catch(console.error);
-
 	res.redirect(`/`);
-
+	// give the user access to their classes.
 	await giveRoles(member, req.body.classes)
 	member.send("All done! If you want me again then type `!help` in the server");
 }
