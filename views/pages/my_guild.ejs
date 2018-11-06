@@ -1,23 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 
-	<head>
-		<title>
-			<%= guild.name%> | Homework Master
-		</title>
-		<% include ../partials/head %>
-	</head>
+<head>
+	<title>
+		<%= guild.name%> | Homework Master
+	</title>
+	<% include ../partials/head %>
+</head>
 
-	<body>
-		<div class="header">
-			<h1>
-				<%= guild.name%>
-			</h1>
-		</div>
-		<div class="content">
-			<% include ../partials/widget %>
-		</div>
-		<% include ../partials/menu %>
-	</body>
+<body>
+	<div class="header">
+		<h1>
+			<%= guild.name%>
+		</h1>
+	</div>
+	<div class="content">
+		<% include ../partials/widget %>
+	</div>
+	<% include ../partials/menu %>
+	<script src="/js/index.js"></script>
+</body>
 
 </html>

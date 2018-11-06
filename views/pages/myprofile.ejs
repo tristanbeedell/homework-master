@@ -1,41 +1,42 @@
 <!DOCTYPE html>
 <html>
 
-	<head>
-		<% include ../partials/head %>
-		<title>
-			<%= name%>'s Profile | Homework Master
-		</title>
-	</head>
+<head>
+	<% include ../partials/head %>
+	<title>
+		<%= name%>'s Profile | Homework Master
+	</title>
+</head>
 
-	<body>
-		<div class="header">
-			<h1>
-				<img src="<%= member.user.avatarURL %>" class="profilePic"></img>
-				<div id="usernameContainer">
-					<%= name%>
-				</div>
-			</h1>
-		</div>
-		<div class="content">
-			<% if (session.user && session.user.name == nickname) { %>
-			<div class="post">
-				This is your profile
-				<button class="important-link delete-account-modal">Delete This Account.</button>
+<body>
+	<div class="header">
+		<h1>
+			<img src="<%= member.user.avatarURL %>" class="profilePic"></img>
+			<div id="usernameContainer">
+				<%= name%>
 			</div>
-			<% } %>
+		</h1>
+	</div>
+	<div class="content">
+		<% if (session.user && session.user.name == nickname) { %>
+		<div class="post">
+			This is your profile
+			<button class="important-link delete-account-modal">Delete This Account.</button>
 		</div>
-		<% include ../partials/menu %>
-		<div id="delete-account-modal" class="modal">
-			<div class="modal-content slide-down">
-				<div>Are you sure?<br>You will be kicked from
-					<%= guild.name%> on discord and your classes will be wiped. Any ranks achieved will also be removed.</div>
-				<span class="close">&times;</span>
-				<button class="link" onclick="deleteAccount()">I understand and would like to continue.</button>
-			</div>
+		<% } %>
+	</div>
+	<% include ../partials/menu %>
+	<div id="delete-account-modal" class="modal">
+		<div class="modal-content slide-down">
+			<div>Are you sure?<br>You will be kicked from
+				<%= guild.name%> on discord and your classes will be wiped. Any ranks achieved will also be removed.</div>
+			<span class="close">&times;</span>
+			<button class="link" onclick="deleteAccount()">I understand and would like to continue.</button>
 		</div>
+	</div>
 
-		<script src="/js/my_profile.js"></script>
-	</body>
+	<script src="/js/my_profile.js"></script>
+	<script src="/js/index.js"></script>
+</body>
 
 </html>

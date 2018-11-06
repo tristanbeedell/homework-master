@@ -54,10 +54,6 @@ window.onload = function () {
 		})
 	}
 	// animations
-	// page swipe
-	let pageWipeEle = document.getElementsByClassName('page-wipe')[0]
-	pageWipeEle.style.width = '0';
-	transition(pageWipeEle, 0.2, 0.4, 'ease-in')
 	// header
 	forEach('header', header => {
 		let head = header.firstElementChild
@@ -91,6 +87,11 @@ window.onload = function () {
 		close.onclick = closeAllModals;
 	})
 }
+
+// page swipe
+let pageWipeEle = document.getElementsByClassName('page-wipe')[0]
+pageWipeEle.style.width = '0';
+transition(pageWipeEle, 0.2, 0.4, 'ease-in')
 
 function forEach(classname, callback) {
 	let items = document.getElementsByClassName(classname)
