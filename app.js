@@ -4,7 +4,11 @@ const path = require("path"); // a neater way to join paths apparently
 const bodyParser = require("body-parser"); // needed for request body on post requests
 const session = require("express-session"); //for sessions
 const bcrypt = require("bcrypt"); //for password encryption
-const sslRedirect = require('heroku-ssl-redirect'); // ssl connection
+const colors = require('colors');
+
+
+
+require('dotenv').config()
 // setup the server
 const app = express();
 // load all the middleware
@@ -13,20 +17,21 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 app.use(express.static("views"));
+app.use(express.static('public'));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.set("public", path.join(__dirname, "public"));
-app.use(express.static('public'))
-app.use(express.static('favicon_package_v0.16'))
+app.use(express.static('favicon_package_v0.16'));
 app.use(session({
 	secret: "keyboard cat",
 	resave: true,
 	saveUninitialized: true
 }));
 app.use(require('./middleware/userExists'))
+app.use(require('./middleware/logger'))
 
-// enable ssl redirect for https connections only
-app.use(sslRedirect());
+// TODO: enable ssl redirect for https connections only
+
 // my modules
 const { initBot, getBot } = require("./modules/discord")
 const { initDB, getDB } = require('./modules/database')
@@ -38,19 +43,6 @@ const signup = require('./controllers/signup')
 const timetable = require('./controllers/timetable')
 const profile = require('./controllers/profile')
 const login = require('./controllers/login')
-
-// initialise bot, database, then listen on webpage
-const port = process.env.PORT;
-initBot(err => {
-	initDB()
-	// run the bot
-	require('./bot/index.js');
-	// listen to the webpage
-	app.listen(port, (err) => {
-		if (err) { throw err }
-		console.log("running on port " + port);
-	});
-});
 
 app.get("/", (req, res) => {
 	res.render("pages/home", {
@@ -101,7 +93,21 @@ app.get('/signup/timetable', timetable.getTimetableForm)
 app.get('/signup/timetabledata', timetable.getTimetable);
 app.post('/signup/timetable', timetable.giveClasses);
 app.get('/guilds/:guildName/members/:memberName', profile);
-app.get('/guilds/:guildName/', (req, res) => { res.send('// TODO: guild profile') });
+// TODO: guild profile
+app.get('/guilds/:guildName/', (req, res) => { res.status(418).send('under construction, <a href="/">go back</a>') });
 app.get('/login', login.getForm)
 app.post('/login', login.login)
 app.post("/validateLogin", login.validate)
+
+// initialise bot, database, then listen on webpage
+const port = 8080;
+initBot(err => {
+	initDB()
+	// run the bot
+	require('./bot/index.js');
+	// listen to the webpage
+	app.listen(port, (err) => {
+		if (err) { throw err }
+		console.log(`listening on port ${port}`.yellow);
+	});
+});

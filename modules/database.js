@@ -12,7 +12,7 @@ function initDB(connectionString) {
 	// connect to database through an ssl connection
 	pool = new Pool({
 		connectionString: connectionString || process.env.DATABASE_URL,
-		ssl: true
+		ssl: !connectionString
 	});
 	// handle any errors
 	pool.on('error', (err) => {

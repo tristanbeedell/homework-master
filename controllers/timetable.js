@@ -8,7 +8,17 @@ async function getTimetableForm(req, res) {
 	let pool = getDB();
 	// ensure that the user has signed up
 	if (!req.session.user) {
-		res.redirect('/login')
+		res.redirect('/login?redirect=/signup/timetable')
+		return;
+	}
+	user = await pool.query(`
+		SELECT * FROM users
+		WHERE member_id = '${req.user.member_id}'
+		AND group_id('${req.user.guild_id}') = group_id
+		AND complete = FALSE;
+	`).catch(console.error)
+	if (user.rowCount == 0) {
+		res.redirect('/myprofile')
 		return;
 	}
 	// get the sets and their divisions

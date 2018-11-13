@@ -25,8 +25,11 @@ async function getSignup(req, res) {
 	if (user.exists && user.complete) {
 		res.redirect(`/guilds/${guild.name}/members/${member.displayName}`.replace(/ /, '_'));
 		return;
-	} else if (user.exists && !user.complete) {
+	} else if (user.exists && !user.complete && req.session.user) {
 		res.redirect(`/signup/timetable`);
+		return;
+	} else if (user.exists && !user.complete && !req.session.user) {
+		res.redirect(`/login?redirect=/signup/timetable`);
 		return;
 	}
 

@@ -1,6 +1,5 @@
-<div class='error'></div>
 <form method="post" id="login">
-	<label for="guild">Discord Server:</label>
+	<div class="error" style="grid-column: 1/-1;"></div> <label for="guild">Discord Server:</label>
 	<select name="guild" id="guild">
 		<% bot.guilds.forEach(guild => {%>
 		<option value="<%= guild.id %>">

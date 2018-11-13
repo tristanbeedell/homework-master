@@ -34,12 +34,12 @@ async function login(req, res) {
 		// store the user in the browser session
 		req.session.user = user.rows[0];
 		req.session.user.name = member.displayName
-		res.redirect("/")
+		res.redirect(req.query.redirect || "/")
 	})
 }
 
 async function validatePassword(member, password) {
-	if (!member) { return false }
+	if (!member.id || !member.guild.id) { return false }
 	// query database for the password ofthe member
 	let pool = getDB()
 	passwords = await pool.query(`

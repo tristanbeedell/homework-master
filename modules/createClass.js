@@ -29,29 +29,17 @@ async function giveRoles(member, chosenSubjects) {
 async function updateClasses(role, set, division) {
 	let pool = database.getDB();
 	let guild = role.guild;
-	// get data for that set from database
 	let rooms = await getChannelData(set, division)
-	// get or create a category
-	for (var i = 0; i < rooms.rows.length; i++) {
-		room = rooms.rows[i]
-
-		let cat = guild.channels.get(room.catagory_id)
-		if (!cat) {
-			cat = await createOrGetCat(guild, room.subject)
-			pool.query(`
-			UPDATE subject
-			SET catagory_id = '${cat.id}'
-			WHERE name = '${room.subject}' AND group_id = group_id('${guild.id}');
-		`).catch(console.error)
-		}
+	rooms.rows.forEach(async room => {
+		let cat = await setupCat(room);
 		let channel = guild.channels.get(room.channel_id)
 		if (!channel) {
 			channel = await createChannels(role, cat, room, 'text')
 			pool.query(`
-			UPDATE timetable
-			SET channel_id = '${channel.id}'
-			WHERE set_id = ${room.set_id} AND subject_id = ${room.sub_id} AND teacher_id = ${room.tea_id};
-		`).catch(console.error)
+				UPDATE timetable
+				SET channel_id = '${channel.id}'
+				WHERE set_id = ${room.set_id} AND subject_id = ${room.sub_id} AND teacher_id = ${room.tea_id};
+			`).catch(console.error)
 		}
 		if (channel.parent != cat) {
 			console.log(`moved ${channel.name} into ${cat.name}`)
@@ -62,8 +50,21 @@ async function updateClasses(role, set, division) {
 			console.log(`update ${channel.name} to ${name}`)
 			channel.setName(name)
 		}
-	}
+	})
 }
+
+async function setupCat(room) {
+	let cat = guild.channels.get(room.catagory_id)
+	if (cat && cat.name != room.subject) {
+		await cat.setName(room.subject)
+	}
+	let general = guild.channels.get(room.general_id)
+	if (!cat || !general) {
+		cat = await createOrGetCat(guild, room.subject, room)
+	}
+	return cat;
+}
+
 async function updatePunishRoles(guild) {
 	S = await getOrMakeRole(guild, 'S')
 	S.setColor('71a947')
@@ -75,14 +76,26 @@ async function updatePunishRoles(guild) {
 	T.setColor('a22f2f')
 }
 
-async function createOrGetCat(guild, division) {
+async function createOrGetCat(guild, division, room) {
 	function matches(cats) { return cats.name == division && cats.type == 'category' }
 	let exists = guild.channels.some(matches)
+	let cat;
 	if (exists) {
-		return guild.channels.find(matches)
+		cat = guild.channels.find(matches)
 	} else {
-		return createCatagory(guild, division)
+		cat = createCatagory(guild, division)
 	}
+	let general = guild.channels.get(room.general_id)
+	if (!general) {
+		pool = database.getDB();
+		general = await createChannel(guild.defaultRole, division, cat, 'text')
+		pool.query(`
+			UPDATE subject
+			SET general_id = '${general.id}'
+			WHERE name = '${room.subject}' AND group_id = group_id('${guild.id}');
+		`).catch(console.error)
+	}
+	return cat;
 }
 
 async function getOrMakeRole(guild, name) {
@@ -113,6 +126,11 @@ async function createCatagory(guild, name) {
   ]
 	let cat = await guild.createChannel(name, "category", perms)
 		.catch(console.error);
+	pool.query(`
+		UPDATE subject
+		SET catagory_id = '${cat.id}'
+		WHERE name = '${name}' AND group_id = group_id('${guild.id}');
+	`).catch(console.error)
 	console.log(`created: ${cat.name}`.green);
 	return cat;
 }
@@ -125,6 +143,7 @@ async function getChannelData(set, division) {
       subject.name      AS subject,
       divisions.name    AS division,
 			subject.catagory_id,
+			subject.general_id,
 			timetable.channel_id,
 			subject.id AS sub_id,
 			sets.id AS set_id,
