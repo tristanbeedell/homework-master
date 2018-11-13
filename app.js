@@ -99,6 +99,15 @@ app.get('/login', login.getForm)
 app.post('/login', login.login)
 app.post("/validateLogin", login.validate)
 
+
+var fs = require('fs');
+var http = require('http');
+var https = require('https');
+var key = fs.readFileSync('../../../Desktop/server.key', 'utf8');
+var cert = fs.readFileSync('../../../Desktop/yourdomain.crt', 'utf8');
+var credentials = { key, cert };
+
+
 // initialise bot, database, then listen on webpage
 const port = 8080;
 initBot(err => {
@@ -106,8 +115,7 @@ initBot(err => {
 	// run the bot
 	require('./bot/index.js');
 	// listen to the webpage
-	app.listen(port, (err) => {
-		if (err) { throw err }
-		console.log(`listening on port ${port}`.yellow);
-	});
+	https.createServer(credentials, app).listen(port)
+	console.log(`listening on port ${port}`.yellow);
 });
+

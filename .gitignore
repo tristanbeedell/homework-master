@@ -6,4 +6,7 @@ node_modules
 .DS_Store
 _test.js
 
+#SSH Termius artifacts
+*.AppleDouble
+
 access.log
