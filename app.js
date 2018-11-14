@@ -103,19 +103,18 @@ app.post("/validateLogin", login.validate)
 var fs = require('fs');
 var http = require('http');
 var https = require('https');
-var key = fs.readFileSync('../../../Desktop/server.key', 'utf8');
-var cert = fs.readFileSync('../../../Desktop/yourdomain.crt', 'utf8');
+var key = fs.readFileSync('/etc/letsencrypt/live/homework-master.co.uk/privkey.pem', 'utf8');
+var cert = fs.readFileSync('/etc/letsencrypt/live/homework-master.co.uk/fullchain.pem', 'utf8');
 var credentials = { key, cert };
 
-
-// initialise bot, database, then listen on webpage
-const port = 8080;
+// initialise bot and then database
 initBot(err => {
 	initDB()
 	// run the bot
 	require('./bot/index.js');
 	// listen to the webpage
-	https.createServer(credentials, app).listen(port)
-	console.log(`listening on port ${port}`.yellow);
+	http.createServer(app).listen(80, "0.0.0.0")
+	https.createServer(credentials, app).listen(443, "0.0.0.0")
+	console.log(`listening`.yellow);
 });
 

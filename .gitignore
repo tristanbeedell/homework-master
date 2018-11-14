@@ -9,4 +9,4 @@ _test.js
 #SSH Termius artifacts
 *.AppleDouble
 
-access.log
+nohup.out
