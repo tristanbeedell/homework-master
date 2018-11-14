@@ -5,9 +5,6 @@ const bodyParser = require("body-parser"); // needed for request body on post re
 const session = require("express-session"); //for sessions
 const bcrypt = require("bcrypt"); //for password encryption
 const colors = require('colors');
-
-
-
 require('dotenv').config()
 // setup the server
 const app = express();
@@ -29,8 +26,6 @@ app.use(session({
 }));
 app.use(require('./middleware/userExists'))
 app.use(require('./middleware/logger'))
-
-// TODO: enable ssl redirect for https connections only
 
 // my modules
 const { initBot, getBot } = require("./modules/discord")
@@ -99,22 +94,11 @@ app.get('/login', login.getForm)
 app.post('/login', login.login)
 app.post("/validateLogin", login.validate)
 
-
-var fs = require('fs');
-var http = require('http');
-var https = require('https');
-var key = fs.readFileSync('/etc/letsencrypt/live/homework-master.co.uk/privkey.pem', 'utf8');
-var cert = fs.readFileSync('/etc/letsencrypt/live/homework-master.co.uk/fullchain.pem', 'utf8');
-var credentials = { key, cert };
-
 // initialise bot and then database
 initBot(err => {
 	initDB()
 	// run the bot
-	require('./bot/index.js');
+	require('./bot/index');
 	// listen to the webpage
-	http.createServer(app).listen(80, "0.0.0.0")
-	https.createServer(credentials, app).listen(443, "0.0.0.0")
-	console.log(`listening`.yellow);
+	require('./middleware/run')(app)
 });
-
