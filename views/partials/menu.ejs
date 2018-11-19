@@ -1,55 +1,62 @@
 <div id="logout-modal" class="modal">
 	<div class="modal-content slide-down">
 		<span class="close">&times;</span>
-		<div class="link" id="/logout">Logout</div>
+		<a href="/logout">Logout</a>
 	</div>
 </div>
-
-<div class="menu">
-	<div class="menu-item">
-		<div class="menu-container" id="home-menu">
-			<div class="menu-tag-container">
-				<div class="menu-tag-content">Home</div>
-			</div>
-			<div class="menu-content">
-				<div class="link" id="/">home</div>
-			</div>
+<div class="entire-menu">
+	<div class="menu">
+		<div id="toggle-menu">
+			<button class="toggle-icon-container" onclick="toggleEntireMenu()">
+				<div class="bar"></div>
+				<div class="bar"></div>
+				<div class="bar"></div>
+			</button>
 		</div>
-	</div>
-	<div class="menu-item">
-		<div class="menu-container" id="account-menu">
-			<div class="menu-tag-container">
-				<div class="menu-tag-content">
-					<%= session.user ? name : "logged out" %>
+		<div class="menu-item">
+			<div class="menu-container" id="home-menu">
+				<div class="menu-tag-container">
+					<div class="menu-tag-content">Home</div>
+				</div>
+				<div class="menu-content">
+					<a href="/">home</a>
 				</div>
 			</div>
-			<div class="menu-content">
-				<% if (session.user) {%>
-				<div class="link" id="/guilds/<%= guild.name.replace(/ /g, '_') %>/members/<%= name.replace(/ /g, '_') %>">My Profile</div>
-				<div class="link" id="/guilds/<%= guild.name.replace(/ /g, '_') %>">My Group</div>
-				<div class="important-link logout-modal">Log Out</div>
-				<% } else {%>
-				<div class="link" id="/login">login</div>
-				<div class="link" id="/join">join</div>
-				<%}%>
-			</div>
 		</div>
-	</div>
-	<div class="menu-item">
-		<div class="menu-container" id="help-menu">
-			<div class="menu-tag-container">
-				<div class="menu-tag-content">
-					Help
+		<div class="menu-item">
+			<div class="menu-container" id="account-menu">
+				<div class="menu-tag-container">
+					<div class="menu-tag-content">
+						<%= session.user ? name : "logged out" %>
+					</div>
+				</div>
+				<div class="menu-content">
+					<% if (session.user) {%>
+					<a href="/guilds/<%= guild.name.replace(/ /g, '_') %>/members/<%= name.replace(/ /g, '_') %>">My Profile</a>
+					<a href="/guilds/<%= guild.name.replace(/ /g, '_') %>">My Group</a>
+					<div class="important-link logout-modal">Log Out</div>
+					<% } else { %>
+					<a href="/login">login</a>
+					<a href="/join">join</a>
+					<%}%>
 				</div>
 			</div>
-			<div class="menu-content">
-				<div class="link" id="/FAQ">FAQ</div>
-				<div class="link" id="/contact">contact</div>
+		</div>
+		<div class="menu-item">
+			<div class="menu-container" id="help-menu">
+				<div class="menu-tag-container">
+					<div class="menu-tag-content">
+						Help
+					</div>
+				</div>
+				<div class="menu-content">
+					<a href="/FAQ">FAQ</a>
+					<a href="/contact">contact</a>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
-
 <div class="page-wipe">
 	<div class="loader-container">
 		loading

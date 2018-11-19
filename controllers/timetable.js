@@ -13,8 +13,8 @@ async function getTimetableForm(req, res) {
 	}
 	user = await pool.query(`
 		SELECT * FROM users
-		WHERE member_id = '${req.user.member_id}'
-		AND group_id('${req.user.guild_id}') = group_id
+		WHERE member_id = '${req.session.user.member_id}'
+		AND group_id('${req.session.user.guild_id}') = group_id
 		AND complete = FALSE;
 	`).catch(console.error)
 	if (user.rowCount == 0) {

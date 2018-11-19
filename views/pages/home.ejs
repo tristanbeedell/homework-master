@@ -11,13 +11,16 @@
 		<h1>Homework Master</h1>
 	</div>
 	<div class="content">
+		<% for (i = 0; i < 10; i++){%>
 		<div class="post">
 			<div class="title">Join Uplands year 11 now!</div>
 			<div class="author">created by <a href="#">me</a></div>
 			<div class="message">
-				<div class="link" id="/join?choice=506096692102430720">join now</div>
+				Testing post!
+				<a href="/join?choice=506096692102430720">join now</a>
 			</div>
 		</div>
+		<%}%>
 	</div>
 	<% include ../partials/menu %>
 	<script src="/js/index.js"></script>

@@ -1,201 +1,189 @@
 body {
-  background-color: cadetblue;
-  display: grid;
-  text-align: center;
-  font-family: Avenir;
-  grid-template-areas: "head menu""content menu";
-  margin: 0;
-  grid-template-columns: calc(100vw - 2em) 2em;
+	background-color: cadetblue;
+	text-align: center;
+	font-family: Avenir;
+	margin: 0;
 }
 
 html, body {
-  overflow-x: hidden;
+	overflow-x: hidden;
 }
 
 .page-wipe {
-  position: fixed;
-  height: 100vh;
-  width: 100vw;
-  background-color: cornflowerblue;
-  right: 0;
-  transition: width;
+	position: fixed;
+	height: 100vh;
+	width: 100vw;
+	background-color: cornflowerblue;
+	right: 0;
+	top: 0;
+	transition: width;
+	overflow-x: hidden;
+	text-wrap: nowrap;
 }
 
 .loader-container {
-  font-size: 4em;
-  color: white;
-  position: fixed;
-  margin: auto;
-  overflow-x: hidden;
+	font-size: 4em;
+	color: white;
+	position: fixed;
+	margin: auto;
 }
 
-/* .loader-container {
-  border: 16px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 16px solid #3498db;
-  width: 120px;
-  height: 120px;
-  animation: spin 2s ease-out infinite;
-} */
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
+	0% {
+		transform: rotate(0deg);
+	}
 
-  100% {
-    transform: rotate(360deg);
-  }
+	100% {
+		transform: rotate(360deg);
+	}
 }
 
 ::selection {
-  background: cadetblue;
-  color: beige
+	background: cadetblue;
+	color: beige
 }
 
 .header {
-  background-color: darkcyan;
-  grid-area: head;
-  color: azure;
-  font-size: larger;
-  display: flex;
-  align-items: center;
-  box-sizing: content-box;
-  justify-content: center;
-  cursor: default;
-  width: 100%;
-  padding-right: 2em;
+	background-color: darkcyan;
+	color: azure;
+	font-size: larger;
+	display: flex;
+	align-items: center;
+	box-sizing: content-box;
+	justify-content: center;
+	cursor: default;
+	width: 100%;
+	padding-right: 2em;
 }
 
 .header>h1 {
-  right: 100vw;
-  position: relative;
+	right: 100vw;
+	position: relative;
 }
 
 .slide-in {
-  animation-name: slide-in;
-  animation-duration: 0.6s;
-  animation-fill-mode: forwards;
+	animation-name: slide-in;
+	animation-duration: 0.6s;
+	animation-fill-mode: forwards;
 }
 
 @keyframes slide-in {
-  from {
-    right: 100vw;
-  }
+	from {
+		right: 100vw;
+	}
 
-  to {
-    right: 0vw
-  }
+	to {
+		right: 0vw
+	}
 }
 
 div.content {
-  display: grid;
-  grid-template-columns: 100%;
-  grid-row-gap: 1em;
-  margin: 1em;
-  color: cadetblue;
-}
-
-.content {
-  grid-area: content;
+	display: grid;
+	grid-template-columns: 100%;
+	grid-row-gap: 1em;
+	margin: 1em;
+	color: cadetblue;
 }
 
 .post {
-  background-color: beige;
-  display: grid;
-  position: relative;
+	background-color: beige;
+	display: grid;
+	position: relative;
+	padding: 0.5em;
+	grid-template-areas:
+		"title"
+		"author"
+		"message"
+		"foot";
+	height: 10pc;
 }
 
 .post>.title {
-  grid-area: title;
-  color: #246f72;
-  font-size: 20px;
-  padding: 1em;
+	grid-area: title;
+	color: #246f72;
+	font-size: 20px;
+	padding: 1em;
 }
 
 .post>.message {
-  grid-area: message;
+	grid-area: message;
 }
 
 .post>.author {
-  grid-area: author;
-}
-
-.post {
-  padding: 0.5em;
-  grid-template-areas:
-    "title"
-    "author"
-    "message"
-    "foot";
+	grid-area: author;
 }
 
 .post>.title {
-  padding-bottom: 0;
+	padding-bottom: 0;
 }
 
 .post>.message {}
 
 .post>.author {
-  margin-bottom: 1em;
+	margin-bottom: 1em;
 }
 
 tr {
-  height: 40px;
+	height: 40px;
 }
 
 th, td {
-  border: 1px solid black;
-  width: 10%;
+	border: 1px solid black;
+	width: 10%;
 }
 
 td {
-  font-size: 12px;
+	font-size: 12px;
 }
 
 .edit {
-  background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Simpleicons_Business_pencil-point.svg/2000px-Simpleicons_Business_pencil-point.svg.png");
-  border: none;
-  background-size: cover;
-  width: 15px;
-  height: 15px;
+	background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Simpleicons_Business_pencil-point.svg/2000px-Simpleicons_Business_pencil-point.svg.png");
+	border: none;
+	background-size: cover;
+	width: 15px;
+	height: 15px;
 }
 
 .invite {
-  cursor: pointer;
+	cursor: pointer;
 }
 
 .invite:hover {
-  background-color: bisque;
+	background-color: bisque;
 }
 
 .profilePic {
-  border-radius: 50%;
-  height: 3em;
+	border-radius: 50%;
+	height: 3em;
 }
 
 #usernameContainer {
-  display: inline-block;
+	display: inline-block;
 }
 
-.link, .important-link {
-  cursor: pointer;
+.important-link {
+	cursor: pointer;
 }
 
-.content a, .content .link {
-  text-decoration: none;
-  color: cornflowerblue;
-  display: inline;
+a {
+	text-decoration: none;
+	color: cornflowerblue;
+	display: inline;
 }
 
-.content a:hover, .content .link:hover {
-  color: darkblue;
+.content a:hover {
+	color: darkblue;
 }
 
 .content a:active {
-  background-color: ivory;
+	background-color: ivory;
 }
 
 .widget {
-  width: 100%;
-  height: 400px;
+	width: 100%;
+	height: 400px;
+}
+
+::-webkit-scrollbar {
+	display: none;
 }
