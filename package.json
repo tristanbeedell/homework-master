@@ -8,7 +8,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test": "node app.js"
+    "test": "node _test.js"
   },
   "dependencies": {
     "bcrypt": "3.0.0",
@@ -19,7 +19,6 @@
     "ejs": "2.6.1",
     "express": "4.16.3",
     "express-session": "1.15.6",
-    "heroku-ssl-redirect": "0.0.4",
     "morgan": "^1.9.1",
     "pg": "^7.5.0",
     "url": "^0.11.0"
@@ -34,8 +33,7 @@
   },
   "keywords": [
     "node",
-    "heroku",
+		"discord",
     "express"
-  ],
-  "license": "MIT"
+  ]
 }

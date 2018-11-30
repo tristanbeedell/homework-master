@@ -2,10 +2,10 @@
 const express = require("express"); // for webpage server
 const path = require("path"); // a neater way to join paths apparently
 const bodyParser = require("body-parser"); // needed for request body on post requests
-const session = require("express-session"); //for sessions
-const bcrypt = require("bcrypt"); //for password encryption
-const colors = require('colors');
-require('dotenv').config()
+const session = require("express-session"); // for sessions
+const bcrypt = require("bcrypt"); // for password encryption
+const colors = require('colors'); // pretty terminal output
+require('dotenv').config() // environment variables
 // setup the server
 const app = express();
 // load all the middleware
