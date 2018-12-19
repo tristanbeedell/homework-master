@@ -3,7 +3,7 @@
 	<% subjects.forEach((set) => { %>
 
 	<% if (set.division != prevDiv){ %>
-	<% if (prevDiv != ''){ %>
+	<% if (prevDiv != undefined){ %>
 	</select>
 	<%}%>
 	<% prevDiv = set.division %>
@@ -30,12 +30,13 @@
 
 		<% }) %>
 		<input class="important-link signup-modal" type="button" value="OK" style="grid-column: 1/-1;">
-</form>
 
-<div id="signup-modal" class="modal">
-	<div class="signup-modal slide-down">
-		<div>You are about to create your account.</div>
-		<span class="close">&times;</span>
-		<div class="link" type="submit" for="signup">continue</div>
-	</div>
-</div>
+
+		<div id="signup-modal" class="modal">
+			<div class="signup-modal slide-down">
+				<div>You are about to create your account.</div>
+				<span class="close">&times;</span>
+				<input type="submit" value="Continue" />
+			</div>
+		</div>
+</form>
