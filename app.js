@@ -1,3 +1,4 @@
+#!/usr/bin/env nodejs
 // dependencies
 const express = require("express"); // for webpage server
 const path = require("path"); // a neater way to join paths apparently
@@ -100,5 +101,5 @@ initBot(err => {
 	// run the bot
 	require('./bot/index');
 	// listen to the webpage
-	require('./middleware/run')(app)
+	app.listen(8080)
 });
