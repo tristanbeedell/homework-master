@@ -38,6 +38,7 @@ const guilds = require("./modules/guild")
 const signup = require('./controllers/signup')
 const timetable = require('./controllers/timetable')
 const profile = require('./controllers/profile')
+const guild = require('./controllers/guild')
 const login = require('./controllers/login')
 
 app.get("/", (req, res) => {
@@ -52,14 +53,8 @@ app.get("/unavaliable", (req, res) => {
 		bot: getBot()
 	});
 });
-app.get("/FAQ", (req, res) => {
-	res.render("pages/FAQ", {
-		session: req.session,
-		bot: getBot()
-	});
-});
-app.get("/contact", (req, res) => {
-	res.render("pages/FAQ", {
+app.get("/help", (req, res) => {
+	res.render("pages/help", {
 		session: req.session,
 		bot: getBot()
 	});
@@ -80,6 +75,7 @@ app.get('/join', (req, res) => {
 		});
 	}
 });
+
 app.post('/join', require('./controllers/join').join)
 app.get('/invite', require('./controllers/invite').invite)
 app.get('/signup', signup.getSignup)
@@ -90,16 +86,17 @@ app.get('/signup/timetabledata', timetable.getTimetable);
 app.post('/signup/timetable', timetable.giveClasses);
 app.get('/guilds/:guildName/members/:memberName', profile);
 // TODO: guild profile
-app.get('/guilds/:guildName/', (req, res) => { res.status(418).send('under construction, <a href="/">go back</a>') });
+app.get('/guilds/:guildName/', guild);
 app.get('/login', login.getForm)
 app.post('/login', login.login)
 app.post("/validateLogin", login.validate)
 
+const port = process.env.PORT || 8080;
 // initialise bot and then database
 initBot(err => {
 	initDB()
 	// run the bot
 	require('./bot/index');
 	// listen to the webpage
-	app.listen(8080)
+	app.listen(port)
 });

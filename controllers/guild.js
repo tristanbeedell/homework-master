@@ -6,8 +6,7 @@ function get(req, res) {
 	const bot = getBot();
 	// if the guild does not exist, return a 404 error
 	const guild = bot.guilds.find(guild => guild.name == req.params.guildName.replace(/_/g, ' '));
-	const member = guild.members.find(member => member.displayName == req.params.memberName.replace(/_/g, ' '))
-	if (!guild || !member) {
+	if (!guild) {
 		res.status(404).render("pages/unavaliable", {
 			session: req.session,
 			bot
@@ -24,9 +23,9 @@ function get(req, res) {
 		return;
 	}
 
-	res.render("pages/profile", {
+	res.render("pages/guild", {
 		session: req.session,
 		bot,
-		member
+		guild
 	});
 }

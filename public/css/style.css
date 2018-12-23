@@ -18,7 +18,6 @@ html, body {
 	top: 0;
 	transition: width;
 	overflow-x: hidden;
-	text-wrap: nowrap;
 }
 
 .loader-container {
@@ -26,6 +25,16 @@ html, body {
 	color: white;
 	position: fixed;
 	margin: auto;
+}
+
+div.lookup {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    padding: 1em;
+    background-color: gainsboro;
+	color: darkslategray;
+	margin: 1em;
+	border-radius: 0.3em;
 }
 
 @keyframes spin {
@@ -39,8 +48,7 @@ html, body {
 }
 
 ::selection {
-	background: cadetblue;
-	color: beige
+	background: rgba(117, 25, 68, 0.2);
 }
 
 .header {
@@ -83,10 +91,12 @@ div.content {
 	grid-row-gap: 1em;
 	margin: 1em;
 	color: cadetblue;
+	grid-template-rows: auto 1fr;
+	min-height: 80vh;
 }
 
 .post {
-	background-color: beige;
+	background-color: floralwhite;
 	display: grid;
 	position: relative;
 	padding: 0.5em;
@@ -95,7 +105,12 @@ div.content {
 		"author"
 		"message"
 		"foot";
-	height: 10pc;
+}
+
+#spacer {
+    height: 50vh;
+    background-color: rgba(0, 0, 0, 0.2);
+    margin-top: 20vh;
 }
 
 .post>.title {
@@ -117,7 +132,7 @@ div.content {
 	padding-bottom: 0;
 }
 
-.post>.message {}
+/* .post>.message {} */
 
 .post>.author {
 	margin-bottom: 1em;

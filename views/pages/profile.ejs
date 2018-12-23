@@ -4,7 +4,7 @@
 <head>
 	<% include ../partials/head %>
 	<title>
-		<%= name%>'s Profile | Homework Master
+		<%= member.displayName%>'s Profile | Homework Master
 	</title>
 </head>
 
@@ -13,17 +13,19 @@
 		<h1>
 			<img src="<%= member.user.avatarURL %>" class="profilePic"></img>
 			<div id="usernameContainer">
-				<%= name%>
+				<%= member.displayName%>
 			</div>
 		</h1>
 	</div>
 	<div class="content">
-		<% if (session.user && session.user.name == nickname) { %>
-		<div class="post">
-			This is your profile
-			<button class="important-link delete-account-modal">Delete This Account.</button>
+		<div class="content">
+			<div class="post">
+				<div class="title">What should go here?</div>
+				<div class="message">
+					If you have any ideas, please tell me what you think I should put here.
+				</div>
+			</div>
 		</div>
-		<% } %>
 	</div>
 	<% include ../partials/menu %>
 	<script src="/js/index.js"></script>

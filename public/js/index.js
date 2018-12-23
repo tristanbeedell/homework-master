@@ -38,7 +38,10 @@ window.onload = function () {
 			item.onmouseout = closemenu
 		})
 		forEachTag('a', link => {
-			link.onclick = click
+			// if its a regular link then do a swipe when it's clicked.
+			if (link.attributes.href.textContent[0] == '/'){
+				link.onclick = click
+			}
 		})
 	}
 	// animations
