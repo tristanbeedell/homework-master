@@ -156,23 +156,23 @@ async function createCatagory(guild, name) {
 async function getChannelData(set, division) {
 	let pool = database.getDB();
 	let rooms = await pool.query(`
-    SELECT DISTINCT
-      teachers.surname  AS teacher,
-      subject.name      AS subject,
-      divisions.name    AS division,
-			subject.catagory_id,
-			subject.general_id,
-			timetable.channel_id,
-			subject.id AS sub_id,
-			sets.id AS set_id,
-			teachers.id AS tea_id
-    FROM sets
-    INNER JOIN timetable ON sets.id = timetable.set_id
-    INNER JOIN subject   ON timetable.subject_id = subject.id
-    INNER JOIN teachers  ON timetable.teacher_id = teachers.id
-    INNER JOIN divisions ON sets.division_id = divisions.id
-    WHERE sets.set = '${set}' AND divisions.name = '${division}' AND timetable.usual;
-  `).catch(console.error)
+		SELECT DISTINCT
+		teachers.surname  AS teacher,
+		subject.name      AS subject,
+		divisions.name    AS division,
+				subject.catagory_id,
+				subject.general_id,
+				timetable.channel_id,
+				subject.id AS sub_id,
+				sets.id AS set_id,
+				teachers.id AS tea_id
+		FROM sets
+		INNER JOIN timetable ON sets.id = timetable.set_id
+		INNER JOIN subject   ON timetable.subject_id = subject.id
+		INNER JOIN teachers  ON timetable.teacher_id = teachers.id
+		INNER JOIN divisions ON sets.division_id = divisions.id
+		WHERE sets.set = '${set}' AND divisions.name = '${division}' AND timetable.usual;
+	`).catch(console.error)
 	return rooms;
 }
 

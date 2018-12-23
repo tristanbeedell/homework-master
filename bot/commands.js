@@ -104,19 +104,19 @@ new Command(/^ *(ma?ke?|create)?( *a? *)?poll/i,
 	'`make a poll titled: <name> with choices: <name>, <name>, ...`', 'creates a poll max 5 choices',
 	async ({ msg, tokens, dest }) => {
 		let reply = new RichEmbed()
-		let title = tokens.match(/titled?: *`([^`]*)`/i)
+		let title = tokens.match(/(poll|titled?:?)\s*`([^`]*)`/i)
 		if (title) {
-			title = title[1];
+			title = title[2];
 			reply.setTitle(title)
 		}
-		let choices = tokens.match(/choi(c|s)es:? *`([^`]*)`(?:, *`([^`]*)`(?:, *`([^`]*)`(?:, *`([^`]*)`(?:, *`([^`]*)`)?)?)?)?/i)
+		let choices = tokens.match(/choi(c|s)es:?\s*`([^`]*)`(?:, *`([^`]*)`(?:, *`([^`]*)`(?:, *`([^`]*)`(?:, *`([^`]*)`)?)?)?)?/i)
 		if (choices) {
 			choices = choices.splice(2)
 		} else {
 			msg.channel.send('error: no choices');
 			return
 		}
-		let emojis = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫']
+		const emojis = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫'];
 		index = 0;
 		choices = choices.filter(word => word);
 		choices.forEach(choice => {
@@ -142,6 +142,9 @@ new Command(/^ *(ma?ke?|create)?( *a? *)?poll/i,
 		} else {
 			poll = await send(reply, msg, dest)
 		}
+		for (let i = 0; i < choices.length; i++){
+			await poll.react(emojis[i]);
+		}
 		poll.pin()
 		setTimeout(() => {
 			poll.delete()
@@ -151,7 +154,7 @@ new Command(/^ *(ma?ke?|create)?( *a? *)?poll/i,
 			embed.fields.forEach(field => {
 				reaction = poll.reactions.find(react => react.emoji == field.value)
 				if (reaction) {
-					votes = reaction.count
+					votes = reaction.count-1
 				} else {
 					votes = 0;
 				}
