@@ -3,10 +3,12 @@ node_modules
 
 # Local development
 *.env
-.DS_Store
 _test.js
+.vscode
 
-# SSH Termius artifacts
+# SSH artifacts
 *.AppleDouble
+.DS_Store
 
-nohup.out
+# outputs
+*.out

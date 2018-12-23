@@ -13,13 +13,13 @@
 		<h1>You've been invited!</h1>
 	</div>
 	<div class="content">
-		<div class="post invite" onclick="openInNewTab('<%= invite.url%>')">
+		<div class="post invite" onclick="document.href = '<%= invite.url%>'">
 			<div class="title">
 				<%= group.school_name%>
 				year
 				<%= group.year%>
 				<br>
-				Click to open Discord
+				<a href="<%= invite.url%>">Click to open Discord</a>
 				<br>
 				Or use the invite code
 				<%= invite.code%>
