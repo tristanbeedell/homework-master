@@ -27,16 +27,6 @@ html, body {
 	margin: auto;
 }
 
-div.lookup {
-    display: grid;
-    grid-template-columns: 1fr 3fr;
-    padding: 1em;
-    background-color: gainsboro;
-	color: darkslategray;
-	margin: 1em;
-	border-radius: 0.3em;
-}
-
 @keyframes spin {
 	0% {
 		transform: rotate(0deg);
@@ -91,7 +81,7 @@ div.content {
 	grid-row-gap: 1em;
 	margin: 1em;
 	color: cadetblue;
-	grid-template-rows: auto 1fr;
+	grid-template-rows: auto;
 	min-height: 80vh;
 }
 
@@ -105,6 +95,19 @@ div.content {
 		"author"
 		"message"
 		"foot";
+}
+
+.snippet {
+	font-family: monospace;
+	color: azure;
+	background-color: gray;
+	padding: 2px;
+}
+
+.multiline {
+    display: inline-block;
+	width: -moz-max-content;
+	margin: 5px;
 }
 
 #spacer {

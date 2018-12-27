@@ -17,6 +17,11 @@ function openInNewTab(url) {
 	win.focus();
 }
 window.onload = function () {
+	// page swipe
+	let pageWipeEle = document.getElementsByClassName('page-wipe')[0]
+	pageWipeEle.style.width = '0';
+	transition(pageWipeEle, 0.2, 0.4, 'ease-in')
+
 	// toggle menus
 	if (onMobile) {
 		forEach('menu-container', item => {
@@ -50,23 +55,19 @@ window.onload = function () {
 		let head = header.firstElementChild
 		animate(head, 'slide-in', 0.5, 0.6)
 	})
-	let startTime = 0.9;
-	let speed = 0.4;
-	// popouts go pop
-	let time = startTime + speed;
-	forEach('menu-container', tag => {
-		// animate(tag, 'pop', time, speed)
-		time += speed;
-	})
-	// menu items get into position
-	time = startTime;
-	let totalHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-	forEach('menu-item', item => {
-		// transition(item, time, speed, 'ease-out')
-		// time += speed;
-		tagheight = item.firstElementChild.firstElementChild.firstElementChild.clientHeight;
-		item.style.height = tagheight + totalHeight * 0.05 + "px";
-	})
+	// let startTime = 5;
+	// let speed = 0.4;
+	// // popouts go pop
+	// let time = startTime + speed;
+
+	// time = startTime;
+	setTimeout(() => {
+		let totalHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+		forEach('menu-item', item => {
+			tagheight = item.firstElementChild.firstElementChild.firstElementChild.clientHeight;
+			item.style.height = tagheight + totalHeight * 0.05 + "px";
+		})
+	}, 500)
 
 	forEach('close', close => {
 		close.onclick = closeAllModals;
@@ -93,11 +94,6 @@ function click(event) {
 	pageSwipe(speed)
 	redirect(event.target.href, speed);
 }
-
-// page swipe
-let pageWipeEle = document.getElementsByClassName('page-wipe')[0]
-pageWipeEle.style.width = '0';
-transition(pageWipeEle, 0.2, 0.4, 'ease-in')
 
 function forEach(classname, callback) {
 	let items = document.getElementsByClassName(classname)
