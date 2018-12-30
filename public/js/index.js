@@ -16,11 +16,11 @@ function openInNewTab(url) {
 	var win = window.open(url, '_blank');
 	win.focus();
 }
+
 window.onload = function () {
 	// page swipe
-	let pageWipeEle = document.getElementsByClassName('page-wipe')[0]
-	pageWipeEle.style.width = '0';
-	transition(pageWipeEle, 0.2, 0.4, 'ease-in')
+	let pageWipeEle = document.getElementsByClassName('page-wipe')[0];
+	pageWipeEle.style.width = '0vw';
 
 	// toggle menus
 	if (onMobile) {
@@ -38,10 +38,6 @@ window.onload = function () {
 			}
 		})
 	} else {
-		forEach('menu-item', item => {
-			item.onmouseover = openmenu
-			item.onmouseout = closemenu
-		})
 		forEachTag('a', link => {
 			// if its a regular link then do a swipe when it's clicked.
 			if (link.attributes.href.textContent[0] == '/'){
@@ -49,16 +45,12 @@ window.onload = function () {
 			}
 		})
 	}
-	// animations
+	
 	// header
 	forEach('header', header => {
 		let head = header.firstElementChild
 		animate(head, 'slide-in', 0.5, 0.6)
 	})
-	// let startTime = 5;
-	// let speed = 0.4;
-	// // popouts go pop
-	// let time = startTime + speed;
 
 	// time = startTime;
 	setTimeout(() => {
@@ -147,38 +139,35 @@ function closeAllModals() {
 }
 
 
-function openmenu(event) {
-	target = event.target || event.originalTarget
-	if (target.classList[0] == 'menu-tag-content') {
-		target.parentNode.parentNode.lastElementChild.style.width = '30vw';
-	}
-}
+// function openmenu(event) {
+// 	target = event.target || event.originalTarget
+// 	if (target.classList[0] == 'menu-tag-content') {
+// 		target.parentNode.parentNode.lastElementChild.style.width = '30vw';
+// 	}
+// }
 
 
-function closemenu(event) {
-	// only close when exiting the menu content onto the page
-	ele = event.fromElement || event.originalTarget
-	if (event.relatedTarget &&
-		!(event.relatedTarget.tagName == "A" ||
-			event.relatedTarget.classList.contains("important-link")
-		)) {
+// function closemenu(event) {
+// 	// only close when exiting the menu content onto the page
+// 	ele = event.fromElement || event.originalTarget
+// 	if (event.relatedTarget &&
+// 		!(event.relatedTarget.tagName == "A" ||
+// 			event.relatedTarget.classList.contains("important-link")
+// 		)) {
 
-		content = ele.classList[0] == 'menu-content' ? ele :
-			ele.classList[0] == 'menu-tag-content' && event.relatedTarget.classList[0] !== 'menu-content' ?
-			ele.parentNode.parentNode.lastElementChild : null;
-		if (content) content.style.width = '0';
-	}
-}
+// 		content = ele.classList[0] == 'menu-content' ? ele :
+// 			ele.classList[0] == 'menu-tag-content' && event.relatedTarget.classList[0] !== 'menu-content' ?
+// 			ele.parentNode.parentNode.lastElementChild : null;
+// 		if (content) content.style.width = '0';
+// 	}
+// }
 
+// FIXME: Mobile popout menus
 
 function togglemenu(event) {
 	// only close when exiting the menu content onto the page
 	ele = event.target
-	if (ele.classList[0] == 'menu-tag-content') {
-		ele.parentNode.parentNode.lastElementChild.style.width = "100vw"
-	} else if (ele.classList[0] == 'menu-content') {
-		ele.style.width = "0"
-	}
+	
 }
 
 function pageSwipe(delay) {
@@ -197,13 +186,10 @@ function redirect(url, delay) {
 function toggleEntireMenu() {
 	// close menu
 	let time = 0;
-	forEach('menu-tag-container', (tag) => {
+	forEach('menu-container', (tag) => {
 		tag.style['transition-delay'] = time + 's';
 		time += 0.1;
-		tag.style.right = tag.style.right == '-3em' ? '' : '-3em'
-	})
-	forEach('menu-content', (content) => {
-		content.style.width = '0';
+		tag.style.right = tag.style.right == '-40vw' ? '-30vw' : '-40vw'
 	})
 	icon = document.getElementsByClassName('toggle-icon-container')[0]
 	icon.style.transform = `rotate(${icon.style.transform == 'rotate(0deg)'?'90':'0'}deg)`

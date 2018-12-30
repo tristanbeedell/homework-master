@@ -163,14 +163,19 @@
 
 .menu-container {
 	position: absolute;
-	right: 0;
-	background-color: inherit;
-	border-top-left-radius: 1em;
+    background-color: inherit;
+    border-top-left-radius: 1em;
+    right: -30vw;
+    transition: right 0.7s;
+}
+
+.menu-container:hover{
+	right: 0vw !important;
 }
 
 .menu-content {
 	position: relative;
-	width: 0;
+	width: 30vw;
 	height: 100vh;
 	overflow: hidden;
 	transition: width 0.7s;

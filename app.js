@@ -59,6 +59,12 @@ app.get("/help", (req, res) => {
 		bot: getBot()
 	});
 });
+app.get("/help/bot", (req, res) => {
+	res.render("pages/bot_help", {
+		session: req.session,
+		bot: getBot()
+	});
+});
 app.get("/logout", (req, res) => {
 	delete req.session.user;
 	res.redirect("back");

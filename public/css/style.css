@@ -16,7 +16,7 @@ html, body {
 	background-color: cornflowerblue;
 	right: 0;
 	top: 0;
-	transition: width;
+	transition: width 0.4s ease-in 0.2s;
 	overflow-x: hidden;
 }
 
@@ -121,6 +121,7 @@ div.content {
 	color: #246f72;
 	font-size: 20px;
 	padding: 1em;
+	padding-bottom: 0;
 }
 
 .post>.message {
@@ -129,17 +130,10 @@ div.content {
 
 .post>.author {
 	grid-area: author;
-}
-
-.post>.title {
-	padding-bottom: 0;
+	margin-bottom: 1em;
 }
 
 /* .post>.message {} */
-
-.post>.author {
-	margin-bottom: 1em;
-}
 
 tr {
 	height: 40px;

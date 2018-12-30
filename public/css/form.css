@@ -10,15 +10,23 @@ form, .lookup {
 }
 
 input {
-  height: min-content;
+  height: 2em;
+  border: 2px solid azure;
 }
 
 select {
-  border-radius: 1px;
+  height: 2em;
+  border: 2px solid azure;
+  border-radius: 2px;
+  background-color: white;
+}
+
+select:active, input:active {
+  border: 2px solid gray !important;
 }
 
 select:focus, input:focus {
-  border: 2px solid #569da08e
+  border: 2px solid #569da08e;
 }
 
 .error {
@@ -27,18 +35,9 @@ select:focus, input:focus {
   display: block;
 }
 
-@media (max-width: 500px) {
-  form {
+@media (max-width: 600px) {
+  .lookup {
     grid-template-columns: 1fr;
-    width: 75vw;
-  }
-
-  form label {
-    text-align: center;
-  }
-
-  tbody {
-    width: 75vw;
   }
 }
 
