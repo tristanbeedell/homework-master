@@ -138,30 +138,6 @@ function closeAllModals() {
 	})
 }
 
-
-// function openmenu(event) {
-// 	target = event.target || event.originalTarget
-// 	if (target.classList[0] == 'menu-tag-content') {
-// 		target.parentNode.parentNode.lastElementChild.style.width = '30vw';
-// 	}
-// }
-
-
-// function closemenu(event) {
-// 	// only close when exiting the menu content onto the page
-// 	ele = event.fromElement || event.originalTarget
-// 	if (event.relatedTarget &&
-// 		!(event.relatedTarget.tagName == "A" ||
-// 			event.relatedTarget.classList.contains("important-link")
-// 		)) {
-
-// 		content = ele.classList[0] == 'menu-content' ? ele :
-// 			ele.classList[0] == 'menu-tag-content' && event.relatedTarget.classList[0] !== 'menu-content' ?
-// 			ele.parentNode.parentNode.lastElementChild : null;
-// 		if (content) content.style.width = '0';
-// 	}
-// }
-
 // FIXME: Mobile popout menus
 
 function togglemenu(event) {

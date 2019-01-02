@@ -78,27 +78,27 @@ app.get('/join', (req, res) => {
 	}
 });
 
-app.post('/join', require('./controllers/join').join)
-app.get('/invite', require('./controllers/invite').invite)
-app.get('/signup', signup.getSignup)
-app.post('/checkNewUserPassword', signup.postPasswordIsValid)
-app.post('/signup', signup.signup)
+app.post('/join', require('./controllers/join').join);
+app.get('/invite', require('./controllers/invite').invite);
+app.get('/signup', signup.getSignup);
+app.post('/checkNewUserPassword', signup.postPasswordIsValid);
+app.post('/signup', signup.signup);
 app.get('/signup/timetable', timetable.getTimetableForm)
 app.get('/signup/timetabledata', timetable.getTimetable);
 app.post('/signup/timetable', timetable.giveClasses);
 app.get('/guilds/:guildName/members/:memberName', profile);
 app.get('/guilds/:guildName/', guild);
-app.get('/login', login.getForm)
-app.post('/login', login.login)
-app.post("/validateLogin", login.validate)
+app.get('/login', login.getForm);
+app.post('/login', login.login);
+app.post("/validateLogin", login.validate);
 // TODO: rules and guidlines page.
 
 const port = process.env.PORT || 8080;
 // initialise bot and then database
 initBot(() => {
-	initDB()
+	initDB();
 	// run the bot
 	require('./bot/index');
 	// listen to the webpage
-	app.listen(port)
+	app.listen(port);
 });
