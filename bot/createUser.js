@@ -1,5 +1,6 @@
 const RichEmbed = require('discord.js').RichEmbed;
 const pool = require('../modules/database').getDB();
+const respond = require('./commands.js');
 const bcrypt = require("bcrypt");
 const urlname = process.env.WEBSITE_URL;
 
@@ -29,7 +30,8 @@ function checkMemberFromSchool(msg, callback) {
 	pool.query("SELECT * FROM groups")
 		.then((groups) => {
 			groups.rows.forEach(group => {
-				bcrypt.compare(msg.content, group.pin_hash).then(valid => {
+				bcrypt.compare(msg.content, group.pin_hash)
+					.then(valid => {
 						callback(valid, group)
 					})
 					.catch(console.error)
@@ -56,7 +58,12 @@ function dmRespond(msg) {
 		checkMemberFromSchool(msg, (valid, group) => {
 			if (valid) {
 				sendSetupLink(msg, group)
+			} else {
+				msg.channel.send('Invalid pin. Please try again...')
 			}
 		})
+	} else {
+		let tokens = msg.content;
+		respond({ msg, tokens });
 	}
 }

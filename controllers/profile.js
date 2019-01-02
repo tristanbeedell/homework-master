@@ -5,6 +5,7 @@ const { getBot } = require('../modules/discord')
 function get(req, res) {
 	const bot = getBot();
 	// if the guild does not exist, return a 404 error
+	// FIXME: handle guild not found error
 	const guild = bot.guilds.find(guild => guild.name == req.params.guildName.replace(/_/g, ' '));
 	const member = guild.members.find(member => member.displayName == req.params.memberName.replace(/_/g, ' '))
 	if (!guild || !member) {

@@ -2,10 +2,12 @@ module.exports = giveRoles
 
 const database = require('./database')
 const discord = require('./discord')
-const colors = require('colors')
+require('colors')
+
+// TODO: add voice channels.
 
 async function giveRoles(member, chosenSubjects) {
-	// TODO: store complete signup in database
+	// FIXME: store complete signup in database
 	// get the guild of the member
 	let guild = member.guild;
 	updatePunishRoles(guild);
@@ -203,11 +205,17 @@ async function createChannel(role, name, cat, type) {
 			id: guild.id,
 			denied: ['VIEW_CHANNEL']
 		}, {
+			id: role.id,
+			allowed: ['VIEW_CHANNEL']
+		}, {
+			id: S.id,
+			denied: ['MENTION_EVERYONE']
+		}, {
 			id: W.id,
-			denied: ['ADD_REACTIONS']
+			denied: ['ADD_REACTIONS', 'SEND_TTS_MESSAGES']
 		}, {
 			id: A.id,
-			denied: ['EMBED_LINKS', 'ATTACH_FILES', 'MENTION_EVERYONE', 'SPEAK']
+			denied: ['EMBED_LINKS', 'ATTACH_FILES', 'SPEAK']
 		}, {
 			id: T.id,
 			denied: ['READ_MESSAGES', 'READ_MESSAGE_HISTORY', 'SEND_MESSAGES', 'CONNECT', 'VIEW_CHANNEL']
@@ -217,7 +225,6 @@ async function createChannel(role, name, cat, type) {
 	let channel = await guild.createChannel(name, type, perms)
 		.catch(console.error)
 	channel = await channel.setParent(cat);
-	channel = await channel.overwritePermissions(role, { 'VIEW_CHANNEL': true })
 	console.log(`created channel ${channel.name}`.green)
 	return channel;
 }

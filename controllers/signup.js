@@ -7,6 +7,8 @@ const bcrypt = require('bcrypt')
 let bot;
 let pool;
 
+// TODO: get fullname and display name.
+
 async function getSignup(req, res) {
 	bot = getBot();
 	pool = db.getDB();
