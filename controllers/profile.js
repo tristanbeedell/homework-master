@@ -11,7 +11,8 @@ function get(req, res) {
 	if (!guild || !member) {
 		res.status(404).render("pages/unavaliable", {
 			session: req.session,
-			bot
+			bot,
+			redirect: req.url
 		});
 		return;
 	}
@@ -20,7 +21,8 @@ function get(req, res) {
 	if (!req.session.user || !guild.members.get(req.session.user.member_id)) {
 		res.status(401).render("pages/unavaliable", {
 			session: req.session,
-			bot
+			bot,
+			redirect: req.url
 		});
 		return;
 	}

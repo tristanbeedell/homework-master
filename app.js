@@ -43,12 +43,6 @@ app.get("/", (req, res) => {
 		bot: getBot()
 	});
 });
-app.get("/unavaliable", (req, res) => {
-	res.render("pages/unavaliable", {
-		session: req.session,
-		bot: getBot()
-	});
-});
 app.get("/help", (req, res) => {
 	res.render("pages/help", {
 		session: req.session,
