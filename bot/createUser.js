@@ -58,6 +58,7 @@ function dmRespond(msg) {
 		checkMemberFromSchool(msg, (valid, group) => {
 			if (valid) {
 				sendSetupLink(msg, group)
+				membersAwaiting = membersAwaiting.filter(id => id !== msg.author.id);
 			} else {
 				msg.channel.send('Invalid pin. Please try again...')
 			}

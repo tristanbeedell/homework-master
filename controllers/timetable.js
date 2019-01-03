@@ -100,8 +100,8 @@ async function giveClasses(req, res) {
   `).catch(console.error);
 	res.redirect(`/`);
 	// give the user access to their classes.
-	await giveRoles(member, req.body.classes)
-	member.send("All done! If you want me again then type `!help` in the server");
+	await giveRoles(member, req.body.classes);
+	member.send("All done! If you want me again then type `help`");
 }
 
 function saveClasses(user) {
