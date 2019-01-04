@@ -31,7 +31,7 @@ window.onload = function () {
 			item.addEventListener('touchstart', togglemenu)
 		})
 		forEachTag('a', link => {
-			link.addEventListener('touchend', click)
+			link.addEventListener('touchend', touch)
 			link.onclick = function (e) {
 				e.preventDefault();
 				return 0;
@@ -66,16 +66,17 @@ window.onload = function () {
 	})
 }
 
+let moved = false;
 function touch(event) {
 	event.preventDefault()
-	y = window.pageYOffset
-	event.target.addEventListener('touchend', () => { release(event, y) })
-	return 0;
+	event.target.addEventListener('touchmove', () => { moved = true})
+	event.target.addEventListener('touchend', release);
 }
 
-function release(event, prev) {
-	if (Math.abs(window.pageYOffset - prev) < 10)
-		click(event)
+function release(e) {
+	if (!moved) 
+		click(e)
+	moved = false;
 }
 
 function click(event) {
@@ -136,8 +137,6 @@ function closeAllModals() {
 		modal.classList.remove('open-modal')
 	})
 }
-
-// FIXME: Mobile popout menus
 
 function togglemenu(event) {
 	ele = event.target
