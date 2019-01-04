@@ -21,6 +21,10 @@ select {
   background-color: white;
 }
 
+:focus {
+  outline: none;
+}
+
 select:active, input:active {
   border: 2px solid gray !important;
 }
