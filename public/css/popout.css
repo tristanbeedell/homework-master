@@ -180,7 +180,7 @@
 	height: 100vh;
 	overflow: hidden;
 	transition: width 0.7s;
-	padding: 2em 0 0 1em;
+	padding: 2em 0;
 	right: 0;
 }
 
@@ -235,5 +235,9 @@
 	.menu-container {
 		right: -80vw;
 		width: 80vw;
+	}
+
+	.menu-content {
+		padding: 2em 0 0 2em;
 	}
 }
