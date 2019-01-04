@@ -31,7 +31,7 @@ window.onload = function () {
 			item.addEventListener('touchstart', togglemenu)
 		})
 		forEachTag('a', link => {
-			link.addEventListener('touchstart', touch)
+			link.addEventListener('touchend', click)
 			link.onclick = function (e) {
 				e.preventDefault();
 				return 0;
@@ -68,9 +68,8 @@ window.onload = function () {
 
 function touch(event) {
 	event.preventDefault()
-	console.log(event)
 	y = window.pageYOffset
-	event.target.addEventListener('touchend', e => { release(e, y) })
+	event.target.addEventListener('touchend', () => { release(event, y) })
 	return 0;
 }
 
@@ -84,7 +83,7 @@ function click(event) {
 	link = event.target
 	speed = 0.3
 	pageSwipe(speed)
-	redirect(event.target.href, speed);
+	redirect(link.href, speed);
 }
 
 function forEach(classname, callback) {
@@ -141,9 +140,7 @@ function closeAllModals() {
 // FIXME: Mobile popout menus
 
 function togglemenu(event) {
-	// only close when exiting the menu content onto the page
 	ele = event.target
-	
 }
 
 function pageSwipe(delay) {
@@ -165,7 +162,10 @@ function toggleEntireMenu() {
 	forEach('menu-container', (tag) => {
 		tag.style['transition-delay'] = time + 's';
 		time += 0.1;
-		tag.style.right = tag.style.right == '-40vw' ? '-30vw' : '-40vw'
+		if (!onMobile)
+			tag.style.right = tag.style.right == '-40vw' ? '-30vw' : '-40vw'
+		else 
+			tag.style.right = tag.style.right == '-100vw' || tag.style.right == '0vw' ? '-80vw' : '-100vw'
 	})
 	icon = document.getElementsByClassName('toggle-icon-container')[0]
 	icon.style.transform = `rotate(${icon.style.transform == 'rotate(0deg)'?'90':'0'}deg)`
