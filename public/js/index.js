@@ -161,10 +161,10 @@ function toggleEntireMenu() {
 	forEach('menu-container', (tag) => {
 		tag.style['transition-delay'] = time + 's';
 		time += 0.1;
-		if (!onMobile)
-			tag.style.right = tag.style.right == '-40vw' ? '-30vw' : '-40vw'
+		if (window.innerWidth <= 600)
+			tag.style.right = tag.style.right == '-100vw' ? '-80vw' : '-100vw'
 		else 
-			tag.style.right = tag.style.right == '-100vw' || tag.style.right == '0vw' ? '-80vw' : '-100vw'
+			tag.style.right = tag.style.right == '-400px' ? '-300px' : '-400px'
 	})
 	icon = document.getElementsByClassName('toggle-icon-container')[0]
 	icon.style.transform = `rotate(${icon.style.transform == 'rotate(0deg)'?'90':'0'}deg)`

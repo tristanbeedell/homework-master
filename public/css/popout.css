@@ -165,7 +165,8 @@
 	position: absolute;
     background-color: inherit;
     border-top-left-radius: 1em;
-    right: -30vw;
+	right: -300px;
+	width: 300px;
     transition: right 0.7s;
 }
 
