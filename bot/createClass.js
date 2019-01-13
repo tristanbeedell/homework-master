@@ -208,7 +208,7 @@ async function createCatagory(guild, name) {
 
 async function getChannelData(set, division) {
 	// get database pool connection
-	let pool = database.getDB();
+	const pool = database.getDB();
 	// get the rooms
 	// FIXME: get channel data for one particular group
 	let rooms = await pool.query(`

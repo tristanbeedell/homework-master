@@ -1,18 +1,15 @@
 module.exports = { invite }
 
-const { getBot } = require('../modules/discord')
-const { getDB } = require('../modules/database')
-let bot;
-let pool;
+const { getBot } = require('../modules/discord');
+const { getDB } = require('../modules/database');
 
 async function invite(req, res) {
-	bot = getBot()
-	pool = getDB()
+	const bot = getBot();
+	const pool = getDB();
 	// if uninvited, let the user join
-	if (!req.session.invite) {
-		res.redirect('/join')
-		return;
-	}
+	if (!req.session.invite)
+		return res.redirect('/join');
+
 	// get the invite from discord.
 	let invite
 	try {
@@ -20,16 +17,17 @@ async function invite(req, res) {
 	} catch (error) {
 		// invite has expired
 		delete req.session.invite;
-		res.redirect('/join')
+		res.redirect('/join');
 		return;
 	}
+
 	// get group data from database
 	let group = await pool.query(`
-    SELECT 	school_name, invite, year
-  	FROM groups
-  	WHERE guild_id = '${invite.guild.id}';
-  `)
-		.catch(console.error)
+		SELECT 	school_name, invite, year
+		FROM groups
+		WHERE guild_id = '${invite.guild.id}';
+	`).catch(console.error);
+
 	// render the page
 	res.render('pages/invite', {
 		session: req.session,

@@ -34,6 +34,7 @@ const { initDB } = require('./modules/database')
 const signup = require('./controllers/signup')
 const timetable = require('./controllers/timetable')
 const profile = require('./controllers/profile')
+const my_profile = require('./controllers/my_profile')
 const guild = require('./controllers/guild')
 const login = require('./controllers/login')
 
@@ -82,6 +83,8 @@ app.get('/signup/timetabledata', timetable.getTimetable);
 app.post('/signup/timetable', timetable.giveClasses);
 app.get('/guilds/:guildName/members/:memberName', profile);
 app.get('/guilds/:guildName/', guild);
+app.get('/me', my_profile.get);
+app.delete('/me', my_profile.del);
 app.get('/login', login.getForm);
 app.post('/login', login.login);
 app.post("/validateLogin", login.validate);

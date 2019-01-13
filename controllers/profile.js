@@ -13,7 +13,7 @@ function get(req, res) {
 		});
 	}
 	
-	const guild = bot.guilds.find(guild => guild.name == req.params.guildName.replace(/_/g, ' '));
+	const guild = bot.guilds.find(guild => guild.name.replace(/ /g, '_') == req.params.guildName);
 	if (!guild) {
 		unavaliable()
 		return;
