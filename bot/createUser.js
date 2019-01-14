@@ -61,7 +61,9 @@ function dmRespond(msg) {
 				sendSetupLink(msg, group)
 				membersAwaiting = membersAwaiting.filter(id => id !== msg.author.id);
 			} else {
-				msg.channel.send('Invalid pin. Please try again...')
+				msg.channel.send(`**Invalid Pin**
+Make sure you send the exact pin and nothing else in the message. It **is** case sensitive.
+Please try again...`)
 			}
 		})
 	} else {

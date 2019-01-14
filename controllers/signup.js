@@ -18,7 +18,7 @@ async function getSignup(req, res) {
 	try {
 		let { guild, member } = getGuildAndMember(guild_id, member_id)
 	} catch (err) {
-		res.status(404).send(err + '<br> Oof! Looks like there was an error! <a href="/FAQ#contact">Contact Tristan</a>.');
+		res.status(404).send(err + '<br> Oof! Looks like there was an error! <a href="/help#contact">Contact Tristan</a>.');
 		return;
 	}
 

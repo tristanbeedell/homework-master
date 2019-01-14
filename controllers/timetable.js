@@ -89,7 +89,7 @@ async function giveClasses(req, res) {
 	if (!req.session.user) 
 		return res.status(400).end();
 
-	res.redirect('/my_profile');
+	res.redirect('/me');
 
 	const pool = getDB();
 	// store the user in their session
