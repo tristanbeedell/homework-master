@@ -3,10 +3,7 @@ module.exports = giveRoles
 const database = require('../modules/database')
 require('colors')
 
-// TODO: add voice channels.
-
 async function giveRoles(member, chosenSubjects) {
-	// FIXME: store complete signup in database
 	// get the guild of the member
 	let guild = member.guild;
 	updatePunishRoles(guild);
@@ -26,6 +23,9 @@ async function giveRoles(member, chosenSubjects) {
 		// update channels, categories in the discord guild.
 		updateClasses(role, set, division)
 	}
+	await database.getDB().query(`
+
+	`);
 	// give the member the roles
 	return member.addRoles(roles);
 }

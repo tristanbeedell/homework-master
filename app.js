@@ -1,4 +1,5 @@
 #!/usr/bin/env nodejs
+console.log('Starting Up...')
 // dependencies
 const express = require("express"); // for webpage server
 const path = require("path"); // a neater way to join paths apparently

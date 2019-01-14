@@ -97,19 +97,15 @@ async function giveClasses(req, res) {
 	const member = members.get(req.session.user.guild_id, req.session.user.member_id);
 	// save new user's classes to database
 	await saveClasses(req.session.user);
-	// remove the pre-user
-	await pool.query(`DELETE FROM pre_users
-		WHERE member_id = '${req.session.user.member_id}'
-		AND guild_id = '${req.session.user.guild_id}';
-	`).catch(console.error);
 	// give the user access to their classes.
 	await giveRoles(member, req.body.classes);
 	// DM the user on discord
 	member.send("All done! If you want me again then type `help`");
 }
 
-function saveClasses(user) {
+async function saveClasses(user) {
 	const pool = getDB();
+	// update the user's classes in the DB
 	let query = `
 		INSERT INTO usr_set_join
 		VALUES`
@@ -120,6 +116,14 @@ function saveClasses(user) {
       set_id('${user.classes[division]}')),`
 		}
 	}
+	// remove trailing comma
 	query = query.slice(0, -1) + ';'
-	return pool.query(query).catch(console.error)
+	// query the DB.
+	await pool.query(query).catch(console.error);
+	// The user is fully signed up.
+	return pool.query(`
+		UPDATE users 
+		SET complete = TRUE 
+		WHERE id = user_id('${user.member_id}', '${user.guild_id}');
+	`);
 }

@@ -8,7 +8,7 @@ let bot;
 
 function initBot(callback, other) {
 	console.time('bot connection time');
-	console.log('connecting to bot...');
+	console.log('Connecting to Bot...');
 	bot = new Discord.Client();
 	bot.login(other || token).catch(console.error);
 	bot.on("ready", () => {

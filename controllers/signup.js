@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt')
 let bot;
 let pool;
 
-// TODO: get fullname and display name.
+// FEATURE: get fullname and display name.
 
 async function getSignup(req, res) {
 	bot = getBot();
@@ -18,14 +18,14 @@ async function getSignup(req, res) {
 	try {
 		let { guild, member } = getGuildAndMember(guild_id, member_id)
 	} catch (err) {
-		res.status(404).send(err + '<br> Oof! Looks like there was an error! <a href="/contact">Contact tristan</a>');
+		res.status(404).send(err + '<br> Oof! Looks like there was an error! <a href="/FAQ#contact">Contact Tristan</a>.');
 		return;
 	}
 
 	// check the user hasn't already signed up
 	let user = await db.userSignedUp(guild_id, member_id)
 	if (user.exists && user.complete) {
-		res.redirect(`/guilds/${guild.name}/members/${member.displayName}`.replace(/ /, '_'));
+		res.redirect(`/guilds/${guild.name}/members/${member.displayName}`.replace(/ /g, '_'));
 		return;
 	} else if (user.exists && !user.complete && req.session.user) {
 		res.redirect(`/signup/timetable`);
@@ -36,19 +36,20 @@ async function getSignup(req, res) {
 	}
 
 	// check the user has been initialised
-	let preuser = await pool.query(`
-    SELECT * FROM pre_users
-    WHERE member_id = '${member_id}'
-    AND guild_id = '${guild_id}'
-  `).catch(console.error)
+	const preuser = await pool.query(`
+		SELECT * FROM pre_users
+		WHERE member_id = '${member_id}'
+		AND guild_id = '${guild_id}'
+	`).catch(console.error);
+
 	if (preuser.rowCount < 1) {
-		res.status(403).send('oof! this discord account hasn\'t been verified over DM')
+		res.status(403).send('oof! this discord account hasn\'t been verified over DM.')
 		return;
 	}
 
-	let valid = await checkNewUserPassword(req)
+	const valid = await checkNewUserPassword(req)
 	if (!valid) {
-		res.status(403).send('oof! You are forbidden from seeing this page')
+		res.status(403).send('oof! You are forbidden from seeing this page.')
 		return;
 	}
 
@@ -101,19 +102,18 @@ function checkValidity(err, p, passwordGiven) {
 }
 
 async function signup(req, res) {
-	// TODO: check the name isn't taken on sign up
+	// TODO: Give error messages on sign up, check for valid username on front end.
 	if (!await checkNewUserPassword(req)) {
 		res.redirect('back')
 		return;
 	}
-	let guild = getBot().guilds.get(req.query.guild)
-	//check the username isn't taken
-	let taken = guild.members.some(member => (member.user.username || member.nickname) == req.body.nickname)
+	const guild = getBot().guilds.get(req.query.guild)
+	const taken = guild.members.some(member => member.displayName == req.body.nickname)
 	if (taken) {
 		res.redirect('back')
 		return;
 	}
-	let member = await guild.members.get(req.query.member).setNickname(req.body.nickname);
+	const member = await guild.members.get(req.query.member).setNickname(req.body.nickname);
 
 	let salt = await bcrypt.genSalt(10);
 	let passwordhash = await bcrypt.hash(req.body.newpassword, salt);
@@ -125,14 +125,24 @@ async function signup(req, res) {
 		name: member.name
 	}
 
-	save(req.session.user)
+	await save(req.session.user);
 	res.redirect('/signup/timetable')
 }
 
-function save(user) {
+async function save(user) {
 	pool = db.getDB();
+
+	// Add the new user with their own password.
+	await pool.query(`
+		INSERT INTO users (member_id, group_id, passwordhash)
+		VALUES ('${user.member_id}', group_id('${user.guild_id}'), '${user.passwordhash}')
+	`).catch(console.error)
+
+	// remove the pre-user.
 	return pool.query(`
-    INSERT INTO users (member_id, group_id, passwordhash)
-    VALUES ('${user.member_id}', group_id('${user.guild_id}'), '${user.passwordhash}')
-  `).catch(console.error)
+		DELETE FROM pre_users
+		WHERE member_id = '${user.member_id}'
+		AND guild_id = '${user.guild_id}';
+	`).catch(console.error);
+
 }

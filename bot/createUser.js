@@ -6,6 +6,7 @@ const urlname = process.env.WEBSITE_URL;
 
 module.exports = { newMember, dmRespond }
 
+// TODO: move the membersAwaiting out of local memory.
 let membersAwaiting = [];
 
 function createPreUser(memberid, guildid) {
@@ -22,7 +23,7 @@ function randomStr(len) {
 
 function newMember(member) {
 	member.send(`Hi! Looks like you're new to ${member.guild.name}.
-	What is the Group Pin?`);
+**What is the Group Pin?**`);
 	membersAwaiting.push(member.id);
 };
 
@@ -46,9 +47,9 @@ function sendSetupLink(msg, group) {
 	let embed;
 	embed = new RichEmbed()
 		.setURL(setupURL)
-		.setTitle("SET UP")
+		.setTitle("CLICK TO SET UP")
 		.setColor(0xFF00FF)
-		.addField("Give your classes, and you'll be put into chat and voice rooms with everyone else in those classes! ")
+		.setDescription("Give your classes, and you'll be put into text and voice chat rooms with everyone else in those classes!")
 
 	msg.channel.send(embed);
 }
