@@ -1,3 +1,4 @@
+<div id="spacer"></div>
 <div id="logout-modal" class="modal">
 	<div class="modal-content slide-down">
 		<span class="close">&times;</span>
@@ -34,7 +35,7 @@
 					<% if (session.user) {%>
 					<a href="/guilds/<%= guild.name.replace(/ /g, '_') %>/members/<%= name.replace(/ /g, '_') %>">My Profile</a>
 					<a href="/guilds/<%= guild.name.replace(/ /g, '_') %>">My Group</a>
-					<div class="important-link logout-modal">Log Out</div>
+					<span class="important-link logout-modal">Log Out</span>
 					<% } else { %>
 					<a href="/login">login</a>
 					<a href="/join">join</a>
@@ -50,8 +51,9 @@
 					</div>
 				</div>
 				<div class="menu-content">
-					<a href="/FAQ">FAQ</a>
-					<a href="/contact">contact</a>
+					<a href="/help">FAQ</a>
+					<a href="/help/bot">Bot Help</a>
+					<a href="/help#contact">Contact</a>
 				</div>
 			</div>
 		</div>

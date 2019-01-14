@@ -16,7 +16,12 @@ function openInNewTab(url) {
 	var win = window.open(url, '_blank');
 	win.focus();
 }
+
 window.onload = function () {
+	// page swipe
+	let pageWipeEle = document.getElementsByClassName('page-wipe')[0];
+	pageWipeEle.style.width = '0vw';
+
 	// toggle menus
 	if (onMobile) {
 		forEach('menu-container', item => {
@@ -26,61 +31,52 @@ window.onload = function () {
 			item.addEventListener('touchstart', togglemenu)
 		})
 		forEachTag('a', link => {
-			link.addEventListener('touchstart', touch)
+			link.addEventListener('touchend', touch)
 			link.onclick = function (e) {
 				e.preventDefault();
 				return 0;
 			}
 		})
 	} else {
-		forEach('menu-item', item => {
-			item.onmouseover = openmenu
-			item.onmouseout = closemenu
-		})
 		forEachTag('a', link => {
-			link.onclick = click
+			// if its a regular link then do a swipe when it's clicked.
+			if (link.attributes.href.textContent[0] == '/'){
+				link.onclick = click
+			}
 		})
 	}
-	// animations
+	
 	// header
 	forEach('header', header => {
 		let head = header.firstElementChild
 		animate(head, 'slide-in', 0.5, 0.6)
 	})
-	let startTime = 0.9;
-	let speed = 0.4;
-	// popouts go pop
-	let time = startTime + speed;
-	forEach('menu-container', tag => {
-		// animate(tag, 'pop', time, speed)
-		time += speed;
-	})
-	// menu items get into position
-	time = startTime;
-	let totalHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-	forEach('menu-item', item => {
-		// transition(item, time, speed, 'ease-out')
-		// time += speed;
-		tagheight = item.firstElementChild.firstElementChild.firstElementChild.clientHeight;
-		item.style.height = tagheight + totalHeight * 0.05 + "px";
-	})
+
+	// time = startTime;
+	setTimeout(() => {
+		let totalHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+		forEach('menu-item', item => {
+			tagheight = item.firstElementChild.firstElementChild.firstElementChild.clientHeight;
+			item.style.height = tagheight + totalHeight * 0.05 + "px";
+		})
+	}, 500)
 
 	forEach('close', close => {
 		close.onclick = closeAllModals;
 	})
 }
 
+let moved = false;
 function touch(event) {
 	event.preventDefault()
-	console.log(event)
-	y = window.pageYOffset
-	event.target.addEventListener('touchend', e => { release(e, y) })
-	return 0;
+	event.target.addEventListener('touchmove', () => { moved = true})
+	event.target.addEventListener('touchend', release);
 }
 
-function release(event, prev) {
-	if (Math.abs(window.pageYOffset - prev) < 10)
-		click(event)
+function release(e) {
+	if (!moved) 
+		click(e)
+	moved = false;
 }
 
 function click(event) {
@@ -88,13 +84,8 @@ function click(event) {
 	link = event.target
 	speed = 0.3
 	pageSwipe(speed)
-	redirect(event.target.href, speed);
+	redirect(link.href, speed);
 }
-
-// page swipe
-let pageWipeEle = document.getElementsByClassName('page-wipe')[0]
-pageWipeEle.style.width = '0';
-transition(pageWipeEle, 0.2, 0.4, 'ease-in')
 
 function forEach(classname, callback) {
 	let items = document.getElementsByClassName(classname)
@@ -147,39 +138,8 @@ function closeAllModals() {
 	})
 }
 
-
-function openmenu(event) {
-	target = event.target || event.originalTarget
-	if (target.classList[0] == 'menu-tag-content') {
-		target.parentNode.parentNode.lastElementChild.style.width = '30vw';
-	}
-}
-
-
-function closemenu(event) {
-	// only close when exiting the menu content onto the page
-	ele = event.fromElement || event.originalTarget
-	if (event.relatedTarget &&
-		!(event.relatedTarget.tagName == "A" ||
-			event.relatedTarget.classList.contains("important-link")
-		)) {
-
-		content = ele.classList[0] == 'menu-content' ? ele :
-			ele.classList[0] == 'menu-tag-content' && event.relatedTarget.classList[0] !== 'menu-content' ?
-			ele.parentNode.parentNode.lastElementChild : null;
-		if (content) content.style.width = '0';
-	}
-}
-
-
 function togglemenu(event) {
-	// only close when exiting the menu content onto the page
 	ele = event.target
-	if (ele.classList[0] == 'menu-tag-content') {
-		ele.parentNode.parentNode.lastElementChild.style.width = "100vw"
-	} else if (ele.classList[0] == 'menu-content') {
-		ele.style.width = "0"
-	}
 }
 
 function pageSwipe(delay) {
@@ -198,13 +158,13 @@ function redirect(url, delay) {
 function toggleEntireMenu() {
 	// close menu
 	let time = 0;
-	forEach('menu-tag-container', (tag) => {
+	forEach('menu-container', (tag) => {
 		tag.style['transition-delay'] = time + 's';
 		time += 0.1;
-		tag.style.right = tag.style.right == '-3em' ? '' : '-3em'
-	})
-	forEach('menu-content', (content) => {
-		content.style.width = '0';
+		if (window.innerWidth <= 600)
+			tag.style.right = tag.style.right == '-100vw' ? '-80vw' : '-100vw'
+		else 
+			tag.style.right = tag.style.right == '-400px' ? '-300px' : '-400px'
 	})
 	icon = document.getElementsByClassName('toggle-icon-container')[0]
 	icon.style.transform = `rotate(${icon.style.transform == 'rotate(0deg)'?'90':'0'}deg)`

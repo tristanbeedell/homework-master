@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<% include ../partials/head %>
+	<title>Bot Help Homework Master</title>
+</head>
+
+<body>
+	<div class="header">
+		<h1>Bot Help</h1>
+	</div>
+	<div class="content">
+		<div class="post" id="help">
+			<div class="title">help</div>
+			<div class="lookup">
+				<b>Usage</b> 
+				<div>
+					<span class="snippet">@bot help [<u>command</u>]</span>
+				</div>
+				<b>Description</b> 
+				<div>
+					Gives help on the command given, or all commands if one is not provided.
+				</div>
+				<b>Options</b> 
+				<div class="lookup">
+					<span>command</span> <span>The title of the command help is wanted on.</span>
+				</div>
+				<b>Examples</b> 
+				<div class="lookup">
+					You:  <span class="snippet">@bot help</span>
+					@bot:   <span class="snippet">
+						commands: help ...
+					</span>
+					You:   <span class="snippet">@bot help `help`</span>
+					@bot:   <span class="snippet">
+						title: Help <br>
+						Usage: ... <br>
+						Description: ... <br>
+						&lt;Link to this page&gt;
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="post" id="say">
+			<div class="title">say</div>
+			<div class="lookup">
+				<b>Usage</b> 
+				<div>
+					<span class="snippet">@bot [say] `<u>message</u>`</span>
+				</div>
+				<b>Description</b> 
+				<div>
+					says <u>message</u>
+				</div>
+				<b>Options</b> 
+				<div class="lookup">
+					<span>message</span> <span>Text to be said</span>
+				</div>
+				<b>Examples</b> 
+				<div class="lookup">
+					You:   <span class="snippet">@bot say `hello world`</span>
+					@bot:   <span class="snippet">
+						@(you) says `hello world`
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="post" id="profile">
+			<div class="title">profile</div>
+			<div class="lookup">
+				<b>Usage</b> 
+				<div>
+					<span class="snippet">@bot profile <u>@user</u></span>
+				</div>
+				<b>Description</b> 
+				<div>
+					Provides a link to the given user's profile.
+				</div>
+				<b>Options</b> 
+				<div class="lookup">
+					<span>@user</span> <span>An @ mention of the user</span>
+				</div>
+				<b>Examples</b> 
+				<div class="lookup">
+					You:   <span class="snippet">@bot profile @tristan</span>
+					@bot:   <span class="snippet">
+						&lt;link to tristan's profile&gt;
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="post" id="send">
+			<div class="title">send</div>
+			<div class="lookup">
+				<b>Usage</b> 
+				<div>
+					<span class="snippet">@bot (send|DM|message) <u>channel</u> <u>command</u></span>
+				</div>
+				<b>Description</b> 
+				<div>
+					Provides a link to the given user's profile.
+				</div>
+				<b>Options</b> 
+				<div class="lookup">
+					<span>channel</span> <span>An @ mention of the user to DM, or a # link to text channel in the server, to which the outcome of <u>command</u> shall be sent</span>
+					<span>command</span> <span>A command to be executed</span>
+				</div>
+				<b>Examples</b> 
+				<div class="lookup">
+					You:   <span class="snippet">@bot DM @user help</span>
+					@bot: @user <span class="snippet">commands: help ... <a href="#help">see help</a></span>
+					You:   <span class="snippet">@bot send #english say `hello world`</span>
+					@bot: #english <span class="snippet">@(you) says `hello world` <a href="#say">see say</a></span>
+				</div>
+			</div>
+		</div>
+		<div class="post" id="poll">
+			<div class="title">poll</div>
+			<div class="lookup">
+				<b>Usage</b>
+				<div>
+					<span class="snippet">@bot [make|mk|create] [a] poll title: `<u>name</u>` choices: <u>choices</u> [time: `<u>time</u>`]</span>
+				</div>
+				<b>Description</b> 
+				<div>
+					Creates a poll with up to 6 choices.
+				</div>
+				<b>Options</b> 
+				<div class="lookup">
+					<span>name</span> <span>The name of the poll.</span>
+					<span>choices</span> <span>The choices to be given. Syntax: <span class="snippet">`A`, `B`[, `C`[, `D`[, `E`[, `F`]]]]</span></span>
+					<span>time</span> <span>The amount of time before the poll ends. Syntax: <span class="snippet">number(s|m)</span> s or m meaning seconds or minutes.</span>
+				</div>
+				<b>Examples</b> 
+				<div class="lookup">
+					You: <span class="snippet">@bot make a poll titled: `Best Subject`, choices: `English`, `Maths`, `Science`, time: `3m`</span>
+					@bot: <div class="snippet">
+						<div class="title">Best Subject</div>
+						<div class="time">`3m`</div>
+						<div class="message">
+							🇦 English<br>
+							🇧 Maths<br>
+							🇨 Science
+						</div>
+					</div>
+					@bot: <span>* pins the poll</span>
+					wait: <span>3 minutes</span>
+					@bot: <div><span>* deletes the poll message
+							<div class="snippet">
+								<div class="title">poll `Best Subject` ended</div>
+								<div class="message">
+									`English` got {🇦 reactions count} votes<br>
+									`Maths` got {🇧 reactions count} votes<br>
+									`Science` got {🇨 reactions count} votes<br>
+								</div>
+							</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<% include ../partials/menu %>
+	<script src="/js/index.js"></script>
+</body>
+
+</html>

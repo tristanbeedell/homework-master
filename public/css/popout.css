@@ -82,11 +82,11 @@
 
 @keyframes slide-down {
 	from {
-		margin-top: -100%;
+		margin-top: -100vh;
 	}
 
 	to {
-		margin-top: 30%;
+		margin-top: 30vh;
 	}
 }
 
@@ -163,14 +163,21 @@
 
 .menu-container {
 	position: absolute;
-	right: 0;
-	background-color: inherit;
-	border-top-left-radius: 1em;
+    background-color: inherit;
+    border-top-left-radius: 1em;
+	right: -300px;
+	width: 300px;
+    transition: right 0.7s;
+}
+
+/* open menu */
+.menu-container:hover{
+	right: 0vw !important;
 }
 
 .menu-content {
 	position: relative;
-	width: 0;
+	width: 30vw;
 	height: 100vh;
 	overflow: hidden;
 	transition: width 0.7s;
@@ -222,5 +229,16 @@
 		text-decoration: none;
 		color: red;
 		display: block;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.menu-container {
+		right: -80vw;
+		width: 80vw;
+	}
+
+	.menu-content {
+		padding: 2em 0 0 2em;
 	}
 }

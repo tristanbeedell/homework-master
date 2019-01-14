@@ -1,10 +1,12 @@
 const RichEmbed = require('discord.js').RichEmbed;
 const pool = require('../modules/database').getDB();
+const respond = require('./commands.js');
 const bcrypt = require("bcrypt");
 const urlname = process.env.WEBSITE_URL;
 
 module.exports = { newMember, dmRespond }
 
+// TODO: move the membersAwaiting out of local memory.
 let membersAwaiting = [];
 
 function createPreUser(memberid, guildid) {
@@ -21,7 +23,7 @@ function randomStr(len) {
 
 function newMember(member) {
 	member.send(`Hi! Looks like you're new to ${member.guild.name}.
-	What is the Group Pin?`);
+**What is the Group Pin?**`);
 	membersAwaiting.push(member.id);
 };
 
@@ -29,7 +31,8 @@ function checkMemberFromSchool(msg, callback) {
 	pool.query("SELECT * FROM groups")
 		.then((groups) => {
 			groups.rows.forEach(group => {
-				bcrypt.compare(msg.content, group.pin_hash).then(valid => {
+				bcrypt.compare(msg.content, group.pin_hash)
+					.then(valid => {
 						callback(valid, group)
 					})
 					.catch(console.error)
@@ -44,9 +47,9 @@ function sendSetupLink(msg, group) {
 	let embed;
 	embed = new RichEmbed()
 		.setURL(setupURL)
-		.setTitle("SET UP")
+		.setTitle("CLICK TO SET UP")
 		.setColor(0xFF00FF)
-		.addField("Give your classes, and you'll be put into chat and voice rooms with everyone else in those classes! ")
+		.setDescription("Give your classes, and you'll be put into text and voice chat rooms with everyone else in those classes!")
 
 	msg.channel.send(embed);
 }
@@ -56,7 +59,13 @@ function dmRespond(msg) {
 		checkMemberFromSchool(msg, (valid, group) => {
 			if (valid) {
 				sendSetupLink(msg, group)
+				membersAwaiting = membersAwaiting.filter(id => id !== msg.author.id);
+			} else {
+				msg.channel.send('Invalid pin. Please try again...')
 			}
 		})
+	} else {
+		let tokens = msg.content;
+		respond({ msg, tokens });
 	}
 }

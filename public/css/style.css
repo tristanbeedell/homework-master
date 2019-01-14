@@ -7,6 +7,7 @@ body {
 
 html, body {
 	overflow-x: hidden;
+	scroll-behavior: smooth;
 }
 
 .page-wipe {
@@ -16,9 +17,8 @@ html, body {
 	background-color: cornflowerblue;
 	right: 0;
 	top: 0;
-	transition: width;
+	transition: width 0.4s ease-in 0.2s;
 	overflow-x: hidden;
-	text-wrap: nowrap;
 }
 
 .loader-container {
@@ -39,8 +39,7 @@ html, body {
 }
 
 ::selection {
-	background: cadetblue;
-	color: beige
+	background: rgba(117, 25, 68, 0.2);
 }
 
 .header {
@@ -83,10 +82,12 @@ div.content {
 	grid-row-gap: 1em;
 	margin: 1em;
 	color: cadetblue;
+	grid-template-rows: auto;
+	min-height: 80vh;
 }
 
 .post {
-	background-color: beige;
+	background-color: floralwhite;
 	display: grid;
 	position: relative;
 	padding: 0.5em;
@@ -95,7 +96,26 @@ div.content {
 		"author"
 		"message"
 		"foot";
-	height: 10pc;
+	overflow-x: scroll;
+}
+
+.snippet {
+	font-family: monospace;
+	color: azure;
+	background-color: gray;
+	padding: 2px;
+}
+
+.multiline {
+    display: inline-block;
+	width: -moz-max-content;
+	margin: 5px;
+}
+
+#spacer {
+    height: 50vh;
+    background-color: rgba(0, 0, 0, 0.2);
+    margin-top: 20vh;
 }
 
 .post>.title {
@@ -103,6 +123,7 @@ div.content {
 	color: #246f72;
 	font-size: 20px;
 	padding: 1em;
+	padding-bottom: 0;
 }
 
 .post>.message {
@@ -111,17 +132,10 @@ div.content {
 
 .post>.author {
 	grid-area: author;
-}
-
-.post>.title {
-	padding-bottom: 0;
-}
-
-.post>.message {}
-
-.post>.author {
 	margin-bottom: 1em;
 }
+
+/* .post>.message {} */
 
 tr {
 	height: 40px;

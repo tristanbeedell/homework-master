@@ -2,7 +2,7 @@ module.exports = { initDB, getDB, getFirst, userSignedUp }
 
 const { Pool } = require("pg");
 const assert = require('assert');
-const colors = require('colors');
+require('colors');
 let pool;
 
 function initDB(connectionString) {

@@ -4,7 +4,7 @@
 <head>
 	<% include ../partials/head %>
 	<title>
-		<%= name%>'s Profile | Homework Master
+		My Profile | Homework Master
 	</title>
 </head>
 
@@ -18,18 +18,22 @@
 		</h1>
 	</div>
 	<div class="content">
-		<% if (session.user && session.user.name == nickname) { %>
 		<div class="post">
 			This is your profile
 			<button class="important-link delete-account-modal">Delete This Account.</button>
 		</div>
-		<% } %>
+		<!-- TODO: Add a user bio. 
+		-->
 	</div>
 	<% include ../partials/menu %>
 	<div id="delete-account-modal" class="modal">
 		<div class="modal-content slide-down">
-			<div>Are you sure?<br>You will be kicked from
-				<%= guild.name%> on discord and your classes will be wiped. Any ranks achieved will also be removed.</div>
+			<div>
+				<h4>Are you sure?</h4>
+				<p>
+				You will be kicked from <%= guild.name%> on discord and your classes will be wiped. Any ranks achieved will also be removed.
+				</p>
+			</div>
 			<span class="close">&times;</span>
 			<button class="link" onclick="deleteAccount()">I understand and would like to continue.</button>
 		</div>

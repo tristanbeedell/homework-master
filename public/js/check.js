@@ -1,3 +1,4 @@
+let allIsValid;
 function check(id) {
 	allIsValid = true
 	requireNewCheck()

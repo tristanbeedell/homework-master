@@ -7,8 +7,9 @@ let commands = [];
 const urlname = process.env.WEBSITE_URL;
 
 class Command {
-	constructor(rule, name, instructions, func, adminOnly = false) {
+	constructor(rule, text, instructions, func, name, adminOnly = false) {
 		this.rule = rule;
+		this.text = text;
 		this.name = name;
 		this.instructions = instructions;
 		this.func = func;
@@ -17,13 +18,54 @@ class Command {
 	}
 }
 
-new Command(/^ *help/i, "`help`", "prints out the commands", ({ msg, dest }) => {
+new Command(/^\s*help/i, "help __command__", "prints out the commands", ({ msg, dest, tokens }) => {
+	let reply;
+	let com = tokens.match(/help\s+([^.]+)/);
+	if (!com) {
+		// get all help
+		reply = help();
+	} else {
+		// create an embed for that command given
+		reply = instructions(com[1]);
+	}
+	send(reply, msg, dest);
+}, 'help');
+
+function instructions (com) {
+	let reply;
+	search = commands.filter(command => com.match(command.rule) || com == command.name);
+
+	if (search.length == 0) {
+		reply = `Couldn\'t find command ${com}`
+	} else if (search.length == 1) {
+		let command = search[0];
+		reply = new RichEmbed()
+			.setTitle(command.text)
+			.setURL(`${urlname}/help/bot#${command.name}`)
+			.setDescription(command.instructions);
+	} else {
+		reply = new RichEmbed()
+			.setTitle('COMMANDS')
+			.setDescription(search.length);
+		// for each command in the commands object
+		search.forEach(command => {
+			// add command to reply in a new line
+			reply.addField(command.text, command.instructions);
+		})
+	}
+
+	return reply;
+}
+
+function help() {
+	// create an embed
 	let reply = new RichEmbed()
 		.setTitle(`COMMANDS`)
 		.setDescription(`
-			Proceed a mention of this bot (@${getBot().user.tag}) with these commands
-			Replace all \`<...>\` appropiately
-		`);
+			To use this bot, follow a ping (\`@${getBot().user.tag}\`) with a command, or DM the bot a command.
+			For more detail, use help __command__.
+		`)
+		.setFooter(`${urlname}/help/bot`);
 	// for each command in the commands object
 	commands.forEach(command => {
 		// do not list admin only commands
@@ -32,17 +74,14 @@ new Command(/^ *help/i, "`help`", "prints out the commands", ({ msg, dest }) => 
 			reply.addField(command.name, command.instructions);
 		}
 	})
-	if (dest) {
-		dest.send(reply)
-	} else {
-		msg.channel.send(reply)
-	}
-});
 
-new Command(/^ *(<@\d+> ?'?s?|my) +profile/i, "`<@user> profile`", "returns selected profile", ({ msg, dest, tokens }) => {
-	let id = tokens.match(/^ *(<@(\d+)> ?'?s?|my)/)[2]
+	return reply;
+}
+
+new Command(/^\s*(get\s*)?((<@!?\d+> ?'?s?|my)\s+)?profile\s*((<@!?\d+>|me)\s+)?/i, "__@user__ profile", "returns selected profile", ({ msg, dest, tokens }) => {
+	let id = tokens.match(/(<@!?(\d+)> ?'?s?|my)/)[2];
 	let selected = msg.guild.members.get(id)
-	member = selected || msg.member
+	member = selected || msg.member;
 	let profileUrl = `${urlname}/guilds/${msg.guild.name}/members/${member.displayName}`.replace(/ /g, "_");
 	let embed;
 	embed = new RichEmbed()
@@ -50,30 +89,26 @@ new Command(/^ *(<@\d+> ?'?s?|my) +profile/i, "`<@user> profile`", "returns sele
 		.setURL(profileUrl)
 		.setAuthor(member.displayName, member.user.avatarURL)
 		.setColor(0xFFFFFF)
-	if (dest) {
-		dest.send(embed)
-	} else {
-		msg.channel.send(embed)
-	}
-});
+	send(embed, msg, dest);
+}, 'profile');
 
-new Command(/^ *(DM|message|send) +<@\d+>/i, "`message`, `DM` or `send <@user> ...`", 'sends the command\'s outcome to `<@user>`', async ({ msg, tokens, selected }) => {
-	let id = tokens.match(/<@(\d+)>/)[1]
-	let dest = msg.guild.members.get(id)
-	let next = tokens.slice(tokens.indexOf('>') + 1)
-	respond({ msg, tokens: next, dest, selected })
-})
+new Command(/^\s*(DM|message|send)\s+(<[@#]!?\d+>|me)/i, "(message|DM|send) (__@user__|__#channel__) __command__", 'sends the command\'s outcome to __@user__', async ({ msg, tokens, selected }) => {
+	let id = tokens.match(/<(@!?|#)(\d+)>/)[2];
+	let dest = msg.guild.members.get(id) || msg.guild.channels.get(id);
+	let next = tokens.slice(tokens.indexOf('>') + 1);
+	respond({ msg, tokens: next, dest, selected });
+}, 'send')
 
-new Command(/^ *report/i, "`report <@user> for <reason>`", ' Reports `<@user>`. This may lead to consequenses', ({ msg, tokens }) => {
-	let mention = tokens.match(/<@(\d+)>/)
+new Command(/^\s*report/i, "report __@user__ for __reason__", ' Reports __@user__. This may lead to consequenses', ({ msg, tokens }) => {
+	let mention = tokens.match(/<@!?(\d+)>/)
 	if (!mention) {
-		msg.channel.send(`:thinking_face: that make sure you properly @ mention a user.`)
+		msg.channel.send(`ERROR :thinking_face: No user given.`)
 		return;
 	}
 	let id = mention[1]
 	let member = msg.guild.members.get(id)
 	if (!member) {
-		msg.channel.send(`:thinking_face: the member ${mention[1]} does not exist`)
+		msg.channel.send(`ERROR :thinking_face: The member ${mention[1]} does not exist`)
 		return;
 	}
 	let reason = '';
@@ -97,11 +132,11 @@ new Command(/^ *report/i, "`report <@user> for <reason>`", ' Reports `<@user>`. 
 		.addField("SANCTIONS", swat[severity.name].sanctions)
 		.setColor(severity.color)
 		.setFooter('Wasn\'t you? Contact the staff.')
-	member.send(report)
-})
+	send(report, msg, member)
+}, 'report')
 
-new Command(/^ *(ma?ke?|create)?( *a? *)?poll/i,
-	'`make a poll titled: <name> with choices: <name>, <name>, ...`', 'creates a poll max 5 choices',
+new Command(/^\s*(ma?ke?|create)?(\s*a?\s*)?poll/i,
+	'make a poll titled: __name__ choices: __choices__ time: __time__', 'creates a poll max 6 choices',
 	async ({ msg, tokens, dest }) => {
 		let reply = new RichEmbed()
 		let title = tokens.match(/(poll|titled?:?)\s*`([^`]*)`/i)
@@ -113,7 +148,7 @@ new Command(/^ *(ma?ke?|create)?( *a? *)?poll/i,
 		if (choices) {
 			choices = choices.splice(2)
 		} else {
-			msg.channel.send('error: no choices');
+			msg.channel.send('ERROR :thinking_face: No choices.');
 			return
 		}
 		const emojis = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫'];
@@ -136,16 +171,11 @@ new Command(/^ *(ma?ke?|create)?( *a? *)?poll/i,
 			}
 			reply.setDescription(timeStr[1])
 		}
-		let poll
-		if (msg.editable) {
-			poll = await msg.edit(reply)
-		} else {
-			poll = await send(reply, msg, dest)
-		}
-		for (let i = 0; i < choices.length; i++){
+		let poll = await send(reply, msg, dest)
+		for (let i = 0; i < choices.length; i++) {
 			await poll.react(emojis[i]);
 		}
-		poll.pin()
+		poll.pin();
 		setTimeout(() => {
 			poll.delete()
 			let embed = poll.embeds[0]
@@ -162,18 +192,14 @@ new Command(/^ *(ma?ke?|create)?( *a? *)?poll/i,
 			})
 			poll.channel.send(outcome)
 		}, time)
-	})
+}, 'poll')
 
-new Command(/^ *(say)? *`.*`/, 'say <text>', 'all words to be taken literally must be wrapped in backticks', ({ msg, tokens, dest }) => {
-	reply = msg.author + ' says '
-	let quote = tokens.match(/`.*`/)
-	reply += quote[0]
-	if (dest) {
-		dest.send(reply)
-	} else {
-		msg.channel.send(reply)
-	}
-})
+new Command(/^\s*(say)? *`.*`/, 'say __text__', 'say some text', ({ msg, tokens, dest }) => {
+	reply = msg.author + ' says ';
+	let quote = tokens.match(/`[^`]*`/);
+	reply += quote[0];
+	send(reply, msg, dest);
+}, 'say')
 
 function respond({ msg, tokens, dest, selected }) {
 	let command
@@ -197,7 +223,7 @@ function respond({ msg, tokens, dest, selected }) {
 let swat = {
 	'S': {
 		name: 'State',
-		sanctions: 'None yet, but be careful.'
+		sanctions: 'No sactions yet. Please follow the guidelines.'
 	},
 	'W': {
 		name: 'Warning',
@@ -215,14 +241,19 @@ let swat = {
 	}
 }
 
-module.exports = respond
+module.exports = respond;
 
 function send(content, msg, dest) {
-	if (dest) {
-		return dest.send(content)
-	} else {
-		return msg.channel.send(content)
-	}
+	return new Promise((resolve, reject) => {
+		if (dest) {
+			return dest.send(content).then((message) => {
+				msg.react('✅');
+				resolve(message)
+			})
+		} else {
+			resolve(msg.channel.send(content))
+		}
+	})
 }
 
 // TODO: make the whole server setup automated
