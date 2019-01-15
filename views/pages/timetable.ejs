@@ -13,6 +13,7 @@
 	<div class="content">
 		<% include ../forms/timetable %>
 		<div class="post">
+			<button onclick="reloadTable()">refresh</button>
 			<table id="table" style="width: 100%; height: 300px;">
 				<tr>
 					<th colspan="10">Your Timetable</th>
@@ -22,7 +23,7 @@
 					<th colspan="5">2</th>
 				</tr>
 				<tr>
-					<%['mon',	'tues', 'wed', 'thurs', 'fri', 'mon', 'tues', 'wed', 'thurs', 'fri'].forEach(day => { %>
+					<%['Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri'].forEach(day => { %>
 					<th>
 						<%= day%>
 					</th>
