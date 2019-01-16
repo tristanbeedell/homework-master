@@ -1,8 +1,9 @@
-const discord = require('../modules/discord')
+const path = require('path');
+const discord = require(path.join(__dirname, '../modules/discord'));
 const bot = discord.getBot();
 //import all commands I made for the bot
-const respond = require('./commands.js');
-const createUser = require('./createUser');
+const respond = require(path.join(__dirname, './commands.js'));
+const createUser = require(path.join(__dirname, './createUser'));
 
 bot.on('guildMemberAdd', createUser.newMember)
 bot.on('message', msg => {

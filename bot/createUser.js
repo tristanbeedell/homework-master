@@ -1,6 +1,7 @@
 const RichEmbed = require('discord.js').RichEmbed;
-const pool = require('../modules/database').getDB();
-const respond = require('./commands.js');
+const path = require('path');
+const pool = require(path.join(__dirname, '../modules/database')).getDB();
+const respond = require(path.join(__dirname, './commands.js'));
 const bcrypt = require("bcrypt");
 const urlname = process.env.WEBSITE_URL;
 

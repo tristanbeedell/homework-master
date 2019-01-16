@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
-const { getBot } = require('../modules/discord');
+const path = require('path');
+const { getBot } = require(path.join(__dirname, '../modules/discord'));
 const RichEmbed = Discord.RichEmbed;
-const url = require('url');
 
 let commands = [];
 const urlname = process.env.WEBSITE_URL;

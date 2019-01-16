@@ -1,7 +1,8 @@
 module.exports = { getSignup, postPasswordIsValid, signup }
 
-const { getBot } = require("../modules/discord")
-const db = require("../modules/database")
+const path = require('path');
+const { getBot } = require(path.join(__dirname, "../modules/discord"))
+const db = require(path.join(__dirname, "../modules/database"))
 const bcrypt = require('bcrypt')
 
 let bot;

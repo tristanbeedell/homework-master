@@ -1,10 +1,8 @@
-const colors = require('colors');
+// const colors = require('colors');
 const morgan = require('morgan');
-const bot = require('../modules/discord');
-var fs = require('fs');
-// stream = fs.createWriteStream('./access.log', { flags: 'a' });
-// date = new Date();
-// stream.write(`${date} || server reset\n`);
+const path = require('path');
+const bot = require(path.join(__dirname, '../modules/discord'));
+
 morgan.token('user', function getUsername(req) {
 	if (!req.session.user) { return 'logged out' }
 	return bot.getBot().guilds.get(req.session.user.guild_id).members.get(req.session.user.member_id).displayName

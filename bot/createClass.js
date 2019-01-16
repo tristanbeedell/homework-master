@@ -1,6 +1,7 @@
 module.exports = giveRoles
 
-const database = require('../modules/database')
+const path = require('path');
+const database = require(path.join(__dirname, '../modules/database'))
 require('colors')
 
 async function giveRoles(member, chosenSubjects) {
