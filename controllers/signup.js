@@ -114,16 +114,21 @@ async function signup(req, res) {
 		res.redirect('back')
 		return;
 	}
-	const member = await guild.members.get(req.query.member).setNickname(req.body.nickname);
+	const member = await guild.members.get(req.query.member);
+	await member.setNickname(req.body.nickname).catch(err => {
+		// bot cannot change an administrator's nickname, ignore this error.
+		if (!err.message === "Missing Permissions") 
+			console.error(err)
+	});
 
-	let salt = await bcrypt.genSalt(10);
-	let passwordhash = await bcrypt.hash(req.body.newpassword, salt);
+	const salt = await bcrypt.genSalt(10);
+	const passwordhash = await bcrypt.hash(req.body.newpassword, salt);
 
 	req.session.user = {
 		member_id: req.query.member,
 		guild_id: req.query.guild,
 		passwordhash: passwordhash,
-		name: member.name
+		name: member.displayName
 	}
 
 	await save(req.session.user);
