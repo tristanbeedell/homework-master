@@ -10,7 +10,7 @@
 
 <body>
 	<% if (member.id == session.user.member_id) { %>
-	THIS IS YOUR PROFILE
+	THIS IS YOUR PROFILE. <a href="/me">Customise</a>
 	<% } %>
 	<div class="header">
 		<h1>
@@ -25,7 +25,12 @@
 			<div class="post">
 				<div class="title">What should go here?</div>
 				<div class="message">
-					If you have any ideas, please tell me what you think I should put here.
+					If you have any ideas, please tell me what you think I should put here.<br>
+					<h4>My ideas:</h4>
+					User Timetable<br>
+					Achievements<br>
+					A Bio<br>
+					Custom colour
 				</div>
 			</div>
 		</div>

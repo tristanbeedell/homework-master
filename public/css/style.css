@@ -1,7 +1,7 @@
 body {
 	background-color: cadetblue;
 	text-align: center;
-	font-family: Avenir;
+	font-family: Avenir, Helvetica;
 	margin: 0;
 }
 
@@ -181,9 +181,13 @@ td {
 }
 
 a {
-	text-decoration: none;
-	color: cornflowerblue;
+	color: aqua;
 	display: inline;
+	text-decoration: none;
+}
+
+.post>a {
+	color: cornflowerblue;
 }
 
 .content a:hover {
@@ -201,4 +205,11 @@ a {
 
 ::-webkit-scrollbar {
 	display: none;
+}
+
+.delete-button {
+	padding: 1em;
+	background-color: crimson;
+	border: none;
+	font-weight: bold;
 }
