@@ -10,7 +10,7 @@
 	<label for="<%= set.division%>">
 		<%= set.division%>
 	</label>
-	<select name="classes[<%= set.division%>]" id="<%= set.division%>" onchange="updateTable('<%= set.division%>', this.value)">
+	<select name="classes[<%= set.division%>]" id="<%= set.division%>" onchange="return updateTable('<%= set.division%>', this.value)">
 		<option value="none">
 			Choose Class
 		</option>

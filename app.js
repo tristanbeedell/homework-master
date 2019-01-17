@@ -80,7 +80,7 @@ app.get('/signup', signup.getSignup);
 app.post('/checkNewUserPassword', signup.postPasswordIsValid);
 app.post('/signup', signup.signup);
 app.get('/signup/timetable', timetable.getTimetableForm)
-app.get('/signup/timetabledata', timetable.getTimetable);
+app.get('/timetabledata', timetable.getTimetable);
 app.post('/signup/timetable', timetable.giveClasses);
 app.get('/guilds/:guildName/members/:memberName', profile);
 app.get('/guilds/:guildName/', guild);
