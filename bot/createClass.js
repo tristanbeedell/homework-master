@@ -36,8 +36,8 @@ async function updateClasses(role, set, division) {
 	const pool = database.getDB();
 
 	// retrieve class data from the database
-	const rooms = (await getChannelData(set, division)).rows;
 	const guild = role.guild;
+	const rooms = (await getChannelData(set, division, guild)).rows;
 
 	// get the category for the subject of the class
 	const cat = await setupCat(guild, rooms[0]);
@@ -190,11 +190,10 @@ async function createCatagory(guild, name) {
 	return cat;
 }
 
-async function getChannelData(set, division) {
+async function getChannelData(set, division, guild) {
 	// get database pool connection
 	const pool = database.getDB();
 	// get the rooms
-	// FIXME: get channel data for one particular group
 	let rooms = await pool.query(`
 		SELECT DISTINCT
 			teachers.surname	AS teacher,
@@ -211,7 +210,9 @@ async function getChannelData(set, division) {
 		INNER JOIN subject   ON timetable.subject_id = subject.id
 		INNER JOIN teachers  ON timetable.teacher_id = teachers.id
 		INNER JOIN divisions ON sets.division_id = divisions.id
-		WHERE sets.set = '${set}' AND divisions.name = '${division}' AND timetable.usual;
+		INNER JOIN groups ON sets.group_id = groups.id
+		WHERE sets.set = '${set}' AND divisions.name = '${division}' 
+		AND groups.guild_id = '${guild.id}' AND timetable.usual;
 	`).catch(console.error)
 	return rooms;
 }

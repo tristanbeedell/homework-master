@@ -5,7 +5,7 @@ const bot = discord.getBot();
 const respond = require(path.join(__dirname, './commands.js'));
 const createUser = require(path.join(__dirname, './createUser'));
 
-bot.on('guildMemberAdd', createUser.newMember)
+bot.on('guildMemberAdd', createUser.newMember);
 bot.on('message', msg => {
 	if (msg.author.id == bot.user.id) {
 		return;
