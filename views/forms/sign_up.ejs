@@ -1,6 +1,10 @@
 <form method="post" id="signup">
-	<label for="nickname">Your Name: </label>
-	<input type="text" name="nickname" id="nickname" placeholder="<%= query.name %>">
+	<span>&check; Your discord:</span>
+	<span><img src="<%= member.user.avatarURL %>" class="profilePic"></img><%= member.user.tag%></span>
+	<label for="nickname">Your Name: 
+		<span class="error"><%= query.nameerror %></span>
+	</label>
+	<input type="text" name="nickname" id="nickname" placeholder="<%= member.displayName%>">
 
 	<label for="newpassword">New Password:
 		<span class="error"></span>

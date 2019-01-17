@@ -81,13 +81,14 @@ div.content {
 	grid-template-columns: 100%;
 	grid-row-gap: 1em;
 	margin: 1em;
-	color: cadetblue;
+	color: beige;
 	grid-template-rows: auto;
 	min-height: 80vh;
 }
 
 .post {
 	background-color: floralwhite;
+	color: cadetblue;
 	display: grid;
 	position: relative;
 	padding: 0.5em;
