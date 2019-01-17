@@ -1,6 +1,6 @@
 const RichEmbed = require('discord.js').RichEmbed;
 const path = require('path');
-const pool = require(path.join(__dirname, '../modules/database')).getDB();
+const database = require(path.join(__dirname, '../modules/database'));
 const bot = require(path.join(__dirname, '../modules/discord')).getBot();
 const respond = require(path.join(__dirname, './commands.js'));
 const bcrypt = require("bcrypt");
@@ -12,6 +12,7 @@ let membersAwaiting = [];
 
 function createPreUser(memberid, guildid) {
 	let password = randomStr(5);
+	const pool = database.getDB();
 	pool.query(`INSERT INTO pre_users (password, member_id, guild_id)
 	VALUES ('${password}', '${memberid}', '${guildid}');`)
 		.catch(console.error);
@@ -29,6 +30,7 @@ function newMember(member) {
 };
 
 async function checkMemberFromSchool(pin, id, callback) {
+	const pool = database.getDB();
 	const groups = await pool.query(`SELECT pin_hash FROM groups WHERE guild_id = '${id}';`)
 		.catch(console.error)
 	if (groups.rows.length == 0) { return callback(false) }
@@ -50,6 +52,18 @@ function sendSetupLink(member) {
 	member.send(embed);
 }
 
+
+function sendTimetableLink(member) {
+	const setupURL = `${urlname}/signup/timetable`;
+	const embed = new RichEmbed()
+		.setURL(setupURL)
+		.setTitle("CLICK TO ENTER YOUR TIMETABLE")
+		.setColor(0xFF00FF)
+		.setDescription("Give your classes, and you'll be put into text and voice chat rooms with everyone else in those classes!")
+
+	member.send(embed);
+}
+
 async function dmRespond(msg) {
 	const members = membersAwaiting.filter(member => member.id === msg.author.id);
 	let member;
@@ -63,37 +77,38 @@ async function dmRespond(msg) {
 				membersAwaiting = membersAwaiting.filter(member => member.id !== msg.author.id);
 			} else {
 				msg.channel.send(`**Invalid Pin**
-Make sure you send the exact pin and nothing else in the message. It **is** case sensitive.
+Make sure you send the exact pin and nothing else in the message. It is **case sensitive**.
 Please try again...`)
 			}
 		})
 	} else if (msg.content.match(/^\s*sign\s?up/)) {
-		if (await signedUp(msg.author)){
-			msg.channel.send('You\'re already signed up.');
-			membersAwaiting = membersAwaiting.filter(member => member.id !== msg.author.id);
-			return;
-		}
+		// find the guild given by name
 		const guild = bot.guilds.find(guild => guild.name === msg.content.match(/^\s*sign\s?up\s*(.*)\s*$/)[1]);
 		if (!guild) {
 			msg.channel.send('**Invalid group.** Give a group as follows: `signup Group Name`');
 			return;
 		}
+		// find the member in that guild
 		const member = guild.members.get(msg.author.id);
 		if (!member) {
 			msg.channel.send('You are not in this server.');
 			return;
 		}
-		newMember(member);
+
+		// get sign up status of that member in that guild
+		const status = await database.userSignedUp(member.guild.id, member.id);
+		if (!status.exists) {
+			newMember(member);
+		} else if (!status.complete) {
+			sendTimetableLink(member);
+			membersAwaiting = membersAwaiting.filter(member => member.id !== msg.author.id);
+		} else {
+			msg.channel.send('You\'re already signed up.');
+			membersAwaiting = membersAwaiting.filter(member => member.id !== msg.author.id);
+		}
+
 	} else {
 		let tokens = msg.content;
 		respond({ msg, tokens });
 	}
-}
-
-async function signedUp(member) {
-	const res = await pool.query(`
-		SELECT * FROM users WHERE member_id = '${member.id}' AND complete = TRUE;
-	`).catch(console.error);
-	const rows = res.rows;
-	return rows.length > 0;
 }

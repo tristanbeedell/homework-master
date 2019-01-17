@@ -80,7 +80,11 @@ function help() {
 
 new Command(/^\s*(get\s*)?((<@!?\d+> ?'?s?|my)\s+)?profile\s*((<@!?\d+>|me)\s+)?/i, "__@user__ profile", "returns selected profile", ({ msg, dest, tokens }) => {
 	let id = tokens.match(/(<@!?(\d+)> ?'?s?|my)/)[2];
-	let selected = msg.guild.members.get(id)
+	if (!msg.guild) {
+		send('Profile in which group? Ask in the server.', msg, dest);
+		return;
+	}
+	let selected = msg.guild.members.get(id);
 	member = selected || msg.member;
 	let profileUrl = `${urlname}/guilds/${msg.guild.name}/members/${member.displayName}`.replace(/ /g, "_");
 	let embed;
