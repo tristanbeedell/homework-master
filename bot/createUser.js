@@ -82,33 +82,37 @@ Please try again...`)
 			}
 		})
 	} else if (msg.content.match(/^\s*sign\s?up/)) {
-		// find the guild given by name
-		const guild = bot.guilds.find(guild => guild.name === msg.content.match(/^\s*sign\s?up\s*(.*)\s*$/)[1]);
-		if (!guild) {
-			msg.channel.send('**Invalid group.** Give a group as follows: `signup Group Name`');
-			return;
-		}
-		// find the member in that guild
-		const member = guild.members.get(msg.author.id);
-		if (!member) {
-			msg.channel.send('You are not in this server.');
-			return;
-		}
-
-		// get sign up status of that member in that guild
-		const status = await database.userSignedUp(member.guild.id, member.id);
-		if (!status.exists) {
-			newMember(member);
-		} else if (!status.complete) {
-			sendTimetableLink(member);
-			membersAwaiting = membersAwaiting.filter(member => member.id !== msg.author.id);
-		} else {
-			msg.channel.send('You\'re already signed up.');
-			membersAwaiting = membersAwaiting.filter(member => member.id !== msg.author.id);
-		}
-
+		signupCommand(msg)
 	} else {
 		let tokens = msg.content;
 		respond({ msg, tokens });
 	}
+}
+
+async function signupCommand (msg) {
+	// find the guild given by name
+	const guild = bot.guilds.find(guild => guild.name === msg.content.match(/^\s*sign\s?up\s*(.*)\s*$/)[1]);
+	if (!guild) {
+		msg.channel.send('**Invalid group.** Give a group as follows: `signup Group Name`');
+		return;
+	}
+	// find the member in that guild
+	const member = guild.members.get(msg.author.id);
+	if (!member) {
+		msg.channel.send('You are not in this server.');
+		return;
+	}
+
+	// get sign up status of that member in that guild
+	const status = await database.userSignedUp(member.guild.id, member.id);
+	if (!status.exists) {
+		newMember(member);
+	} else if (!status.complete) {
+		sendTimetableLink(member);
+		membersAwaiting = membersAwaiting.filter(member => member.id !== msg.author.id);
+	} else {
+		msg.channel.send('You\'re already signed up.');
+		membersAwaiting = membersAwaiting.filter(member => member.id !== msg.author.id);
+	}
+
 }
