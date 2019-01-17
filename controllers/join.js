@@ -1,7 +1,8 @@
 module.exports = { join }
 
-const { getBot } = require("../modules/discord")
-const { getDB, getFirst } = require("../modules/database")
+const path = require('path');
+const { getBot } = require(path.join(__dirname, "../modules/discord"))
+const { getDB, getFirst } = require(path.join(__dirname, "../modules/database"))
 const bcrypt = require('bcrypt')
 let bot;
 let pool;

@@ -9,6 +9,7 @@
 </head>
 
 <body>
+	<a href="/guilds/<%= guild.name.replace(/ /g, '_') %>/members/<%= name.replace(/ /g, '_') %>">View Profile</a>
 	<div class="header">
 		<h1>
 			<img src="<%= member.user.avatarURL %>" class="profilePic"></img>
@@ -19,13 +20,20 @@
 	</div>
 	<div class="content">
 		<div class="post">
-			This is your profile
-			<button class="important-link delete-account-modal">Delete This Account.</button>
+			<div class="title">Features to come here.</div>
+			<div class="message">
+				<h4>My ideas:</h4>
+				Customise Bio<br>
+				Customise Timetable<br>
+				Reset password<br>
+				Background colour
+			</div>
 		</div>
-		<!-- TODO: Add a user bio. 
-		-->
 	</div>
+	<button class="important-link delete-account-modal delete-button">Delete This Account.</button>
+
 	<% include ../partials/menu %>
+
 	<div id="delete-account-modal" class="modal">
 		<div class="modal-content slide-down">
 			<div>

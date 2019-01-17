@@ -1,8 +1,9 @@
 module.exports = { giveClasses, getTimetable, getTimetableForm }
 
-const { getDB } = require('../modules/database');
-const members = require('../modules/member');
-const giveRoles = require('../bot/createClass');
+const path = require('path');
+const { getDB } = require(path.join(__dirname, '../modules/database'));
+const members = require(path.join(__dirname, '../modules/member'));
+const giveRoles = require(path.join(__dirname, '../bot/createClass'));
 
 async function getTimetableForm(req, res) {
 	const pool = getDB();

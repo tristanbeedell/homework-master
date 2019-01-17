@@ -1,29 +1,27 @@
 module.exports = { getSignup, postPasswordIsValid, signup }
 
-const { getBot } = require("../modules/discord")
-const db = require("../modules/database")
-const bcrypt = require('bcrypt')
-
-let bot;
-let pool;
+const path = require('path');
+const url = require('url');
+const { getBot } = require(path.join(__dirname, "../modules/discord"))
+const database = require(path.join(__dirname, "../modules/database"))
+const bcrypt = require('bcrypt');
 
 // FEATURE: get fullname and display name.
 
 async function getSignup(req, res) {
-	bot = getBot();
-	pool = db.getDB();
+	const pool = database.getDB();
+
 	// get the member and the guild from discord to check they exist
-	let member_id = req.query.member
-	let guild_id = req.query.guild
-	try {
-		let { guild, member } = getGuildAndMember(guild_id, member_id)
-	} catch (err) {
-		res.status(404).send(err + '<br> Oof! Looks like there was an error! <a href="/help#contact">Contact Tristan</a>.');
+	const member_id = req.query.member;
+	const guild_id = req.query.guild;
+	const { guild, member } = await getGuildAndMember(guild_id, member_id);
+	if (!guild || !member){
+		res.status(404).send(`Invalid <br> Oof! Looks like there was an error! <a href="/help#contact">Contact Tristan</a>.`);
 		return;
 	}
 
 	// check the user hasn't already signed up
-	let user = await db.userSignedUp(guild_id, member_id)
+	const user = await database.userSignedUp(guild_id, member_id)
 	if (user.exists && user.complete) {
 		res.redirect(`/guilds/${guild.name}/members/${member.displayName}`.replace(/ /g, '_'));
 		return;
@@ -55,32 +53,33 @@ async function getSignup(req, res) {
 
 	// render page
 	res.render("pages/sign_up", {
-		guild: req.query.guild,
-		member: req.query.member,
-		query: req.query
+		guild, member,
+		query: req.query,
 	});
 }
 
 function getGuildAndMember(guild_id, member_id) {
-	guild = bot.guilds.get(guild_id);
-	if (!guild) { throw "Invalid guild"; }
-	member = guild.members.get(member_id);
-	if (!member) { throw "Invalid member" }
-	return { guild, member }
+	const bot = getBot();
+	return new Promise((resolve, reject) => {
+		let guild = bot.guilds.get(guild_id);
+		let member;
+		if (guild) {
+			member = guild.members.get(member_id);
+		}
+		resolve({ guild, member })
+	})
 }
 
 async function checkNewUserPassword(req) {
-	pool = db.getDB();
-	let passwordGiven = req.query.password || req.body.password;
-	let member_id = req.query.member || req.body.member;
-	let guild_id = req.query.guild || req.body.guild;
+	const pool = database.getDB();
+	const passwordGiven = req.query.password || req.body.password;
+	const member_id = req.query.member || req.body.member;
+	const guild_id = req.query.guild || req.body.guild;
 	let valid = false;
 	let passwords = await pool.query(`
-    SELECT password FROM pre_users WHERE member_id = '${member_id}' AND guild_id = '${guild_id}';
-  `).catch(() => {
-		valid = false;
-	})
-	db.getFirst(passwords,
+		SELECT password FROM pre_users WHERE member_id = '${member_id}' AND guild_id = '${guild_id}';
+	`).catch(console.error);
+	database.getFirst(passwords,
 		(err, pass) => {
 			valid = checkValidity(err, pass, passwordGiven)
 		}
@@ -89,7 +88,7 @@ async function checkNewUserPassword(req) {
 }
 
 async function postPasswordIsValid(req, res) {
-	let valid = await checkNewUserPassword(req)
+	const valid = await checkNewUserPassword(req)
 	res.status(valid ? 200 : 400).end()
 }
 
@@ -102,35 +101,47 @@ function checkValidity(err, p, passwordGiven) {
 }
 
 async function signup(req, res) {
-	// TODO: Give error messages on sign up, check for valid username on front end.
 	if (!await checkNewUserPassword(req)) {
-		res.redirect('back')
+		res.redirect('back');
+		return;
+	}
+	if (req.body.nickname.length > 32) {
+		let u = new url.URL(path.join(process.env.WEBSITE_URL, req.url));
+		u.searchParams.set('nameerror', 'Too Long!')
+		res.redirect(u);
 		return;
 	}
 	const guild = getBot().guilds.get(req.query.guild)
-	const taken = guild.members.some(member => member.displayName == req.body.nickname)
+	const taken = guild.members.some(member => member.displayName === req.body.nickname && member.id !== req.query.member)
 	if (taken) {
-		res.redirect('back')
+		let u = new url.URL(path.join(process.env.WEBSITE_URL, req.url));
+		u.searchParams.set('nameerror', 'Name Taken!')
+		res.redirect(u);
 		return;
 	}
-	const member = await guild.members.get(req.query.member).setNickname(req.body.nickname);
+	const member = await guild.members.get(req.query.member);
+	await member.setNickname(req.body.nickname).catch(err => {
+		// bot cannot change an administrator's nickname, ignore this error.
+		if (!err.message === "Missing Permissions") 
+			console.error(err)
+	});
 
-	let salt = await bcrypt.genSalt(10);
-	let passwordhash = await bcrypt.hash(req.body.newpassword, salt);
+	const salt = await bcrypt.genSalt(10);
+	const passwordhash = await bcrypt.hash(req.body.newpassword, salt);
 
 	req.session.user = {
 		member_id: req.query.member,
 		guild_id: req.query.guild,
 		passwordhash: passwordhash,
-		name: member.name
+		name: member.displayName
 	}
 
 	await save(req.session.user);
-	res.redirect('/signup/timetable')
+	res.redirect('/signup/timetable');
 }
 
 async function save(user) {
-	pool = db.getDB();
+	const pool = database.getDB();
 
 	// Add the new user with their own password.
 	await pool.query(`

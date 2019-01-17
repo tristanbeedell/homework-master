@@ -1,6 +1,7 @@
 module.exports = get;
 
-const { getBot } = require('../modules/discord')
+const path = require('path');
+const { getBot } = require(path.join(__dirname, '../modules/discord'));
 
 function get(req, res) {
 	const bot = getBot();

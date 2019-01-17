@@ -1,7 +1,8 @@
 module.exports = { invite }
 
-const { getBot } = require('../modules/discord');
-const { getDB } = require('../modules/database');
+const path = require('path');
+const { getBot } = require(path.join(__dirname, '../modules/discord'));
+const { getDB } = require(path.join(__dirname, '../modules/database'));
 
 async function invite(req, res) {
 	const bot = getBot();

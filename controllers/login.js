@@ -1,8 +1,9 @@
 module.exports = { getForm, login, validate }
 
-const discord = require('../modules/discord')
-const members = require('../modules/member')
-const { getDB } = require('../modules/database')
+const path = require('path');
+const discord = require(path.join(__dirname, '../modules/discord'));
+const members = require(path.join(__dirname, '../modules/member'));
+const { getDB } = require(path.join(__dirname, '../modules/database'));
 const bcrypt = require('bcrypt');
 
 function getForm(req, res) {

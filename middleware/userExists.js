@@ -1,6 +1,7 @@
 module.exports = userExists
 
-const discord = require('../modules/discord')
+const path = require('path');
+const discord = require(path.join(__dirname, '../modules/discord'));
 
 function userExists(req, res, next) {
 	if (req.url == '/unavaliable') { return next() }
