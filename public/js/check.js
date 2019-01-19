@@ -52,13 +52,14 @@ function requireNewCheck() {
 	}
 }
 
-function validateLogin() {
+function login() {
 	guild = document.getElementById("guild").value;
 	name = document.getElementById("name").value;
 	password = document.getElementById("password").value;
 	ajaxValidate("validateLogin", `password=${password}&guild=${guild}&name=${name}`)
 		.then(() => {
 			allIsValid = true
+			document.getElementById('login').submit()
 		})
 		.catch((message) => {
 			document.getElementsByClassName('error')[0].innerHTML = message;
@@ -66,9 +67,9 @@ function validateLogin() {
 		})
 }
 
-function login() {
-	validateLogin();
-	if (allIsValid) {
-		document.getElementById('login').submit()
-	}
-}
+// function login() {
+// 	validateLogin();
+// 	if (allIsValid) {
+// 		document.getElementById('login').submit()
+// 	}
+// }
