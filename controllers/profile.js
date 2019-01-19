@@ -3,6 +3,7 @@ module.exports = get;
 const path = require('path');
 const { getBot } = require(path.join(__dirname, '../modules/discord'))
 const { getDB } = require(path.join(__dirname, '../modules/database'))
+const { markdown } = require('markdown');
 
 async function get(req, res) {
 	const bot = getBot();
@@ -37,6 +38,7 @@ async function get(req, res) {
 	const userData = (await pool.query(`
 		SELECT * FROM users WHERE id = user_id('${req.session.user.member_id}', '${req.session.user.guild_id}');
 	`)).rows[0];
+	userData.bio = markdown.toHTML(userData.bio);
 
 
 	res.render("pages/profile", {

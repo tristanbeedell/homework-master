@@ -86,7 +86,7 @@ app.get('/guilds/:guildName/members/:memberName', profile);
 app.get('/guilds/:guildName/', guild);
 app.get('/me', my_profile.get);
 app.delete('/me', my_profile.del);
-app.post('/bio', my_profile.bio);
+app.post('/bio', my_profile.post);
 app.get('/login', login.getForm);
 app.post('/login', login.login);
 app.post('/validateLogin', login.validate);

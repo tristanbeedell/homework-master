@@ -1,5 +1,8 @@
 <div class="title">Set Bio</div>
 <form method="POST" action="/bio">
-	<textarea name="bio" type="text" class="full-width" placeholder="Enter your bio here."><%= userData.bio%></textarea>
+	<textarea name="bio" type="text" class="full-width" 
+placeholder="Tell everyone something wonderful. 
+
+Markdown is supported!"><%- userData.bio%></textarea>
 	<input type="submit" class="full-width" value="Save Bio">
 </form>
