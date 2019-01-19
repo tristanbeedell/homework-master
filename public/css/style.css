@@ -100,7 +100,7 @@ div.content {
 	overflow-x: scroll;
 }
 
-.snippet {
+code {
 	font-family: monospace;
 	color: azure;
 	background-color: gray;
