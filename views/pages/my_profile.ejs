@@ -1,12 +1,8 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-	<% include ../partials/head %>
-	<title>
-		My Profile | Homework Master
-	</title>
-</head>
+<% title = 'Me' %>
+<% include ../partials/head %>
 
 <body>
 	<a href="/guilds/<%= guild.name.replace(/ /g, '_') %>/members/<%= name.replace(/ /g, '_') %>">View Profile</a>

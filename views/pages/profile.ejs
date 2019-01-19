@@ -1,12 +1,8 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-	<% include ../partials/head %>
-	<title>
-		<%= member.displayName%>'s Profile | Homework Master
-	</title>
-</head>
+<% title = `${member.displayName+(member.displayName.slice(-1)=='s'?"'":"'s")} Profile`%>
+<% include ../partials/head %>
 
 <body>
 	<% if (member.id == session.user.member_id) { %>
