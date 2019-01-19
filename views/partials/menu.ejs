@@ -33,8 +33,8 @@
 				</div>
 				<div class="menu-content">
 					<% if (session.user) {%>
+					<a href="/me">My Account</a>
 					<a href="/guilds/<%= guild.name.replace(/ /g, '_') %>/members/<%= name.replace(/ /g, '_') %>">My Profile</a>
-					<a href="/guilds/<%= guild.name.replace(/ /g, '_') %>">My Group</a>
 					<span class="important-link logout-modal">Log Out</span>
 					<% } else { %>
 					<a href="/login">login</a>
