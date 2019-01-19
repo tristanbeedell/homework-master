@@ -1,4 +1,4 @@
-module.exports = { get, del, bio };
+module.exports = { get, del, post };
 
 const path = require('path');
 const { getBot } = require(path.join(__dirname, '../modules/discord'));
@@ -55,14 +55,16 @@ function del(req, res) {
 	res.redirect('/join');
 }
 
-async function bio(req, res) {
+async function post(req, res) {
 	if (!req.session.user) {
 		res.redirect('/login?redirect=/me')
 	}
 	const pool = getDB();
-	await pool.query(`
-		UPDATE users SET bio = $1
-		WHERE users.id = user_id('${req.session.user.member_id}', '${req.session.user.guild_id}');
-	`, [req.body.bio])
+	if (req.body.bio) {
+		await pool.query(`
+			UPDATE users SET bio = $1
+			WHERE users.id = user_id('${req.session.user.member_id}', '${req.session.user.guild_id}');
+		`, [req.body.bio])
+	}
 	res.redirect('back');
 }

@@ -2,9 +2,12 @@ module.exports = get;
 
 const path = require('path');
 const { getBot } = require(path.join(__dirname, '../modules/discord'))
+const { getDB } = require(path.join(__dirname, '../modules/database'))
 
-function get(req, res) {
+async function get(req, res) {
 	const bot = getBot();
+	const pool = getDB();
+	
 	// if the guild does not exist, return a 404 error
 	function unavaliable() {
 		res.status(404).render("pages/unavaliable", {
@@ -31,9 +34,15 @@ function get(req, res) {
 		return;
 	}
 
+	const userData = (await pool.query(`
+		SELECT * FROM users WHERE id = user_id('${req.session.user.member_id}', '${req.session.user.guild_id}');
+	`)).rows[0];
+
+
 	res.render("pages/profile", {
 		session: req.session,
 		bot,
-		member
+		member,
+		userData
 	});
 }
