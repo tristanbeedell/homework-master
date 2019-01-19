@@ -1,11 +1,12 @@
-module.exports = { get, del };
+module.exports = { get, del, bio };
 
 const path = require('path');
 const { getBot } = require(path.join(__dirname, '../modules/discord'));
 const { getDB } = require(path.join(__dirname, '../modules/database'));
 
-function get(req, res) {
+async function get(req, res) {
 	const bot = getBot();
+	const pool = getDB();
 	// if the guild does not exist, return a 404 error
 	function unavaliable() {
 		res.status(404).render("pages/unavaliable", {
@@ -21,10 +22,15 @@ function get(req, res) {
 		return;
 	}
 
+	const userData = (await pool.query(`
+		SELECT * FROM users WHERE id = user_id('${req.session.user.member_id}', '${req.session.user.guild_id}');
+	`)).rows[0];
+
 	res.render("pages/my_profile", {
 		session: req.session,
 		bot,
-		member
+		member,
+		userData
 	});
 }
 
@@ -47,4 +53,16 @@ function del(req, res) {
 	member.kick()
 	delete req.session.user;
 	res.redirect('/join');
+}
+
+async function bio(req, res) {
+	if (!req.session.user) {
+		res.redirect('/login?redirect=/me')
+	}
+	const pool = getDB();
+	await pool.query(`
+		UPDATE users SET bio = $1
+		WHERE users.id = user_id('${req.session.user.member_id}', '${req.session.user.guild_id}');
+	`, [req.body.bio])
+	res.redirect('back');
 }

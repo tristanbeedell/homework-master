@@ -86,9 +86,10 @@ app.get('/guilds/:guildName/members/:memberName', profile);
 app.get('/guilds/:guildName/', guild);
 app.get('/me', my_profile.get);
 app.delete('/me', my_profile.del);
+app.post('/bio', my_profile.bio);
 app.get('/login', login.getForm);
 app.post('/login', login.login);
-app.post("/validateLogin", login.validate);
+app.post('/validateLogin', login.validate);
 // TODO: rules and guidlines page.
 
 const port = process.env.PORT || 8080;
