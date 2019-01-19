@@ -50,3 +50,14 @@ select:focus, input:focus {
 tbody {
   background-color: azure;
 }
+
+.full-width {
+	grid-column: 1 / -1;
+}
+
+textarea {
+  max-width: 100%;
+  min-width: 100%;
+  min-height: 4em;
+  padding: 1em;
+}
