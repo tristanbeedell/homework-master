@@ -56,11 +56,12 @@ tbody {
 }
 
 textarea {
-  width: calc(100% - 2em);
-  min-width: calc(100% - 2em);
-  max-width: calc(100% - 2em);
-  min-height: 4em;
+  min-width: 80%;
+  max-width: 80%;
+  min-height: 5em;
   padding: 1em;
+  margin: auto;
+  white-space: pre;
 }
 
 .accept-button {

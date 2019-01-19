@@ -62,6 +62,7 @@ async function post(req, res) {
 	}
 	const pool = getDB();
 	if (req.body.bio) {
+		req.body.bio = req.body.bio.slice(0, 500);
 		await pool.query(`
 			UPDATE users SET bio = $1
 			WHERE users.id = user_id('${req.session.user.member_id}', '${req.session.user.guild_id}');

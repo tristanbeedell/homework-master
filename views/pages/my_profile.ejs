@@ -9,7 +9,7 @@
 	<div class="header">
 		<h1>
 			<img src="<%= member.user.avatarURL %>" class="profilePic"></img>
-			<input name="username" form="update-profile" type="text" id="usernameContainer" value="<%= name%>" placeholder="<%= member.user.username%>">
+			<input name="username" form="update-profile" type="text" id="usernameContainer" value="<%= name%>" placeholder="<%= member.user.username%>" title="Your Username">
 		</h1>
 	</div>
 	<div class="content">
@@ -17,7 +17,7 @@
 				<div class="title">Set Bio</div>
 				<textarea name="bio" type="text" class="full-width" 
 			placeholder="Tell everyone something wonderful. 
-Markdown is supported!" form="update-profile"><%- userData.bio%></textarea>
+Markdown is supported!" form="update-profile" rows="<%= userData.bio.split('\n').length%>" maxlength="500" title="Your Bio"><%- userData.bio%></textarea>
 		</div>
 
 		<div class="post">
