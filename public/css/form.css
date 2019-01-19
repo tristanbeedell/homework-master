@@ -56,8 +56,9 @@ tbody {
 }
 
 textarea {
-  max-width: 100%;
-  min-width: 100%;
+  width: calc(100% - 2em);
+  min-width: calc(100% - 2em);
+  max-width: calc(100% - 2em);
   min-height: 4em;
   padding: 1em;
 }

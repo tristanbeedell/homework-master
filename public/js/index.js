@@ -17,7 +17,7 @@ function openInNewTab(url) {
 	win.focus();
 }
 
-window.onload = function () {
+window.onpageshow = function () {
 	// page swipe
 	let pageWipeEle = document.getElementsByClassName('page-wipe')[0];
 	pageWipeEle.style.width = '0vw';
