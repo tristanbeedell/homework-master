@@ -212,4 +212,12 @@ a {
 	background-color: crimson;
 	border: none;
 	font-weight: bold;
+	height: auto;
+}
+
+ul, ol {
+	text-align: left;
+	width: -moz-max-content;
+	width: fit-content;
+	margin: auto;
 }

@@ -57,7 +57,8 @@ function del(req, res) {
 
 async function post(req, res) {
 	if (!req.session.user) {
-		res.redirect('/login?redirect=/me')
+		res.redirect('/login?redirect=/me');
+		return;
 	}
 	const pool = getDB();
 	if (req.body.bio) {
@@ -65,6 +66,12 @@ async function post(req, res) {
 			UPDATE users SET bio = $1
 			WHERE users.id = user_id('${req.session.user.member_id}', '${req.session.user.guild_id}');
 		`, [req.body.bio])
+	}
+	if (req.body.username) {
+		await member.setNickname(req.body.username).catch(error => {
+			if (error.message !== 'Missing Permissions')
+				throw error
+		});
 	}
 	res.redirect('back');
 }

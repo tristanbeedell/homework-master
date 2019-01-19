@@ -9,12 +9,17 @@
 	<div class="header">
 		<h1>
 			<img src="<%= member.user.avatarURL %>" class="profilePic"></img>
-			<div id="usernameContainer">
-				<%= name%>
-			</div>
+			<input name="username" form="update-profile" type="text" id="usernameContainer" value="<%= name%>" placeholder="<%= member.user.username%>">
 		</h1>
 	</div>
 	<div class="content">
+		<div class="post">
+				<div class="title">Set Bio</div>
+				<textarea name="bio" type="text" class="full-width" 
+			placeholder="Tell everyone something wonderful. 
+Markdown is supported!" form="update-profile"><%- userData.bio%></textarea>
+		</div>
+
 		<div class="post">
 			<div class="title">Features to come here.</div>
 			<div class="message">
@@ -24,24 +29,27 @@
 				Background colour
 			</div>
 		</div>
-		<div class="post">
-			<% include ../forms/bio %>
-		</div>
+
 	</div>
+
+	<form id="update-profile" method="POST" style="padding:0;display:block">
+		<input type="submit" value="Save Changes" class="full-width accept-button">
+	</form>
+	
 	<button class="important-link delete-account-modal delete-button">Delete This Account.</button>
 
 	<% include ../partials/menu %>
 
 	<div id="delete-account-modal" class="modal">
 		<div class="modal-content slide-down">
-			<div>
+			<form method="DELETE" id="delete-account-form">
 				<h4>Are you sure?</h4>
 				<p>
 				You will be kicked from <%= guild.name%> on discord and your classes will be wiped. Any ranks achieved will also be removed.
 				</p>
-			</div>
+			</form>
 			<span class="close">&times;</span>
-			<button class="link" onclick="deleteAccount()">I understand and would like to continue.</button>
+			<input type="submit" class="delete-button" form="delete-account-form" onclick="deleteAccount()" value="I understand and would like to continue.">
 		</div>
 	</div>
 
