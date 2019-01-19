@@ -36,7 +36,7 @@ async function get(req, res) {
 	}
 
 	const userData = (await pool.query(`
-		SELECT * FROM users WHERE id = user_id('${req.session.user.member_id}', '${req.session.user.guild_id}');
+		SELECT * FROM users WHERE id = user_id('${member.id}', '${guild.id}');
 	`)).rows[0];
 	userData.bio = markdown.toHTML(userData.bio);
 
