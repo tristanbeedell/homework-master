@@ -5,42 +5,59 @@
 <% include ../partials/head %>
 
 <body>
-	<a href="/guilds/<%= guild.name.replace(/ /g, '_') %>/members/<%= name.replace(/ /g, '_') %>">View Profile</a>
+	<a href="/guilds/<%= member.guild.name.replace(/ /g, '_') %>/members/<%= member.displayName.replace(/ /g, '_') %>">View Profile</a>
 	<div class="header">
 		<h1>
-			<img src="<%= member.user.avatarURL %>" class="profilePic"></img>
-			<div id="usernameContainer">
-				<%= name%>
-			</div>
+			<img src="<%= member.user.avatarURL %>" class="profilePic" title="Your Discord Profile Picture"></img>
+			<input name="username" form="update-profile" type="text" id="usernameContainer" value="<%= member.displayName%>" placeholder="<%= member.user.username%>" title="Your Username">
 		</h1>
 	</div>
 	<div class="content">
+		<div class="post">
+				<div class="title">Set Bio</div>
+				<textarea name="bio" type="text" class="full-width" 
+			placeholder="Tell everyone something wonderful. 
+Markdown is supported!" form="update-profile" rows="<%= userData.rows[0].bio ? userData.rows[0].bio.split('\n').length : 5 %>" maxlength="500" title="Your Bio"><%= userData.rows[0].bio%></textarea>
+		</div>
+
 		<div class="post">
 			<div class="title">What should go here?</div>
 			<div class="message">
 				If you have any ideas, please tell me what you think I should put here.<br>
 				<h4>My ideas:</h4>
-				Customise Bio<br>
 				Customise Timetable<br>
 				Reset password<br>
 				Background colour
 			</div>
 		</div>
+
+		<% if (!userData.rows[0].complete) { %>
+			<a href="/signup/timetable">You haven't completed your signup!</a>
+		<% } else { %>
+			<% userData.rows.forEach(row => { %>
+				<%= row.set_name%><br>
+			<% }) %>
+		<% } %>
 	</div>
+
+	<form id="update-profile" method="POST" style="padding:0;display:block">
+		<input type="submit" value="Save Changes" class="full-width accept-button">
+	</form>
+	
 	<button class="important-link delete-account-modal delete-button">Delete This Account.</button>
 
 	<% include ../partials/menu %>
 
 	<div id="delete-account-modal" class="modal">
 		<div class="modal-content slide-down">
-			<div>
+			<form method="DELETE" id="delete-account-form">
 				<h4>Are you sure?</h4>
 				<p>
-				You will be kicked from <%= guild.name%> on discord and your classes will be wiped. Any ranks achieved will also be removed.
+				You will be kicked from <%= member.guild.name%> on discord and your classes will be wiped. Any ranks achieved will also be removed.
 				</p>
-			</div>
+			</form>
 			<span class="close">&times;</span>
-			<button class="link" onclick="deleteAccount()">I understand and would like to continue.</button>
+			<input type="submit" class="delete-button" form="delete-account-form" value="I understand and would like to continue.">
 		</div>
 	</div>
 

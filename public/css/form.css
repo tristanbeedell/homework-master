@@ -50,3 +50,37 @@ select:focus, input:focus {
 tbody {
   background-color: azure;
 }
+
+.full-width {
+	grid-column: 1 / -1;
+}
+
+textarea {
+  width: 80%;
+  min-height: 5em;
+  max-height: 50em;
+  padding: 1em;
+  margin: auto;
+  white-space: pre;
+  resize: vertical;
+}
+
+.accept-button {
+  background-color: greenyellow;
+  border: none;
+  font-weight: bold;
+  padding: 1em;
+  height: auto;
+  cursor: pointer;
+  margin: 0;
+  width: 100%;
+}
+
+input#usernameContainer {
+  font-size: 1em;
+  background: none;
+  border: none !important;
+  text-align: center;
+  margin: 2rem;
+}
+

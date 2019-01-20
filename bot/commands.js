@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const path = require('path');
 const { getBot } = require(path.join(__dirname, '../modules/discord'));
+const database = require(path.join(__dirname, '../modules/database'));
 const RichEmbed = Discord.RichEmbed;
 
 let commands = [];
@@ -78,7 +79,7 @@ function help() {
 	return reply;
 }
 
-new Command(/^\s*(get\s*)?((<@!?\d+> ?'?s?|my)\s+)?profile\s*((<@!?\d+>|me)\s+)?/i, "__@user__ profile", "returns selected profile", ({ msg, dest, tokens }) => {
+new Command(/^\s*(get\s*)?((<@!?\d+> ?'?s?|my)\s+)?profile\s*((<@!?\d+>|me)\s+)?/i, "__@user__ profile", "returns selected profile", async ({ msg, dest, tokens }) => {
 	let id = tokens.match(/(<@!?(\d+)> ?'?s?|my)/)[2];
 	if (!msg.guild) {
 		send('Profile in which group? Ask in the server.', msg, dest);
@@ -88,11 +89,15 @@ new Command(/^\s*(get\s*)?((<@!?\d+> ?'?s?|my)\s+)?profile\s*((<@!?\d+>|me)\s+)?
 	member = selected || msg.member;
 	let profileUrl = `${urlname}/guilds/${msg.guild.name}/members/${member.displayName}`.replace(/ /g, "_");
 	let embed;
+	const pool = database.getDB();
+	const DBbio = (await pool.query(`SELECT bio FROM users WHERE id = user_id('${member.id}', '${member.guild.id}');`))
+	const bio = DBbio.rowCount == 1 ? DBbio.rows[0].bio || '' : '';
 	embed = new RichEmbed()
-		.setTitle(`${member.displayName}'s Profile`)
+		.setTitle(`${member.displayName+(member.displayName.slice(-1)=='s'?"'":"'s")} Profile`)
 		.setURL(profileUrl)
 		.setAuthor(member.displayName, member.user.avatarURL)
 		.setColor(0xFFFFFF)
+		.setDescription(bio.replace(/(?:#)+([^\n]+)/, '**$1**'));
 	send(embed, msg, dest);
 }, 'profile');
 

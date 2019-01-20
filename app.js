@@ -41,24 +41,25 @@ const login = require('./controllers/login')
 
 app.get("/", (req, res) => {
 	res.render("pages/home", {
-		session: req.session,
+		...req,
 		bot: getBot()
 	});
 });
 app.get("/help", (req, res) => {
 	res.render("pages/help", {
-		session: req.session,
+		...req,
 		bot: getBot()
 	});
 });
 app.get("/help/bot", (req, res) => {
 	res.render("pages/bot_help", {
-		session: req.session,
+		...req,
 		bot: getBot()
 	});
 });
 app.get("/logout", (req, res) => {
 	delete req.session.user;
+	delete req.member;
 	res.redirect("back");
 });
 app.get('/join', (req, res) => {
@@ -67,28 +68,34 @@ app.get('/join', (req, res) => {
 		res.redirect('/invite')
 	} else {
 		res.render('pages/join', {
-			session: req.session,
+			...req,
 			bot: getBot(),
-			query: req.query
+			wrong: 'none'
 		});
 	}
 });
 
 app.post('/join', require('./controllers/join').join);
 app.get('/invite', require('./controllers/invite').invite);
-app.get('/signup', signup.getSignup);
+
+app.get('/signup', signup.get);
+app.post('/signup', signup.post);
+
 app.post('/checkNewUserPassword', signup.postPasswordIsValid);
-app.post('/signup', signup.signup);
-app.get('/signup/timetable', timetable.getTimetableForm)
+app.get('/signup/timetable', timetable.getTimetableForm);
 app.get('/timetabledata', timetable.getTimetable);
 app.post('/signup/timetable', timetable.giveClasses);
+
 app.get('/guilds/:guildName/members/:memberName', profile);
 app.get('/guilds/:guildName/', guild);
+
 app.get('/me', my_profile.get);
 app.delete('/me', my_profile.del);
+app.post('/me', my_profile.post);
+
 app.get('/login', login.getForm);
 app.post('/login', login.login);
-app.post("/validateLogin", login.validate);
+app.post('/validateLogin', login.validate);
 // TODO: rules and guidlines page.
 
 const port = process.env.PORT || 8080;

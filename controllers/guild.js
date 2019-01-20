@@ -9,7 +9,7 @@ function get(req, res) {
 	const guild = bot.guilds.find(guild => guild.name == req.params.guildName.replace(/_/g, ' '));
 	if (!guild) {
 		res.status(404).render("pages/unavaliable", {
-			session: req.session,
+			...req,
 			bot,
 			redirect: req.url
 		});
@@ -19,7 +19,7 @@ function get(req, res) {
 	// if the user is not logged into an account in this guild, send an unauthorised error
 	if (!req.session.user || !guild.members.get(req.session.user.member_id)) {
 		res.status(401).render("pages/unavaliable", {
-			session: req.session,
+			...req,
 			bot,
 			redirect: req.url
 		});
@@ -27,7 +27,7 @@ function get(req, res) {
 	}
 
 	res.render("pages/guild", {
-		session: req.session,
+		...req,
 		bot,
 		guild
 	});

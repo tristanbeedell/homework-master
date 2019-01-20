@@ -100,7 +100,7 @@ div.content {
 	overflow-x: scroll;
 }
 
-.snippet {
+code {
 	font-family: monospace;
 	color: azure;
 	background-color: gray;
@@ -212,4 +212,20 @@ a {
 	background-color: crimson;
 	border: none;
 	font-weight: bold;
+	height: auto;
+}
+
+ul, ol {
+	text-align: left;
+	width: -moz-max-content;
+	width: fit-content;
+	margin: auto;
+}
+
+blockquote {
+	text-align: left;
+	background-color: antiquewhite;
+	color: blueviolet;
+	padding: 0.3em 1em 0.3em 2em;
+	border-left: 2px solid orange;
 }
