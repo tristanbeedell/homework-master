@@ -7,23 +7,15 @@ const { getDB } = require(path.join(__dirname, '../modules/database'));
 async function get(req, res) {
 	const bot = getBot();
 	const pool = getDB();
-	// if the guild does not exist, return a 404 error
-	function unavaliable() {
-		res.status(404).render("pages/unavaliable", {
-			session: req.session,
-			bot,
-			redirect: req.url
-		});
-	}
 	
-	// if the user is not logged into an account in this guild, send an unauthorised error
-	if (!req.session.user || !guild.members.get(req.session.user.member_id)) {
-		unavaliable();
+	// if the user is not logged in, redirect to login page
+	if (!req.session.user) {
+		res.redirect('/login?redirect=/me');
 		return;
 	}
 
 	const userData = (await pool.query(`
-		SELECT * FROM users WHERE id = user_id('${req.session.user.member_id}', '${req.session.user.guild_id}');
+		SELECT * FROM users WHERE id = user_id('${req.session.member.id}', '${req.session.guild.id}');
 	`)).rows[0];
 
 	res.render("pages/my_profile", {
@@ -69,10 +61,14 @@ async function post(req, res) {
 		`, [req.body.bio])
 	}
 	if (req.body.username) {
-		await member.setNickname(req.body.username).catch(error => {
-			if (error.message !== 'Missing Permissions')
-				throw error
-		});
+		const taken = guild.members.some(member => 
+			member.displayName === req.body.username && member.id !== req.query.member);
+		if (!taken) {
+			await member.setNickname(req.body.username).catch(error => {
+				if (error.message !== 'Missing Permissions')
+					throw error
+			});
+		}
 	}
 	res.redirect('back');
 }

@@ -1,4 +1,4 @@
-module.exports = { getSignup, postPasswordIsValid, signup }
+module.exports = { get, postPasswordIsValid, post }
 
 const path = require('path');
 const url = require('url');
@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt');
 
 // FEATURE: get fullname and display name.
 
-async function getSignup(req, res) {
+async function get(req, res) {
 	const pool = database.getDB();
 
 	// get the member and the guild from discord to check they exist
@@ -100,7 +100,7 @@ function checkValidity(err, p, passwordGiven) {
 	return (p.password == passwordGiven)
 }
 
-async function signup(req, res) {
+async function post(req, res) {
 	if (!await checkNewUserPassword(req)) {
 		res.redirect('back');
 		return;

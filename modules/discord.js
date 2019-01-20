@@ -1,6 +1,6 @@
 module.exports = { initBot, getBot }
 
-const Discord = require("discord.js");
+const Discord = require('discord.js');
 const assert = require('assert');
 const token = process.env.DISCORD_BOT_SECRET;
 

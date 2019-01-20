@@ -1,8 +1,13 @@
 <form method="post">
-	<label for="guild">Group
-		<span class="error">
-			<%= query.chosenguild === 'false' ? 'choose your group' : '' %></label>
-	<select name="guild" id="guild">
+	<label for="guild">Group</label>
+	<select name="guild" id="guild"
+		<% if (wrong === 'guild') {%>
+		onchange="
+			this.onchange = null;
+			this.style = null
+		"
+		style="border: 1px solid red"
+		<% } %>>
 		<option value="0">
 			choose your school
 		</option>
@@ -14,9 +19,15 @@
 		</option>
 		<% }) %>
 	</select>
-	<label for="pin">Group Pin <span class="error">
-			<%= query.validpin === 'false' ? 'invalid' : '' %></span></label>
-	<input type="password" name="pin" id="pin"></input>
+	<label for="pin">Group Pin</label>
+	<input type="password" name="pin" id="pin"
+	<% if (wrong === 'pin') {%>
+	onchange="
+		this.onchange = null;
+		this.style = null
+	"
+	style="border: 1px solid red"
+	<% } %>>
 	<br>
 	<input type="submit" class="link" value="OK">
 </form>

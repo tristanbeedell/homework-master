@@ -34,6 +34,6 @@ async function invite(req, res) {
 		session: req.session,
 		bot: bot,
 		invite: invite,
-		group: group.rows[0],
+		group: group.rows[0]
 	});
 }
