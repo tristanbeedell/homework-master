@@ -15,8 +15,20 @@ async function get(req, res) {
 	}
 
 	const userData = (await pool.query(`
-		SELECT * FROM users WHERE id = user_id('${req.member.id}', '${req.member.guild.id}');
-	`)).rows[0];
+	SELECT DISTINCT 
+		name AS set_name,
+		complete,
+		set,
+		bio
+		
+	FROM (
+		SELECT * FROM users 
+		WHERE users.id = user_id('${req.session.user.member_id}', '${req.session.user.guild_id}')
+	) AS users
+
+	LEFT JOIN usr_set_join ON users.id = usr_set_join.user_id
+	LEFT JOIN sets ON usr_set_join.set_id = sets.id;
+	`));
 
 	res.render("pages/my_profile", {
 		bot,

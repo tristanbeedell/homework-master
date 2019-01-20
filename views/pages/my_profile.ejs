@@ -17,7 +17,7 @@
 				<div class="title">Set Bio</div>
 				<textarea name="bio" type="text" class="full-width" 
 			placeholder="Tell everyone something wonderful. 
-Markdown is supported!" form="update-profile" rows="<%= userData.bio ? userData.bio.split('\n').length : 5 %>" maxlength="500" title="Your Bio"><%= userData.bio%></textarea>
+Markdown is supported!" form="update-profile" rows="<%= userData.rows[0].bio ? userData.rows[0].bio.split('\n').length : 5 %>" maxlength="500" title="Your Bio"><%= userData.rows[0].bio%></textarea>
 		</div>
 
 		<div class="post">
@@ -30,6 +30,13 @@ Markdown is supported!" form="update-profile" rows="<%= userData.bio ? userData.
 			</div>
 		</div>
 
+		<% if (!userData.rows[0].complete) { %>
+			<a href="/signup/timetable">You haven't completed your signup!</a>
+		<% } else { %>
+			<% userData.rows.forEach(row => { %>
+				<%= row.set_name%><br>
+			<% }) %>
+		<% } %>
 	</div>
 
 	<form id="update-profile" method="POST" style="padding:0;display:block">
