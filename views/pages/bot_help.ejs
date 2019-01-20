@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-	<% include ../partials/head %>
-	<title>Bot Help | Homework Master</title>
-</head>
+<% title = 'Bot Help' %>
+<% include ../partials/head %>
 
 <body>
 	<div class="header">
@@ -16,7 +14,7 @@
 			<div class="lookup">
 				<b>Usage</b> 
 				<div>
-					<span class="snippet">@bot help [<u>command</u>]</span>
+					<code>@bot help [<u>command</u>]</code>
 				</div>
 				<b>Description</b> 
 				<div>
@@ -28,11 +26,11 @@
 				</div>
 				<b>Examples</b> 
 				<div class="lookup">
-					You:  <span class="snippet">@bot help</span>
+					You:  <code>@bot help</code>
 					@bot:   <span class="snippet">
 						commands: help ...
 					</span>
-					You:   <span class="snippet">@bot help `help`</span>
+					You:   <code>@bot help `help`</code>
 					@bot:   <span class="snippet">
 						title: Help <br>
 						Usage: ... <br>
@@ -47,7 +45,7 @@
 			<div class="lookup">
 				<b>Usage</b> 
 				<div>
-					<span class="snippet">@bot [say] `<u>message</u>`</span>
+					<code>@bot [say] `<u>message</u>`</code>
 				</div>
 				<b>Description</b> 
 				<div>
@@ -59,7 +57,7 @@
 				</div>
 				<b>Examples</b> 
 				<div class="lookup">
-					You:   <span class="snippet">@bot say `hello world`</span>
+					You:   <code>@bot say `hello world`</code>
 					@bot:   <span class="snippet">
 						@(you) says `hello world`
 					</span>
@@ -71,7 +69,7 @@
 			<div class="lookup">
 				<b>Usage</b> 
 				<div>
-					<span class="snippet">@bot profile <u>@user</u></span>
+					<code>@bot profile <u>@user</u></code>
 				</div>
 				<b>Description</b> 
 				<div>
@@ -83,7 +81,7 @@
 				</div>
 				<b>Examples</b> 
 				<div class="lookup">
-					You:   <span class="snippet">@bot profile @tristan</span>
+					You:   <code>@bot profile @tristan</code>
 					@bot:   <span class="snippet">
 						&lt;link to tristan's profile&gt;
 					</span>
@@ -95,7 +93,7 @@
 			<div class="lookup">
 				<b>Usage</b> 
 				<div>
-					<span class="snippet">@bot (send|DM|message) <u>channel</u> <u>command</u></span>
+					<code>@bot (send|DM|message) <u>channel</u> <u>command</u></code>
 				</div>
 				<b>Description</b> 
 				<div>
@@ -108,10 +106,10 @@
 				</div>
 				<b>Examples</b> 
 				<div class="lookup">
-					You:   <span class="snippet">@bot DM @user help</span>
-					@bot: @user <span class="snippet">commands: help ... <a href="#help">see help</a></span>
-					You:   <span class="snippet">@bot send #english say `hello world`</span>
-					@bot: #english <span class="snippet">@(you) says `hello world` <a href="#say">see say</a></span>
+					You:   <code>@bot DM @user help</code>
+					@bot: @user <code>commands: help ... <a href="#help">see help</a></code>
+					You:   <code>@bot send #english say `hello world`</code>
+					@bot: #english <code>@(you) says `hello world` <a href="#say">see say</a></code>
 				</div>
 			</div>
 		</div>
@@ -120,7 +118,7 @@
 			<div class="lookup">
 				<b>Usage</b>
 				<div>
-					<span class="snippet">@bot [make|mk|create] [a] poll title: `<u>name</u>` choices: <u>choices</u> [time: `<u>time</u>`]</span>
+					<code>@bot [make|mk|create] [a] poll title: `<u>name</u>` choices: <u>choices</u> [time: `<u>time</u>`]</code>
 				</div>
 				<b>Description</b> 
 				<div>
@@ -129,12 +127,12 @@
 				<b>Options</b> 
 				<div class="lookup">
 					<span>name</span> <span>The name of the poll.</span>
-					<span>choices</span> <span>The choices to be given. Syntax: <span class="snippet">`A`, `B`[, `C`[, `D`[, `E`[, `F`]]]]</span></span>
-					<span>time</span> <span>The amount of time before the poll ends. Syntax: <span class="snippet">number(s|m)</span> s or m meaning seconds or minutes.</span>
+					<span>choices</span> <span>The choices to be given. Syntax: <code class="multiline">`A`, `B`[, `C`[, `D`[, `E`[, `F`]]]]</span></code>
+					<span>time</span> <span>The amount of time before the poll ends. Syntax: <code>number(s|m)</code> s or m meaning seconds or minutes.</span>
 				</div>
 				<b>Examples</b> 
 				<div class="lookup">
-					You: <span class="snippet">@bot make a poll titled: `Best Subject`, choices: `English`, `Maths`, `Science`, time: `3m`</span>
+					You: <code>@bot make a poll titled: `Best Subject`, choices: `English`, `Maths`, `Science`, time: `3m`</code>
 					@bot: <div class="snippet">
 						<div class="title">Best Subject</div>
 						<div class="time">`3m`</div>
@@ -147,14 +145,14 @@
 					@bot: <span>* pins the poll</span>
 					wait: <span>3 minutes</span>
 					@bot: <div><span>* deletes the poll message
-							<div class="snippet">
+							<code class="multiline">
 								<div class="title">poll `Best Subject` ended</div>
 								<div class="message">
 									`English` got {🇦 reactions count} votes<br>
 									`Maths` got {🇧 reactions count} votes<br>
 									`Science` got {🇨 reactions count} votes<br>
 								</div>
-							</div>
+							</code>
 					</div>
 				</div>
 			</div>

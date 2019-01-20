@@ -41,6 +41,10 @@
 }
 
 .modal-content a {
+	color: green;
+}
+
+.modal-content a {
 	margin: auto;
 }
 

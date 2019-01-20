@@ -1,7 +1,16 @@
 <form method="post" id="login">
-	<div class="error" style="grid-column: 1/-1;"></div> <label for="guild">Discord Server:</label>
-	<select name="guild" id="guild">
-		<% bot.guilds.forEach(guild => {%>
+	<label for="guild">Discord Server:
+	</label>
+	<select name="guild" id="guild"
+	<% if (wrong === 'guild') {%>
+	onchange="
+		this.onchange = null;
+		this.style = null
+	"
+	style="border: 1px solid red"
+	<% } %>>
+		<option value="none">Pick a Server</option>
+		<% bot.guilds.forEach( guild => { %>
 		<option value="<%= guild.id %>">
 			<%= guild.name %>
 		</option>
@@ -10,11 +19,25 @@
 	<label for="name">
 		Name:
 	</label>
-	<input type="text" name="name" id="name">
+	<input type="text" name="name" id="name"
+		<% if (wrong === 'name') {%>
+		onchange="
+			this.onchange = null;
+			this.style = null
+		"
+		style="border: 1px solid red"
+		<% } %>>
 	<label for="password">
 		Password:
 	</label>
-	<input type="password" name="password" id="password" onchange="validateLogin()">
+	<input type="password" name="password" id="password"
+		<% if (wrong === 'pass') {%>
+		onchange="
+			this.onchange = null;
+			this.style = null
+		"
+		style="border: 1px solid red"
+		<% } %>>
 	<br>
-	<input type="button" value="OK" onclick="login()">
+	<input type="submit" value="OK">
 </form>

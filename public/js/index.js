@@ -17,7 +17,7 @@ function openInNewTab(url) {
 	win.focus();
 }
 
-window.onload = function () {
+window.onpageshow = function () {
 	// page swipe
 	let pageWipeEle = document.getElementsByClassName('page-wipe')[0];
 	pageWipeEle.style.width = '0vw';
@@ -42,6 +42,15 @@ window.onload = function () {
 			// if its a regular link then do a swipe when it's clicked.
 			if (link.attributes.href.textContent[0] == '/'){
 				link.onclick = click
+			}
+		})
+
+		forEachTag('input', input => {
+			if (input.type === 'submit') {
+				input.onclick = function () {
+					pageSwipe(0.3);
+					input.form.submit();
+				}
 			}
 		})
 	}

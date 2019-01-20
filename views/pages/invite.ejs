@@ -1,12 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-	<title>
-		<%= invite.guild.name%> | Homework Master
-	</title>
-	<% include ../partials/head %>
-</head>
+<% title = invite.guild.name %>
+<% include ../partials/head %>
 
 <body>
 	<div class="header">
@@ -35,6 +31,8 @@
 				</p>
 			</div>
 		</div>
+		<% let guild = invite.guild %>
+		<% include ../partials/widget%>
 	</div>
 	<% include ../partials/menu %>
 	<script src="/js/index.js"></script>
