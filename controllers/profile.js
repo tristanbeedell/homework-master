@@ -12,10 +12,16 @@ async function get(req, res) {
 	// if the guild does not exist, return a 404 error
 	function unavaliable() {
 		res.status(404).render("pages/unavaliable", {
-			session: req.session,
+			...req,
 			bot,
 			redirect: req.url
 		});
+	}
+
+	// if the user is not logged into an account in this guild, send an unauthorised error
+	if (!req.member) {
+		unavaliable();
+		return;
 	}
 	
 	const guild = bot.guilds.find(guild => guild.name.replace(/ /g, '_') == req.params.guildName);
@@ -23,28 +29,21 @@ async function get(req, res) {
 		unavaliable()
 		return;
 	}
-	const member = guild.members.find(member => member.displayName == req.params.memberName.replace(/_/g, ' '))
-	if (!member) {
+	const user = guild.members.find(member => member.displayName == req.params.memberName.replace(/_/g, ' '))
+	if (!user) {
 		unavaliable()
 		return;
 	}
 
-	// if the user is not logged into an account in this guild, send an unauthorised error
-	if (!req.session.user || !guild.members.get(req.session.user.member_id)) {
-		unavaliable();
-		return;
-	}
-
 	const userData = (await pool.query(`
-		SELECT * FROM users WHERE id = user_id('${member.id}', '${guild.id}');
+		SELECT * FROM users WHERE id = user_id('${user.id}', '${guild.id}');
 	`)).rows[0];
-	userData.bio = markdown.toHTML(userData.bio);
-
+	userData.bio = userData.bio ? markdown.toHTML(userData.bio) : false;
 
 	res.render("pages/profile", {
-		session: req.session,
+		...req,
 		bot,
-		member,
-		userData
+		userData,
+		user
 	});
 }

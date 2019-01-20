@@ -13,9 +13,8 @@ async function join(req, res) {
 	`).catch(console.error);
 	if (groups.rowCount === 0) {
 		res.render('pages/join', {
-			session: req.session,
+			...req,
 			bot: discord.getBot(),
-			query: req.query,
 			wrong: 'guild'
 		});
 		return;
@@ -24,9 +23,8 @@ async function join(req, res) {
 	valid = await bcrypt.compare(req.body.pin, group.pin_hash);
 	if (!valid) {
 		res.render('pages/join', {
-			session: req.session,
+			...req,
 			bot: discord.getBot(),
-			query: req.query,
 			wrong: 'pin'
 		});
 		return;

@@ -41,24 +41,25 @@ const login = require('./controllers/login')
 
 app.get("/", (req, res) => {
 	res.render("pages/home", {
-		session: req.session,
+		...req,
 		bot: getBot()
 	});
 });
 app.get("/help", (req, res) => {
 	res.render("pages/help", {
-		session: req.session,
+		...req,
 		bot: getBot()
 	});
 });
 app.get("/help/bot", (req, res) => {
 	res.render("pages/bot_help", {
-		session: req.session,
+		...req,
 		bot: getBot()
 	});
 });
 app.get("/logout", (req, res) => {
 	delete req.session.user;
+	delete req.member;
 	res.redirect("back");
 });
 app.get('/join', (req, res) => {
@@ -67,9 +68,8 @@ app.get('/join', (req, res) => {
 		res.redirect('/invite')
 	} else {
 		res.render('pages/join', {
-			session: req.session,
+			...req,
 			bot: getBot(),
-			query: req.query,
 			wrong: 'none'
 		});
 	}

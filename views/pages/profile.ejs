@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
 
-<% title = `${member.displayName+(member.displayName.slice(-1)=='s'?"'":"'s")} Profile`%>
+<% title = `${user.displayName+(user.displayName.slice(-1)=='s'?"'":"'s")} Profile`%>
 <% include ../partials/head %>
 
 <body>
-	<% if (member.id == session.user.member_id) { %>
+	<% if (user.id == member.id) { %>
 	THIS IS YOUR PROFILE. <a href="/me">Customise</a>
 	<% } %>
 	<div class="header">
 		<h1>
-			<img src="<%= member.user.avatarURL %>" class="profilePic"></img>
+			<img src="<%= user.user.avatarURL %>" class="profilePic"></img>
 			<div id="usernameContainer">
-				<%= member.displayName%>
+				<%= user.displayName%>
 			</div>
 		</h1>
 	</div>

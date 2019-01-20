@@ -8,9 +8,8 @@ const bcrypt = require('bcrypt');
 
 function getForm(req, res, wrong = 'none') {
 	res.render('pages/login', {
-		session: req.session,
+		...req,
 		bot: discord.getBot(),
-		query: req.query,
 		wrong
 	});
 }
@@ -46,7 +45,6 @@ async function login(req, res) {
 	`).then(user => {
 		// store the user in the browser session
 		req.session.user = user.rows[0];
-		req.session.user.name = member.displayName
 		res.redirect(req.query.redirect || "/")
 	})
 }

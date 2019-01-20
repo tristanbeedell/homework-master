@@ -31,7 +31,7 @@ async function invite(req, res) {
 
 	// render the page
 	res.render('pages/invite', {
-		session: req.session,
+		...req,
 		bot: bot,
 		invite: invite,
 		group: group.rows[0]

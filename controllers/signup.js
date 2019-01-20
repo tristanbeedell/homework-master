@@ -53,8 +53,9 @@ async function get(req, res) {
 
 	// render page
 	res.render("pages/sign_up", {
-		guild, member,
-		query: req.query,
+		...req,
+		guild,
+		member
 	});
 }
 
