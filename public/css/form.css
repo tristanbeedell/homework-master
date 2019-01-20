@@ -56,12 +56,13 @@ tbody {
 }
 
 textarea {
-  min-width: 80%;
-  max-width: 80%;
+  width: 80%;
   min-height: 5em;
+  max-height: 50em;
   padding: 1em;
   margin: auto;
   white-space: pre;
+  resize: vertical;
 }
 
 .accept-button {
@@ -74,3 +75,12 @@ textarea {
   margin: 0;
   width: 100%;
 }
+
+input#usernameContainer {
+  font-size: 1em;
+  background: none;
+  border: none !important;
+  text-align: center;
+  margin: 2rem;
+}
+
