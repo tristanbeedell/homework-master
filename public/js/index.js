@@ -44,6 +44,15 @@ window.onpageshow = function () {
 				link.onclick = click
 			}
 		})
+
+		forEachTag('input', input => {
+			if (input.type === 'submit') {
+				input.onclick = function () {
+					pageSwipe(0.3);
+					input.form.submit();
+				}
+			}
+		})
 	}
 	
 	// header

@@ -66,10 +66,3 @@ function login() {
 			allIsValid = false
 		})
 }
-
-// function login() {
-// 	validateLogin();
-// 	if (allIsValid) {
-// 		document.getElementById('login').submit()
-// 	}
-// }
