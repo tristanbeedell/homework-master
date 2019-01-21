@@ -1,8 +1,8 @@
-module.exports = giveRoles
+module.exports = giveRoles;
 
 const path = require('path');
-const database = require(path.join(__dirname, '../modules/database'))
-require('colors')
+const database = require(path.join(__dirname, '../modules/database'));
+require('colors');
 
 async function giveRoles(member, chosenSubjects) {
 	// get the guild of the member
@@ -13,16 +13,16 @@ async function giveRoles(member, chosenSubjects) {
 	// iterate through the classes
 	for (let division in chosenSubjects) {
 		let set = chosenSubjects[division];
-		if (set == 'none') { continue }
+		if (set == 'none') { continue; }
 		// get or create the role
 		let role = await getOrMakeRole(guild, set);
-		role.setColor('88c65a')
+		role.setColor('88c65a');
 		// give that role to the member if they do not already have it
 		if (!member.roles.some((hasRole) => hasRole.id == role.id)) {
 			roles.push(role);
 		}
 		// update channels, categories in the discord guild.
-		updateClasses(role, set, division)
+		updateClasses(role, set, division);
 	}
 	await database.getDB().query(`
 
@@ -86,7 +86,7 @@ async function setupGeneral(guild, room, cat, role) {
 	// if the general does not exist, create it
 	if (!channel) {
 		// create the channel
-		channel = await createChannel(role, name, cat, 'text')
+		channel = await createChannel(role, name, cat, 'text');
 
 		// remove the ability to mention everyone in the general chats.
 		await channel.overwritePermissions(guild.id, {
@@ -98,17 +98,17 @@ async function setupGeneral(guild, room, cat, role) {
 			UPDATE subject
 			SET general_id = '${channel.id}'
 			WHERE catagory_id = '${cat.id}';
-		`).catch(console.error)
+		`).catch(console.error);
 	} else {
 		// ammend channel position error
 		if (channel.parent != cat) {
-			console.log(`moved ${general.name} into ${cat.name}`);
+			console.log(`moved ${channel.name} into ${cat.name}`);
 			channel.setParent(cat);
 		}
 
 		// ammend incorrect name
 		if (channel.name != name) {
-			console.log(`update ${general.name} to ${name}`);
+			console.log(`update ${channel.name} to ${name}`);
 			channel.setName(name);
 		}
 	}
@@ -119,37 +119,37 @@ async function setupGeneral(guild, room, cat, role) {
 // setup a category using a classroom from database
 async function setupCat(guild, room) {
 	// attempt to find the category
-	let cat = guild.channels.get(room.catagory_id)
+	let cat = guild.channels.get(room.catagory_id);
 	
 	// create category if not existing
 	if (!cat) {
-		cat = await createCatagory(guild, room.subject)
+		cat = await createCatagory(guild, room.subject);
 	} 
 	// amend misnamed catagory
 	else if (cat.name != room.subject) {
-		await cat.setName(room.subject)
+		await cat.setName(room.subject);
 	}
 
 	return cat;
 }
 
 async function updatePunishRoles(guild) {
-	S = await getOrMakeRole(guild, 'S')
-	S.setColor('71a947')
-	W = await getOrMakeRole(guild, 'W')
-	W.setColor('acb351')
-	A = await getOrMakeRole(guild, 'A')
-	A.setColor('b58b52')
-	T = await getOrMakeRole(guild, 'T')
-	T.setColor('a22f2f')
+	const S = await getOrMakeRole(guild, 'S');
+	S.setColor('71a947');
+	const W = await getOrMakeRole(guild, 'W');
+	W.setColor('acb351');
+	const A = await getOrMakeRole(guild, 'A');
+	A.setColor('b58b52');
+	const T = await getOrMakeRole(guild, 'T');
+	T.setColor('a22f2f');
 }
 
 async function getOrMakeRole(guild, name) {
 	// check is the role exists already
-	function matches(role) { return role.name == name }
-	let exists = guild.roles.some(matches)
+	function matches(role) { return role.name == name; }
+	let exists = guild.roles.some(matches);
 	if (exists) {
-		return guild.roles.find(matches)
+		return guild.roles.find(matches);
 	}
 	// IDEA: could make role prefs adjustable
 	// role preferences
@@ -158,7 +158,7 @@ async function getOrMakeRole(guild, name) {
 		color: "ORANGE",
 		mentionable: true
 	};
-	console.log(`created: ${name} role`.green)
+	console.log(`created: ${name} role`.green);
 	// create the role on the guild
 	return guild.createRole(prefs)
 		.catch(console.error);
@@ -171,8 +171,8 @@ async function createCatagory(guild, name) {
 		{
 			id: guild.id,
 			denied: ['VIEW_CHANNEL']
-    	}
-	]
+		}
+	];
 	
 	// create the category
 	let cat = await guild.createChannel(name, "category", perms)
@@ -183,7 +183,7 @@ async function createCatagory(guild, name) {
 		UPDATE subject
 		SET catagory_id = '${cat.id}'
 		WHERE name = '${name}' AND group_id = group_id('${guild.id}');
-	`).catch(console.error)
+	`).catch(console.error);
 	
 	// usefull debug info
 	console.log(`created catagory: ${cat.name}`.green);
@@ -213,18 +213,18 @@ async function getChannelData(set, division, guild) {
 		INNER JOIN groups ON sets.group_id = groups.id
 		WHERE sets.set = '${set}' AND divisions.name = '${division}' 
 		AND groups.guild_id = '${guild.id}' AND timetable.usual;
-	`).catch(console.error)
+	`).catch(console.error);
 	return rooms;
 }
 
 async function createChannel(role, name, cat, type) {
-	const guild = role.guild
+	const guild = role.guild;
 
 	// get the punishment roles
-	let S = await getOrMakeRole(guild, 'S')
-	let W = await getOrMakeRole(guild, 'W')
-	let A = await getOrMakeRole(guild, 'A')
-	let T = await getOrMakeRole(guild, 'T')
+	let S = await getOrMakeRole(guild, 'S');
+	let W = await getOrMakeRole(guild, 'W');
+	let A = await getOrMakeRole(guild, 'A');
+	let T = await getOrMakeRole(guild, 'T');
 
 	// permissions
 	let perms = [
@@ -247,7 +247,7 @@ async function createChannel(role, name, cat, type) {
 			id: T.id,	// Transfer role
 			denied: ['READ_MESSAGES', 'READ_MESSAGE_HISTORY', 'SEND_MESSAGES', 'CONNECT', 'VIEW_CHANNEL']
 		}
-	]
+	];
 
 	// create the channel
 	let channel = await guild.createChannel(name, type, perms)

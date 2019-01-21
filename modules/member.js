@@ -1,26 +1,20 @@
-module.exports = { get }
+module.exports = { get };
 
-const { getBot } = require('./discord.js')
-const guilds = require('./guild.js')
+const guilds = require('./guild.js');
 
-function get(guild_id, member_id) {
-	guild = typeof guild_id == 'string' ? guilds.get(guild_id) : guild_id
+function get(guildId, memberId) {
+	const guild = typeof guildId == 'string' ? guilds.get(guildId) : guildId;
 	if (!guild) {
-		return { error: 'guild not found' }
+		return { error: 'guild not found' };
 	}
-	let id = /\d{18}/
-	let member
-	if (member_id.match(id)) {
-		member = guild.members.get(member_id)
+	let id = /\d{18}/;
+	let member;
+	if (memberId.match(id)) {
+		member = guild.members.get(memberId);
 	} else {
-		member = getMemberFromName(member_id)
+		member = guild.members.find(member => {
+			return member.tag === memberId || member.displayName === memberId;
+		});
 	}
-	return member || { error: 'member not found' }
-}
-
-function getMemberFromName(name) {
-	let guildFound = guild.members.find(val => {
-		return val.displayName === name
-	})
-	return guildFound
+	return member || { error: 'member not found' };
 }

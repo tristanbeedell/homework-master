@@ -1,8 +1,8 @@
 module.exports = get;
 
 const path = require('path');
-const { getBot } = require(path.join(__dirname, '../modules/discord'))
-const { getDB } = require(path.join(__dirname, '../modules/database'))
+const { getBot } = require(path.join(__dirname, '../modules/discord'));
+const { getDB } = require(path.join(__dirname, '../modules/database'));
 const { markdown } = require('markdown');
 
 async function get(req, res) {
@@ -26,12 +26,12 @@ async function get(req, res) {
 	
 	const guild = bot.guilds.find(guild => guild.name.replace(/ /g, '_') == req.params.guildName);
 	if (!guild) {
-		unavaliable()
+		unavaliable();
 		return;
 	}
-	const user = guild.members.find(member => member.displayName == req.params.memberName.replace(/_/g, ' '))
+	const user = guild.members.find(member => member.displayName == req.params.memberName.replace(/_/g, ' '));
 	if (!user) {
-		unavaliable()
+		unavaliable();
 		return;
 	}
 

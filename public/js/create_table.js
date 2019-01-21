@@ -5,7 +5,7 @@ function updateTable(subject, set) {
 	}
 	// send a requst to the server for timtable data from the database.
 	const xhttp = new XMLHttpRequest();
-	xhttp.onload = use
+	xhttp.onload = use;
 	xhttp.open("GET", `/timetabledata?set=${set}&sub=${subject}`, true);
 	xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 	xhttp.send();
@@ -14,12 +14,12 @@ function updateTable(subject, set) {
 function use(data) {
 	rows = JSON.parse(data.target.response).rows;
 	for (item of rows) {
-		t = document.getElementById("table")
-		row = t.firstElementChild.children[2 + parseInt(item.period)]
-		box = row.children[parseInt(item.day) - 1]
+		t = document.getElementById("table");
+		row = t.firstElementChild.children[2 + parseInt(item.period)];
+		box = row.children[parseInt(item.day) - 1];
 		teacher = item.teacher == null ? "" : "<br>" + item.teacher;
 		box.innerHTML = item.class + teacher;
-		box.style.cssText = `background-color: ${colours[item.division]};`
+		box.style.cssText = `background-color: ${colours[item.division]};`;
 		if (item.override) {
 			// reset disabled selects
 			let selects = document.getElementsByTagName('select');
@@ -37,11 +37,11 @@ const colours = {
 	'Maths': 'lavenderblush',
 	'English': 'lavender',
 	'Science': 'aquamarine'
-}
+};
 
 function reloadTable(){
 
-	t = document.getElementById("table")
+	t = document.getElementById("table");
 	for (const row of Array.from(t.firstElementChild.children).slice(3)){
 		for (const box of row.children) {
 			box.innerHTML = '';
@@ -53,7 +53,7 @@ function reloadTable(){
 	const selects = document.getElementsByTagName('select');
 	for (select of selects) {
 		if (select.value !== 'none') {
-			select.onchange()
+			select.onchange();
 		}
 	}
 }

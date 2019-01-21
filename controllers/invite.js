@@ -1,4 +1,4 @@
-module.exports = { invite }
+module.exports = { invite };
 
 const path = require('path');
 const { getBot } = require(path.join(__dirname, '../modules/discord'));
@@ -12,7 +12,7 @@ async function invite(req, res) {
 		return res.redirect('/join');
 
 	// get the invite from discord.
-	let invite
+	let invite;
 	try {
 		invite = await bot.fetchInvite(req.session.invite.url);
 	} catch (error) {

@@ -1,4 +1,4 @@
-module.exports = userExists
+module.exports = userExists;
 
 const path = require('path');
 const discord = require(path.join(__dirname, '../modules/discord'));

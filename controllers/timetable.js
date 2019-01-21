@@ -1,4 +1,4 @@
-module.exports = { giveClasses, getTimetable, getTimetableForm }
+module.exports = { giveClasses, getTimetable, getTimetableForm };
 
 const path = require('path');
 const { getDB } = require(path.join(__dirname, '../modules/database'));
@@ -79,7 +79,7 @@ function getTimetable(req, res) {
 			groups.guild_id = '${req.session.user.guild_id}') AS timetable
 		ON timetable.overrides = override.id;`)
 		.then((responce) => {
-			res.json(responce)
+			res.json(responce);
 		})
 		.catch(console.error);
 }
@@ -92,7 +92,6 @@ async function giveClasses(req, res) {
 
 	res.redirect('/me');
 
-	const pool = getDB();
 	// store the user in their session
 	req.session.user = Object.assign(req.session.user, req.body);
 	const member = members.get(req.session.user.guild_id, req.session.user.member_id);
@@ -109,16 +108,16 @@ async function saveClasses(user) {
 	// update the user's classes in the DB
 	let query = `
 		INSERT INTO usr_set_join
-		VALUES`
+		VALUES`;
 	for (let division in user.classes) {
 		if (user.classes[division] != 'none') {
 			query += `
       (user_id('${user.member_id}', '${user.guild_id}'),
-      set_id('${user.classes[division]}')),`
+      set_id('${user.classes[division]}')),`;
 		}
 	}
 	// remove trailing comma
-	query = query.slice(0, -1) + ';'
+	query = query.slice(0, -1) + ';';
 	// query the DB.
 	await pool.query(query).catch(console.error);
 	// The user is fully signed up.

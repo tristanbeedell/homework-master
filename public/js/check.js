@@ -1,14 +1,14 @@
 let allIsValid;
 function check(id) {
-	allIsValid = true
-	requireNewCheck()
+	allIsValid = true;
+	requireNewCheck();
 	let password = document.getElementById("password");
 	let newpassword = document.getElementById("newpassword");
 	let checkPassword = document.getElementById("checkPassword");
 
-	if (id == 'password') { return }
+	if (id == 'password') { return; }
 	throwErrorIf(newpassword.value.length < 5 ? "Use a longer password." : "", newpassword);
-	if (id == 'newpassword') { return }
+	if (id == 'newpassword') { return; }
 	throwErrorIf(newpassword.value != checkPassword.value ? "Passwords do not match." : "", checkPassword);
 
 }
@@ -16,12 +16,12 @@ function check(id) {
 function throwErrorIf(error, ele) {
 	if (error != "") {
 		allIsValid = false;
-		ele.previousElementSibling.firstElementChild.innerHTML = error
+		ele.previousElementSibling.firstElementChild.innerHTML = error;
 	}
 }
 
 function signup(formID) {
-	check('all')
+	check('all');
 	if (allIsValid) {
 		document.getElementById(formID).submit();
 	}
@@ -33,9 +33,9 @@ function ajaxValidate(url, body) {
 		xhttp.onreadystatechange = function () {
 			if (this.readyState == 4) {
 				if (this.status == 200) {
-					resolve(this.response)
+					resolve(this.response);
 				} else {
-					reject(this.response)
+					reject(this.response);
 				}
 			}
 		};
@@ -58,11 +58,11 @@ function login() {
 	password = document.getElementById("password").value;
 	ajaxValidate("validateLogin", `password=${password}&guild=${guild}&name=${name}`)
 		.then(() => {
-			allIsValid = true
-			document.getElementById('login').submit()
+			allIsValid = true;
+			document.getElementById('login').submit();
 		})
 		.catch((message) => {
 			document.getElementsByClassName('error')[0].innerHTML = message;
-			allIsValid = false
-		})
+			allIsValid = false;
+		});
 }

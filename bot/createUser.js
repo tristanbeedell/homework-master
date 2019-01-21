@@ -6,7 +6,7 @@ const respond = require(path.join(__dirname, './commands.js'));
 const bcrypt = require("bcrypt");
 const urlname = process.env.WEBSITE_URL;
 
-module.exports = { newMember, dmRespond }
+module.exports = { newMember, dmRespond };
 
 let membersAwaiting = [];
 
@@ -27,16 +27,16 @@ function newMember(member) {
 	member.send(`Hi! Looks like you're new to ${member.guild.name}.
 **What is the Group Pin?**`);
 	membersAwaiting.push(member);
-};
+}
 
 async function checkMemberFromSchool(pin, id, callback) {
 	const pool = database.getDB();
 	const groups = await pool.query(`SELECT pin_hash FROM groups WHERE guild_id = '${id}';`)
-		.catch(console.error)
-	if (groups.rows.length == 0) { return callback(false) }
+		.catch(console.error);
+	if (groups.rows.length == 0) { return callback(false); }
 	const group = groups.rows[0];
-	const valid = bcrypt.compareSync(pin, group.pin_hash)
-	callback(valid, group)
+	const valid = bcrypt.compareSync(pin, group.pin_hash);
+	callback(valid, group);
 }
 
 function sendSetupLink(member) {
@@ -47,7 +47,7 @@ function sendSetupLink(member) {
 		.setURL(setupURL)
 		.setTitle("CLICK TO SET UP")
 		.setColor(0xFF00FF)
-		.setDescription("Give your classes, and you'll be put into text and voice chat rooms with everyone else in those classes!")
+		.setDescription("Give your classes, and you'll be put into text and voice chat rooms with everyone else in those classes!");
 
 	member.send(embed);
 }
@@ -59,7 +59,7 @@ function sendTimetableLink(member) {
 		.setURL(setupURL)
 		.setTitle("CLICK TO ENTER YOUR TIMETABLE")
 		.setColor(0xFF00FF)
-		.setDescription("Give your classes, and you'll be put into text and voice chat rooms with everyone else in those classes!")
+		.setDescription("Give your classes, and you'll be put into text and voice chat rooms with everyone else in those classes!");
 
 	member.send(embed);
 }
@@ -68,7 +68,7 @@ async function dmRespond(msg) {
 	const members = membersAwaiting.filter(member => member.id === msg.author.id);
 	let member;
 	if (members.length === 1) {
-		member = members[0]
+		member = members[0];
 	}
 	if (member) {
 		checkMemberFromSchool(msg.content, member.guild.id, (valid) => {
@@ -78,11 +78,11 @@ async function dmRespond(msg) {
 			} else {
 				msg.channel.send(`**Invalid Pin**
 Make sure you send the exact pin and nothing else in the message. It is **case sensitive**.
-Please try again...`)
+Please try again...`);
 			}
-		})
+		});
 	} else if (msg.content.match(/^\s*sign\s?up/)) {
-		signupCommand(msg)
+		signupCommand(msg);
 	} else {
 		let tokens = msg.content;
 		respond({ msg, tokens });
