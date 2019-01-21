@@ -47,7 +47,10 @@
             "error",
             "last"
         ],
-        "complexity": "error",
+        "complexity": [
+            "error",
+            6
+        ],
         "computed-property-spacing": [
             "error",
             "never"
@@ -67,7 +70,7 @@
             }
         ],
         "eol-last": "off",
-        "eqeqeq": "off",
+        "eqeqeq": "warn",
         "func-call-spacing": "error",
         "func-name-matching": "error",
         "func-names": "error",
