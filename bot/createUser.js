@@ -33,7 +33,7 @@ async function checkMemberFromSchool(pin, id, callback) {
 	const pool = database.getDB();
 	const groups = await pool.query(`SELECT pin_hash FROM groups WHERE guild_id = '${id}';`)
 		.catch(console.error);
-	if (groups.rows.length == 0) { return callback(false); }
+	if (groups.rows.length === 0) { return callback(false); }
 	const group = groups.rows[0];
 	const valid = bcrypt.compareSync(pin, group.pin_hash);
 	callback(valid, group);
