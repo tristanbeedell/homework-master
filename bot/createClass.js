@@ -211,9 +211,9 @@ async function getChannelData(set, division, guild) {
 		INNER JOIN teachers  ON timetable.teacher_id = teachers.id
 		INNER JOIN divisions ON sets.division_id = divisions.id
 		INNER JOIN groups ON sets.group_id = groups.id
-		WHERE sets.set = '${set}' AND divisions.name = '${division}' 
+		WHERE sets.set = $1 AND divisions.name = $2
 		AND groups.guild_id = '${guild.id}' AND timetable.usual;
-	`).catch(console.error);
+	`, [set, division]).catch(console.error);
 	return rooms;
 }
 

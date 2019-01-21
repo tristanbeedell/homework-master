@@ -74,10 +74,10 @@ function getTimetable(req, res) {
 		INNER JOIN subject 	 	ON timetable.subject_id = subject.id
 		INNER JOIN divisions 	ON sets.division_id = divisions.id
 		INNER JOIN groups 		ON divisions.group_id = groups.id
-			WHERE sets.set  = '${req.query.set}' AND
-			divisions.name  = '${req.query.sub}' AND
+			WHERE sets.set  = $1 AND
+			divisions.name  = $2 AND
 			groups.guild_id = '${req.session.user.guild_id}') AS timetable
-		ON timetable.overrides = override.id;`)
+		ON timetable.overrides = override.id;`, [req.query.set, req.query.sub])
 		.then((responce) => {
 			res.json(responce);
 		})
