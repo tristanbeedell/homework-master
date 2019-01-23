@@ -21,6 +21,8 @@ select {
   border: 2px solid azure;
   border-radius: 2px;
   background-color: white;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 :focus {
@@ -84,3 +86,37 @@ input#usernameContainer {
   margin: 2rem;
 }
 
+.add {
+  padding: 0.5em;
+  height: auto;
+  width: 100%;
+}
+
+.timetable {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+}
+
+
+@media screen and (max-width: 800px) {
+
+.timetable {
+  grid-template-columns: 1fr 1fr;
+}
+
+}
+
+
+@media screen and (max-width: 450px) {
+
+.timetable {
+  grid-template-columns: 1fr;
+}
+
+}
+
+option[value="none"] {
+  background-color: grey;
+  color: white;
+  font-weight: bold;
+}

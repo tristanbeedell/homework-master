@@ -78,7 +78,7 @@ async function checkNewUserPassword(req) {
 	const guildId = req.query.guild || req.body.guild;
 	let valid = false;
 	let passwords = await pool.query(`
-		SELECT password FROM pre_users WHERE member_id = '${memberId}' AND guildId = '${guildId}';
+		SELECT password FROM pre_users WHERE member_id = '${memberId}' AND guild_id = '${guildId}';
 	`).catch(console.error);
 	database.getFirst(passwords,
 		(err, pass) => {

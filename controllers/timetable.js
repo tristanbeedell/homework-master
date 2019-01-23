@@ -8,42 +8,48 @@ const giveRoles = require(path.join(__dirname, '../bot/createClass'));
 async function getTimetableForm(req, res) {
 	const pool = getDB();
 	// ensure that the user is signed in
-	if (!req.session.user) 
+	if (!req.member) 
 		return res.redirect('/login?redirect=/signup/timetable');
 	
 	const user = await pool.query(`
 		SELECT * FROM users
-		WHERE member_id = '${req.session.user.member_id}'
-		AND group_id('${req.session.user.guild_id}') = group_id
+		WHERE member_id = '${req.member.id}'
+		AND group_id('${req.member.guild.id}') = group_id
 		AND complete = FALSE;
 	`).catch(console.error);
 
 	if (user.rowCount == 0)
-		return res.redirect('/');
+		return res.redirect('/signup');
 
-	// get the sets and their divisions
-	const sets = await pool.query(`
+	pool.query(`
 		SELECT	DISTINCT
-			sets.set 	        AS name,
+			sets.set			AS set,
 			divisions.name 		AS division,
-			teachers.name 		AS teacher,
-			sets.name  		    AS subject
+			sets.name		    AS name,
+			timetable.day,
+			timetable.period,
+			subject.name		AS subject,
+			teachers.name		AS teacher
 		FROM sets
 		INNER JOIN divisions 	ON divisions.id = sets.division_id
 		INNER JOIN groups		ON divisions.group_id = groups.id
 		INNER JOIN timetable	ON sets.id = timetable.set_id
-		LEFT JOIN  teachers		ON timetable.teacher_id = teachers.id
-		WHERE groups.guild_id = '${req.session.user.guild_id}' AND timetable.usual
+		INNER JOIN subject		ON timetable.subject_id = subject.id
+		LEFT JOIN teachers		ON timetable.teacher_id = teachers.id
+		WHERE groups.guild_id = '${req.member.guild.id}'
 		ORDER BY division DESC;
-	`).catch(console.error);
-	// render page with
-	res.render("pages/timetable", {
-		subjects: sets.rows,
-		guild: req.session.user.guild_id,
-		member: req.session.user.member_id,
+	`)
+	.then((sets) =>{
+		// render page
+		res.render("pages/timetable", {
+			...req,
+			rows: sets.rows
+		});
+	}).catch((err) => {
+		console.error(err);
+		res.status(500).end();
 	});
 }
-
 
 function getTimetable(req, res) {
 	// if the user isn't logged in, they cannot see the timetable data
@@ -92,28 +98,25 @@ async function giveClasses(req, res) {
 
 	res.redirect('/me');
 
-	// store the user in their session
-	req.session.user = Object.assign(req.session.user, req.body);
-	const member = members.get(req.session.user.guild_id, req.session.user.member_id);
 	// save new user's classes to database
-	await saveClasses(req.session.user);
+	await saveClasses(req.session.user, req.body);
 	// give the user access to their classes.
-	await giveRoles(member, req.body.classes);
+	await giveRoles(req.member, req.body);
 	// DM the user on discord
 	member.send("All done! If you want me again then type `help`");
 }
 
-async function saveClasses(user) {
+async function saveClasses(user, classes) {
 	const pool = getDB();
 	// update the user's classes in the DB
 	let query = `
 		INSERT INTO usr_set_join
 		VALUES`;
-	for (let division in user.classes) {
-		if (user.classes[division] != 'none') {
+	for (let division in classes) {
+		if (classes[division] != 'none') {
 			query += `
-      (user_id('${user.member_id}', '${user.guild_id}'),
-      set_id('${user.classes[division]}')),`;
+		(user_id('${user.member_id}', '${user.guild_id}'),
+		set_id('${classes[division]}')),`; // FIXME: SQL INJECTION
 		}
 	}
 	// remove trailing comma
