@@ -127,11 +127,11 @@ function transition(ele, del, dur, curve) {
 
 function toggleModal(event) {
 	if (event.target) {
-		let classes = event.target.classList;
-		if (classes[0] == 'important-link') {
+		let classes = event.target.className.split(' ');
+		if (classes.includes('important-link')) {
 			let modal = document.getElementById(classes[1]);
 			modal.classList.add('open-modal');
-		} else {
+		} else if (!classes.includes('modal-content')) {
 			closeAllModals();
 		}
 	} else {
