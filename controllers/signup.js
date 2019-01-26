@@ -15,8 +15,20 @@ async function get(req, res) {
 	const memberId = req.query.member;
 	const guildId = req.query.guild;
 	const { guild, member } = await getGuildAndMember(guildId, memberId);
-	if (!guild || !member){
-		res.status(404).send(`Invalid <br> Oof! Looks like there was an error! <a href="/help#contact">Contact Tristan</a>.`);
+	if (!guild){
+		res.status(404).render('pages/unavaliable',{
+			message: `The guild does not exist`,
+			...req,
+			redirect: req.url
+		});
+		return;
+	}
+	if (!member){
+		res.status(404).render('pages/unavaliable',{
+			message: `The member does not exist in ${guild.name}`,
+			...req,
+			redirect: req.url
+		});
 		return;
 	}
 
@@ -41,13 +53,21 @@ async function get(req, res) {
 	`).catch(console.error);
 
 	if (preuser.rowCount < 1) {
-		res.status(403).send('oof! this discord account hasn\'t been verified over DM.');
+		res.status(403).render('pages/unavaliable', {
+			...req,
+			message: 'This discord account hasn\'t been verified over DM.',
+			redirect: req.url
+		});
 		return;
 	}
 
 	const valid = await checkNewUserPassword(req);
 	if (!valid) {
-		res.status(403).send('oof! You are forbidden from seeing this page.');
+		res.status(403).render('pages/unavaliable', {
+			...req,
+			message: 'You must follow the signup link DMd to you',
+			redirect: req.url
+		});
 		return;
 	}
 
