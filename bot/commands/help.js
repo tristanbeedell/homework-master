@@ -11,7 +11,7 @@ module.exports = {
 	instructions: 'Prints out all the commands, or detail on one if provided in __command__'
 };
 
-let commands
+let commands;
 function func ({ msg, dest, tokens }) {
 	commands = require(path.join(__dirname, '../get_commands'));
 	let reply;
@@ -31,11 +31,11 @@ function instructions(author, com) {
 	const search = commands.filter(command => com.match(command.rule) || com === command.name);
 
 	if (search.length === 0) {
-		reply = `Couldn't find command ${com}`;
+		reply = `I couldn't find a command named ${com}`;
 	} else {
 		let command = search[0];
 		// create an embed
-		reply = discord.createEmbed(author)
+		reply = discord.createEmbed(author) 
 			.setTitle(`@${discord.getBot().user.tag} ${command.usage}`)
 			.setURL(`${process.env.WEBSITE_URL}/help/bot#${command.name}`)
 			.setDescription(command.instructions);

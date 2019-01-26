@@ -22,8 +22,11 @@ function getBot() {
 }
 
 function createEmbed(member) {
-	const url = `${process.env.WEBSITE_URL}/guilds/${encodeURIComponent(member.guild.name)}/members/${encodeURIComponent(member.displayName)}`.replace(/%20/g, '_');
-	const embed = new Discord.RichEmbed()
-		.setAuthor(member.displayName, member.user.avatarURL, url);
-	return embed;
+	if (member && member.guild){
+		const url = `${process.env.WEBSITE_URL}/guilds/${encodeURIComponent(member.guild.name)}/members/${encodeURIComponent(member.displayName)}`.replace(/%20/g, '_');
+		return new Discord.RichEmbed()
+			.setAuthor(member.displayName, member.user.avatarURL, url);
+	} else {
+		return new Discord.RichEmbed();
+	}
 }
