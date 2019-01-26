@@ -3,6 +3,7 @@ module.exports = { get, postPasswordIsValid, post };
 const path = require('path');
 const url = require('url');
 const { getBot } = require(path.join(__dirname, "../modules/discord"));
+const members = require(path.join(__dirname, "../modules/member"));
 const database = require(path.join(__dirname, "../modules/database"));
 const bcrypt = require('bcrypt');
 
@@ -14,18 +15,10 @@ async function get(req, res) {
 	// get the member and the guild from discord to check they exist
 	const memberId = req.query.member;
 	const guildId = req.query.guild;
-	const { guild, member } = await getGuildAndMember(guildId, memberId);
-	if (!guild){
-		res.status(404).render('pages/unavaliable',{
-			message: `The guild does not exist`,
-			...req,
-			redirect: req.url
-		});
-		return;
-	}
-	if (!member){
-		res.status(404).render('pages/unavaliable',{
-			message: `The member does not exist in ${guild.name}`,
+	const member = await members.get(guildId, memberId);
+	if (member.error){
+		res.status(404).render('pages/unavaliable', {
+			message: member.error,
 			...req,
 			redirect: req.url
 		});
@@ -35,10 +28,10 @@ async function get(req, res) {
 	// check the user hasn't already signed up
 	const user = await database.userSignedUp(guildId, memberId);
 	if (user.exists && user.complete) {
-		res.redirect(`/guilds/${guild.name}/members/${member.displayName}`.replace(/ /g, '_'));
+		res.redirect(`/guilds/${member.guild.name}/members/${member.displayName}`.replace(/ /g, '_'));
 		return;
 	} else if (user.exists && !user.complete && req.session.user) {
-		res.redirect(`/signup/timetable`);
+		res.redirect('/signup/timetable');
 		return;
 	} else if (user.exists && !user.complete && !req.session.user) {
 		res.redirect(`/login?redirect=/signup/timetable`);
@@ -65,7 +58,7 @@ async function get(req, res) {
 	if (!valid) {
 		res.status(403).render('pages/unavaliable', {
 			...req,
-			message: 'You must follow the signup link DMd to you',
+			message: 'You must follow the signup link DM\'d to you',
 			redirect: req.url
 		});
 		return;
@@ -74,20 +67,7 @@ async function get(req, res) {
 	// render page
 	res.render("pages/sign_up", {
 		...req,
-		guild,
 		member
-	});
-}
-
-function getGuildAndMember(guildId, memberId) {
-	const bot = getBot();
-	return new Promise((resolve) => {
-		let guild = bot.guilds.get(guildId);
-		let member;
-		if (guild) {
-			member = guild.members.get(memberId);
-		}
-		resolve({ guild, member });
 	});
 }
 
@@ -118,7 +98,7 @@ function checkValidity(err, p, passwordGiven) {
 		console.log(err);
 		return false;
 	}
-	return (p.password == passwordGiven);
+	return (p.password === passwordGiven);
 }
 
 async function post(req, res) {
