@@ -48,8 +48,8 @@
             "last"
         ],
         "complexity": [
-            "error",
-            6
+            "warn",
+            9
         ],
         "computed-property-spacing": [
             "error",
@@ -247,7 +247,10 @@
         "prefer-spread": "error",
         "prefer-template": "off",
         "quote-props": "off",
-        "quotes": "off",
+        "quotes": [
+            "warn",
+            "single"
+        ],
         "radix": [
             "error",
             "as-needed"

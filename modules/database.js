@@ -30,7 +30,7 @@ function getFirst(dbRes, callback) {
 	let first;
 	let err;
 	// if one and only one is found
-	if (dbRes.rowCount == 1) {
+	if (dbRes.rowCount === 1) {
 		first = dbRes.rows[0];
 	} else {
 		err = `error: db query returned ${dbRes.rowCount} rows`.red;
@@ -43,5 +43,5 @@ async function userSignedUp(guildId, memberId) {
 	let signedUpUser = await pool.query(`
 		SELECT complete FROM users WHERE id = user_id('${memberId}', '${guildId}');
 	`).catch(console.error);
-	return { exists: signedUpUser.rowCount == 1, complete: signedUpUser.rowCount == 1 && signedUpUser.rows[0].complete };
+	return { exists: signedUpUser.rowCount === 1, complete: signedUpUser.rowCount === 1 && signedUpUser.rows[0].complete };
 }

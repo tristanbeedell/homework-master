@@ -2,8 +2,8 @@ const RichEmbed = require('discord.js').RichEmbed;
 const path = require('path');
 const database = require(path.join(__dirname, '../modules/database'));
 const bot = require(path.join(__dirname, '../modules/discord')).getBot();
-const respond = require(path.join(__dirname, './commands.js'));
-const bcrypt = require("bcrypt");
+const respond = require(path.join(__dirname, './respond.js'));
+const bcrypt = require('bcrypt');
 const urlname = process.env.WEBSITE_URL;
 
 module.exports = { newMember, dmRespond };
@@ -45,9 +45,9 @@ function sendSetupLink(member) {
 	let embed;
 	embed = new RichEmbed()
 		.setURL(setupURL)
-		.setTitle("CLICK TO SET UP")
+		.setTitle('CLICK TO SET UP')
 		.setColor(0xFF00FF)
-		.setDescription("Give your classes, and you'll be put into text and voice chat rooms with everyone else in those classes!");
+		.setDescription('Give your classes, and you\'ll be put into text and voice chat rooms with everyone else in those classes!');
 
 	member.send(embed);
 }
@@ -57,9 +57,9 @@ function sendTimetableLink(member) {
 	const setupURL = `${urlname}/signup/timetable`;
 	const embed = new RichEmbed()
 		.setURL(setupURL)
-		.setTitle("CLICK TO ENTER YOUR TIMETABLE")
+		.setTitle('CLICK TO ENTER YOUR TIMETABLE')
 		.setColor(0xFF00FF)
-		.setDescription("Give your classes, and you'll be put into text and voice chat rooms with everyone else in those classes!");
+		.setDescription('Give your classes, and you\'ll be put into text and voice chat rooms with everyone else in those classes!');
 
 	member.send(embed);
 }
