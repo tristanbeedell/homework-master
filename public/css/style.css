@@ -194,10 +194,6 @@ a {
 	color: darkblue;
 }
 
-.content a:active {
-	background-color: ivory;
-}
-
 .widget {
 	width: 100%;
 	height: 400px;

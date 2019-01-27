@@ -21,32 +21,60 @@ Markdown is supported!" form="update-profile" rows="<%= userData.rows[0].bio ? u
 		</div>
 
 		<div class="post">
-			<div class="title">What should go here?</div>
-			<div class="message">
-				If you have any ideas, please tell me what you think I should put here.<br>
-				<h4>My ideas:</h4>
-				Customise Timetable<br>
-				Reset password<br>
-				Background colour
-			</div>
+			<div class="title">Timetable</div>
+			<% if (!userData.rows[0].complete) { %>
+				<a href="/signup/timetable">You haven't completed your signup!</a>
+			<% } else { %>
+				<a href="/empty_timetable">RESET TIMETABLE</a>
+
+				<div class="message">
+						<div class="timetable">
+							<% for (let day = 1; day <= 10; day++) { %>
+							<% if (day % 5 === 1){ %>
+								<h3 class="full-width"><%= ((day-1)/5)+1 %></h3>
+							<% } %>
+							<ol class="day">
+							<h4>
+								<%= ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri'][(day-1)%5]%>
+							</h4>
+							<% for (let period = 1; period <= 5; period++) { %>
+							<li height="2em">
+								<% for (const row of userData.rows) {
+									if (row.day === day && row.period === period) { -%>
+								<%= row.subject%> - <%= row.teacher%>
+									<% }
+								} -%>
+							</li>
+							<% } %>
+							</ol>
+							<% } %>
+					</div>
+				</div>
+
+
+
+			<% } %>
 		</div>
 
-		<% if (!userData.rows[0].complete) { %>
-			<a href="/signup/timetable">You haven't completed your signup!</a>
-		<% } else { %>
-			<% userData.rows.forEach(row => { %>
-				<%= row.set_name%><br>
-			<% }) %>
-			<a href="/empty_timetable">RESET</a>
-		<% } %>
+		<form id="update-profile" method="POST" style="padding:0;display:block;height:3em">
+			<input type="submit" value="Save Changes" class="full-width accept-button" style="height:inherit">
+		</form>
+		
+		<button class="important-link delete-account-modal delete-button">Delete This Account.</button>
+
 	</div>
 
-	<form id="update-profile" method="POST" style="padding:0;display:block">
-		<input type="submit" value="Save Changes" class="full-width accept-button">
-	</form>
-	
-	<button class="important-link delete-account-modal delete-button">Delete This Account.</button>
 
+	<div class="post">
+		<div class="title">What else should go here?</div>
+		<div class="message">
+			If you have any ideas, please tell me what you think I should put here.<br>
+			<h4>My ideas:</h4>
+			Reset password<br>
+			Background colour
+		</div>
+	</div>
+	
 	<% include ../partials/menu %>
 
 	<div id="delete-account-modal" class="modal">
