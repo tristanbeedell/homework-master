@@ -36,14 +36,32 @@ async function get(req, res) {
 		return;
 	}
 
-	const userData = (await pool.query(`
-		SELECT * FROM users WHERE id = user_id('${user.id}', '${guild.id}');
-	`)).rows[0];
-	if (!userData) {
+	const userData = await pool.query(`
+	SELECT DISTINCT
+		sets.set	AS set,
+		divisions.name	AS division,
+		sets.name	AS name,
+		timetable.day,
+		timetable.period,
+		subject.name	AS subject,
+		teachers.name	AS teacher,
+		users.complete,
+		users.bio
+	FROM sets
+	INNER JOIN divisions	ON divisions.id = sets.division_id
+	INNER JOIN groups	ON divisions.group_id = groups.id
+	INNER JOIN timetable	ON sets.id = timetable.set_id
+	INNER JOIN subject	ON timetable.subject_id = subject.id
+	INNER JOIN usr_set_join ON usr_set_join.set_id = sets.id
+	INNER JOIN users		ON usr_set_join.user_id = users.id
+	LEFT JOIN teachers	ON timetable.teacher_id = teachers.id
+		WHERE users.id = user_id('${user.id}', '${user.guild.id}');
+	`);
+	if (userData.rowCount < 1) {
 		unavaliable(`Member '${user.displayName}' hasn't made an account yet.`);
 		return;
 	}
-	userData.bio = userData.bio ? markdown.toHTML(userData.bio) : false;
+	userData.rows[0].bio = userData.rows[0].bio ? markdown.toHTML(userData.rows[0].bio) : false;
 
 	res.render("pages/profile", {
 		...req,

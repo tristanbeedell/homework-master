@@ -218,6 +218,20 @@ ul, ol {
 	margin: auto;
 }
 
+li {
+    border: 1px solid;
+    padding: 0.5em;
+}
+
+.day {
+	width: auto;
+	margin: 0.5em;
+}
+
+h2,h3,h4,h5,h6 {
+	text-align: center;
+}
+
 blockquote {
 	text-align: left;
 	background-color: antiquewhite;

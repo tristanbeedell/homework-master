@@ -17,21 +17,14 @@
 		</h1>
 	</div>
 	<div class="content">
-		<% if (userData.bio) { %>
+		<% if (userData.rows[0].bio) { %>
 		<div class="post">
-			<div class="message"><%- userData.bio %></div>
+			<div class="message"><%- userData.rows[0].bio %></div>
 		</div>
 		<% } %>
 		<div class="post">
-			<div class="title">Features to come here?</div>
-			<div class="message">
-				If you have any ideas, please tell me what you think I should put here.<br>
-				<h4>My ideas:</h4>
-				User Timetable<br>
-				Achievements<br>
-				Custom colour<br>
-				Social media links
-			</div>
+			<div class="title">Timetable</div>
+			<% include ../partials/user_timetable %>
 		</div>
 	</div>
 	<% include ../partials/menu %>

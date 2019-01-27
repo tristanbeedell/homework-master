@@ -13,67 +13,36 @@
 		</h1>
 	</div>
 	<div class="content">
+		<% if (userData.rowCount > 0) { %>
 		<div class="post">
 				<div class="title">Set Bio</div>
 				<textarea name="bio" type="text" class="full-width" 
 			placeholder="Tell everyone something wonderful. 
 Markdown is supported!" form="update-profile" rows="<%= userData.rows[0].bio ? userData.rows[0].bio.split('\n').length : 5 %>" maxlength="500" title="Your Bio"><%= userData.rows[0].bio%></textarea>
+	
+			<form id="update-profile" method="POST" style="padding:0;display:block;height:3em">
+				<input type="submit" value="Save Changes" class="full-width accept-button" style="height:inherit">
+			</form>	
 		</div>
+		<% } %>
+	
 
 		<div class="post">
 			<div class="title">Timetable</div>
-			<% if (!userData.rows[0].complete) { %>
+			<% if (userData.rowCount < 1 || !userData.rows[0].complete) { %>
 				<a href="/signup/timetable">You haven't completed your signup!</a>
 			<% } else { %>
-				<a href="/empty_timetable">RESET TIMETABLE</a>
+				<a href="/signup/timetable">RESET TIMETABLE</a>
 
-				<div class="message">
-						<div class="timetable">
-							<% for (let day = 1; day <= 10; day++) { %>
-							<% if (day % 5 === 1){ %>
-								<h3 class="full-width"><%= ((day-1)/5)+1 %></h3>
-							<% } %>
-							<ol class="day">
-							<h4>
-								<%= ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri'][(day-1)%5]%>
-							</h4>
-							<% for (let period = 1; period <= 5; period++) { %>
-							<li height="2em">
-								<% for (const row of userData.rows) {
-									if (row.day === day && row.period === period) { -%>
-								<%= row.subject%> - <%= row.teacher%>
-									<% }
-								} -%>
-							</li>
-							<% } %>
-							</ol>
-							<% } %>
-					</div>
-				</div>
-
-
+				<% include ../partials/user_timetable %>
 
 			<% } %>
 		</div>
-
-		<form id="update-profile" method="POST" style="padding:0;display:block;height:3em">
-			<input type="submit" value="Save Changes" class="full-width accept-button" style="height:inherit">
-		</form>
 		
-		<button class="important-link delete-account-modal delete-button">Delete This Account.</button>
 
 	</div>
 
-
-	<div class="post">
-		<div class="title">What else should go here?</div>
-		<div class="message">
-			If you have any ideas, please tell me what you think I should put here.<br>
-			<h4>My ideas:</h4>
-			Reset password<br>
-			Background colour
-		</div>
-	</div>
+	<button class="important-link delete-account-modal delete-button">Delete This Account.</button>
 	
 	<% include ../partials/menu %>
 

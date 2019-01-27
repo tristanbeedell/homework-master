@@ -1,4 +1,4 @@
-module.exports = { giveClasses, getTimetable, getTimetableForm, empty };
+module.exports = { giveClasses, getTimetableForm };
 
 const path = require('path');
 const { getDB } = require(path.join(__dirname, '../modules/database'));
@@ -12,14 +12,12 @@ async function getTimetableForm(req, res) {
 	
 	const user = await pool.query(`
 		SELECT * FROM users
-		WHERE member_id = '${req.member.id}'
-		AND group_id('${req.member.guild.id}') = group_id
-		AND complete = FALSE;
+		WHERE id = user_id('${req.member.id}', '${req.member.guild.id}');
 	`).catch(console.error);
 
 	if (user.rowCount === 0)
 		return res.redirect('/me');
-
+	
 	pool.query(`
 		SELECT	DISTINCT
 			sets.set			AS set,
@@ -50,55 +48,18 @@ async function getTimetableForm(req, res) {
 	});
 }
 
-function getTimetable(req, res) {
-	// if the user isn't logged in, they cannot see the timetable data
-	if (!req.session.user) 
-		return res.status(403).end();
-
-	const pool = getDB();
-	pool.query(`
-		SELECT
-			timetable.teacher,
-			timetable.period,
-			timetable.day,
-			timetable.class,
-			timetable.division,
-			override.name      AS override
-		FROM divisions AS override
-		RIGHT JOIN (
-			SELECT
-			teachers.name     AS teacher,
-			timetable.period,
-			timetable.day,
-			subject.name      AS class,
-			divisions.name    AS division,
-			sets.overrides    AS overrides
-		FROM timetable
-		LEFT JOIN teachers  	ON teachers.id = timetable.teacher_id
-		INNER JOIN sets 	 		ON sets.id = timetable.set_id
-		INNER JOIN subject 	 	ON timetable.subject_id = subject.id
-		INNER JOIN divisions 	ON sets.division_id = divisions.id
-		INNER JOIN groups 		ON divisions.group_id = groups.id
-			WHERE sets.set  = '${req.query.set}' AND
-			divisions.name  = '${req.query.sub}' AND
-			groups.guild_id = '${req.session.user.guild_id}') AS timetable
-		ON timetable.overrides = override.id;`)
-		.then((responce) => {
-			res.json(responce);
-		})
-		.catch(console.error);
-}
-
-
 async function giveClasses(req, res) {
 
-	if (!req.session.user) 
+	if (!req.session.user || !req.member) 
 		return res.status(400).end();
-
-	res.redirect('/me');
+	
+	empty(req);
 
 	// save new user's classes to database
 	await saveClasses(req.session.user, req.body);
+
+	res.redirect('/me');
+
 	// give the user access to their classes.
 	await giveRoles(req.member, req.body);
 	// DM the user on discord
@@ -130,15 +91,7 @@ async function saveClasses(user, classes) {
 	`);
 }
 
-async function empty(req, res) {
-	if (!req.member) {
-		return res.status(404).render('pages/unavaliable', {
-			...req,
-			message: 'Not logged in',
-			redirect: '/me'
-		});
-	}
-
+async function empty(req) {
 	const pool = getDB();
 	const roles = await pool.query(`
 		SELECT role_id FROM sets
@@ -154,6 +107,4 @@ async function empty(req, res) {
 	await pool.query(`
 		UPDATE users SET complete = FALSE WHERE id = user_id('${req.member.id}', '${req.member.guild.id}');
 	`);
-
-	res.redirect('/signup/timetable');
 }

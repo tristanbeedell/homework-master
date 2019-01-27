@@ -23,7 +23,8 @@ async function get(req, res) {
 		timetable.period,
 		subject.name	AS subject,
 		teachers.name	AS teacher,
-		users.complete
+		users.complete,
+		users.bio
 	FROM sets
 	INNER JOIN divisions	ON divisions.id = sets.division_id
 	INNER JOIN groups	ON divisions.group_id = groups.id
