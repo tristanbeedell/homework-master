@@ -113,7 +113,7 @@ async function post(req, res) {
 		return;
 	}
 	const guild = getBot().guilds.get(req.query.guild);
-	const taken = guild.members.some(member => member.displayName === req.body.nickname && member.id !== req.query.member);
+	const taken = guild.members.some(member => member.displayName.replace(/_/g, ' ') === req.body.nickname.replace(/_/g, ' ') && member.id !== req.query.member);
 	if (taken) {
 		let u = new url.URL(path.join(process.env.WEBSITE_URL, req.url));
 		u.searchParams.set('nameerror', 'Name Taken!');

@@ -62,8 +62,11 @@ async function giveClasses(req, res) {
 
 	// give the user access to their classes.
 	await giveRoles(req.member, req.body);
+
 	// DM the user on discord
-	req.member.send("All done! If you want me again then type `help`");
+	req.member.send(`All done! 
+You should now be in ${Object.values(req.body).join(', ')}. 
+If you want me again then type \`help\``);
 }
 
 async function saveClasses(user, classes) {
@@ -72,17 +75,19 @@ async function saveClasses(user, classes) {
 	let query = `
 		INSERT INTO usr_set_join
 		VALUES`;
+	let classCount = 1; // to pass untrusted data into DB
 	for (let division in classes) {
 		if (classes[division] !== 'none') {
 			query += `
 		(user_id('${user.member_id}', '${user.guild_id}'),
-		set_id('${classes[division]}')),`; // FIXME: SQL INJECTION
+		set_id($${classCount}, '${user.guild_id}')),`;
+		classCount++;
 		}
 	}
 	// remove trailing comma
 	query = query.slice(0, -1) + ';';
 	// query the DB.
-	await pool.query(query).catch(console.error);
+	await pool.query(query, Object.values(classes)).catch(console.error);
 	// The user is fully signed up.
 	return pool.query(`
 		UPDATE users 
@@ -99,7 +104,7 @@ async function empty(req) {
 		INNER JOIN users ON users.id = usr_set_join.user_id
 		WHERE users.member_id = '${req.member.id}';
 	`);
-	req.member.removeRoles(roles.rows.map(row => row.role_id));
+	await req.member.removeRoles(roles.rows.map(row => row.role_id));
 
 	await pool.query(`
 		DELETE FROM usr_set_join WHERE user_id = user_id('${req.member.id}', '${req.member.guild.id}');

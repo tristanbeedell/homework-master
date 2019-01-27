@@ -76,7 +76,7 @@ async function post(req, res) {
 	}
 	if (req.body.username) {
 		const taken = req.member.guild.members.some(member => 
-			member.displayName === req.body.username && member.id !== req.member.id);
+			member.displayName.replace(/_/g, ' ') === req.body.username.replace(/_/g, ' ') && member.id !== req.member.id);
 		if (!taken) {
 			await req.member.setNickname(req.body.username).catch(error => {
 				if (error.message !== 'Missing Permissions')

@@ -41,23 +41,8 @@ Markdown is supported!" form="update-profile" rows="<%= userData.rows[0].bio ? u
 		
 
 	</div>
-
-	<button class="important-link delete-account-modal delete-button">Delete This Account.</button>
 	
 	<% include ../partials/menu %>
-
-	<div id="delete-account-modal" class="modal">
-		<div class="modal-content slide-down">
-			<form method="DELETE" id="delete-account-form">
-				<h4>Are you sure?</h4>
-				<p>
-				You will be kicked from <%= member.guild.name%> on discord and your classes will be wiped. Any ranks achieved will also be removed.
-				</p>
-			</form>
-			<span class="close">&times;</span>
-			<input type="submit" class="delete-button" form="delete-account-form" value="I understand and would like to continue.">
-		</div>
-	</div>
 
 	<script src="/js/index.js"></script>
 </body>

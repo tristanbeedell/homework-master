@@ -10,7 +10,7 @@
 				<%= ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri'][(day-1)%5]%>
 			</h4>
 			<% for (let period = 1; period <= 5; period++) { %>
-			<li height="2em">
+			<li>
 				<% for (const row of userData.rows) {
 					if (row.day === day && row.period === period) { -%>
 				<%= row.subject%> - <%= row.teacher%>
