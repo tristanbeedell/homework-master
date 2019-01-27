@@ -6,9 +6,12 @@ module.exports = {
 	name: 'help',
 	rule: /^\s*help/i, 
 	func, 
-	usage: 'help __command__', 
-	summary: 'Does this.',
-	instructions: 'Prints out all the commands, or detail on one if provided in __command__'
+	usage: 'help __[command]__', 
+	summary: 'Gets help.',
+	instructions: 'Prints out all the commands, or detail on one if provided in __command__.\n\n' +
+	'Variables, such as the __command__ in this command are underlined.\n' +
+	'Optional phrases or words are wrapped in square brackets `[]`\n'+
+	'Where there are multiple choices, they will be separated by bars `|`'
 };
 
 let commands;
@@ -36,7 +39,7 @@ function instructions(author, com) {
 		let command = search[0];
 		// create an embed
 		reply = discord.createEmbed(author) 
-			.setTitle(`@${discord.getBot().user.tag} ${command.usage}`)
+			.setTitle(command.usage)
 			.setURL(`${process.env.WEBSITE_URL}/help/bot#${command.name}`)
 			.setDescription(command.instructions);
 	}

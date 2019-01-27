@@ -8,19 +8,26 @@ module.exports = {
 	rule: /^\s*(ma?ke?|create)?(\s*a?\s*)?poll/i,
 	usage: 'poll __name__ choices: __choices__', 
 	summary: 'Creates a poll',
-	instructions: '',
+	instructions: 'Creates a poll that can be voted on in discord using reaction emojis\n\n' +
+	'2 to 6 choices may be provided.\n' +
+	'Choices are given as follows: `\'choice1\', \'choice2\'[, ...]`\n\n' +
+	'Polls will be pinned by default. You can choose for the poll not to be pinned by including the word `nopin` in the command',
 	func: async ({ msg, tokens, dest }) => {
+		const chunk ='[“”‘’‛‟\'"′″´˝`]([^“”‘’‛‟\'"′″´˝`]*)[“”‘’‛‟\'"′″´˝`]';
 		let reply = new RichEmbed();
-		let title = tokens.match(/(poll|titled?:?)\s*`([^`]*)`/i);
+		let title = tokens.match(new RegExp('(poll|titled?:?)\\s*'+chunk));
 		if (title) {
 			title = title[2];
 			reply.setTitle(title);
+		} else {
+			msg.reply('ERROR :thinking_face: No title. The title is set like: `poll "title"`');
+			return;
 		}
-		let choices = tokens.match(/choi(c|s)es:?\s*`([^`]*)`(?:, *`([^`]*)`(?:, *`([^`]*)`(?:, *`([^`]*)`(?:, *`([^`]*)`)?)?)?)?/i);
+		let choices = tokens.match(new RegExp('choi(c|s)es:?\\s*'+chunk+'(?:, *'+chunk+'(?:, *'+chunk+'(?:, *'+chunk+'(?:, *'+chunk+')?)?)?)?'));
 		if (choices) {
 			choices = choices.splice(2);
 		} else {
-			msg.channel.send('ERROR :thinking_face: No choices.');
+			msg.reply('ERROR :thinking_face: No choices. The choices are set like: `poll "title" choices: "1", "2"[, ...]`');
 			return;
 		}
 		const emojis = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫'];
@@ -34,6 +41,8 @@ module.exports = {
 		for (let i = 0; i < choices.length; i++) {
 			await poll.react(emojis[i]);
 		}
-		poll.pin();
+		if (!tokens.match(/nopin/)) {
+			poll.pin();
+		}
 	}
 };

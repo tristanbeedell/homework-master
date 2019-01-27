@@ -5,11 +5,12 @@ const send = require(path.join(__dirname, '../send'));
 
 module.exports = {
 	name: 'profile',
-	rule: /^\s*(get\s*)?((<@!?\d+> ?'?s?|my)\s+)?profile\s*((<@!?\d+>|me)\s+)?/i, 
-	usage: '__@user__ profile', 
+	rule: /^\s*profile/i, 
+	usage: 'profile __[username|usertag|@user|me]__', 
 	summary: 'Gets a profile', 
 	func: profile, 
-	instructions: 'Mention a user and their profile will be printed out, with a link to the website.'
+	instructions: 'The user\'s profile is printed with a link to the website.\n' +
+	`A user can be found by a mention [${discord.getBot().user.toString()}], their discord tag [${discord.getBot().user.tag}], their discord username [${discord.getBot().user.username}] or get your own with [me].`
 };
 
 async function profile ({ msg, dest, tokens }) {
@@ -17,14 +18,33 @@ async function profile ({ msg, dest, tokens }) {
 		send('Please ask for profiles from inside the server.', msg, dest);
 		return;
 	}
-	const match = tokens.match(/(?:<@!?(\d+)> ?'?s?|my)/);
-	const selected = match === 'my' ? msg.member : msg.guild.members.get(match[1]);
+	const match = tokens.match(/^\s*(?:profile)?\s*(\b.+)/i);
+	if (!match) {
+		msg.reply('You did not specify a user. Use `help profile` for help');
+		msg.react('❌');
+		return;
+	}
+	const selected = match[1] === 'my' || match[1] === 'me' ? msg.member
+		: msg.guild.members.find(member => 
+			member.user.tag === match[1] || 
+			member.toString() === match[1] || 
+			member.displayName === match[1]
+		);
+
+	if (!selected) {
+		msg.reply('The user was not found. Use `help profile` for help');
+		msg.react('❌');
+		return;
+	}
 	const pool = database.getDB();
 	const DBbio = (await pool.query(`SELECT bio FROM users WHERE id = user_id('${selected.id}', '${selected.guild.id}');`));
-	const bio = DBbio.rowCount === 1 ? DBbio.rows[0].bio || '' : '';
+	let bio = DBbio.rowCount === 1 ? DBbio.rows[0].bio || '' : 'No account yet';
+	while (bio.match(/(?:#)+([^\n]+)/)) {
+		bio = bio.replace(/(?:#)+([^\n]+)/g, '**$1**');
+	}
 	const embed = discord.createEmbed(msg.author)
-		.setTitle(`${selected.displayName+(selected.displayName.slice(-1)==='s'?'\'':'\'s')} Profile`)
+		.setAuthor(selected.displayName, selected.user.avatarURL, `${process.env.WEBSITE_URL}/guilds/${encodeURIComponent(selected.guild.name).replace(/%20/g, '_')}/members/${encodeURIComponent(selected.displayName).replace(/%20/g, '_')}`)
 		.setColor(0xFFFFFF)
-		.setDescription(bio.replace(/(?:#)+([^\n]+)/, '**$1**'));
+		.setDescription(bio);
 	send(embed, msg, dest);
 }

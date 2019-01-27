@@ -8,7 +8,7 @@ module.exports = {
 	usage: 'say __text__', 
 	summary: 'Echo some text', 
 	func: ({ msg, tokens, dest }) => {
-		let quote = tokens.match(/^\s*say\s*`([^`]*)`/);
+		let quote = tokens.match(/^\s*say\s*[“”‘’‛‟'"′″´˝`]([^“”‘’‛‟'"′″´˝`]*)[“”‘’‛‟'"′″´˝`]/);
 		if (quote) {
 			const reply = discord.createEmbed(msg.member)
 				.setDescription(quote[1]);
@@ -18,5 +18,5 @@ module.exports = {
 			msg.channel.send(':thinking_face: Nothing to say...');
 		}
 	}, 
-	instructions: 'This will echo back whatever text is put after. The text must be wrapped in ` backticks'
+	instructions: 'This will echo back whatever text is put after. The text must be wrapped in quote marks'
 };
