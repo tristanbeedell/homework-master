@@ -34,7 +34,7 @@
 				<div class="menu-content">
 					<% if (session.user) {%>
 					<a href="/me">My Account</a>
-					<a href="/guilds/<%= member.guild.name.replace(/ /g, '_') %>/members/<%= member.displayName.replace(/ /g, '_') %>">My Profile</a>
+					<a href="/guilds/<%= encodeURIComponent(member.guild.name).replace(/ /g, '_') %>/members/<%= encodeURIComponent(member.displayName).replace(/ /g, '_') %>">My Profile</a>
 					<span class="important-link logout-modal">Log Out</span>
 					<% } else { %>
 					<a href="/login">login</a>

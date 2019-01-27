@@ -5,9 +5,11 @@
 <% include ../partials/head %>
 
 <body>
-	<% if (user.id == member.id) { %>
-	THIS IS YOUR PROFILE. <a href="/me">Customise</a>
-	<% } %>
+	<style>
+		:root {
+			--theme-color: <%= userData.rows[0].color%>;
+		}
+	</style>
 	<div class="header">
 		<h1>
 			<img src="<%= user.user.avatarURL %>" class="profilePic"></img>
@@ -16,6 +18,9 @@
 			</div>
 		</h1>
 	</div>
+	<% if (user.id == member.id) { %>
+		<a href="/me">Customise Profile</a>
+	<% } %>	
 	<div class="content">
 		<% if (userData.rows[0].bio) { %>
 		<div class="post">

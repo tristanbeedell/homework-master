@@ -24,7 +24,8 @@ async function get(req, res) {
 		subject.name	AS subject,
 		teachers.name	AS teacher,
 		users.complete,
-		users.bio
+		users.bio,
+		users.color
 	FROM sets
 	INNER JOIN divisions	ON divisions.id = sets.division_id
 	INNER JOIN groups	ON divisions.group_id = groups.id
@@ -83,6 +84,11 @@ async function post(req, res) {
 					throw error;
 			});
 		}
+	}
+	if (req.body.color) {
+		await pool.query(`
+		UPDATE users SET color = $1 WHERE users.id = user_id('${req.member.id}', '${req.member.guild.id}');
+		`, [req.body.color]);
 	}
 	res.redirect('/me');
 }

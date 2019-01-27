@@ -46,7 +46,8 @@ async function get(req, res) {
 		subject.name	AS subject,
 		teachers.name	AS teacher,
 		users.complete,
-		users.bio
+		users.bio,
+		users.color
 	FROM sets
 	INNER JOIN divisions	ON divisions.id = sets.division_id
 	INNER JOIN groups	ON divisions.group_id = groups.id

@@ -1,5 +1,5 @@
 body {
-	background-color: cadetblue;
+	background-color: var(--theme-color);
 	text-align: center;
 	font-family: Avenir, Helvetica;
 	margin: 0;
@@ -129,14 +129,13 @@ code {
 
 .post>.message {
 	grid-area: message;
+	min-height: 2em;
 }
 
 .post>.author {
 	grid-area: author;
 	margin-bottom: 1em;
 }
-
-/* .post>.message {} */
 
 tr {
 	height: 40px;
@@ -174,6 +173,7 @@ td {
 
 #usernameContainer {
 	display: inline-block;
+	color: var(--member-color);
 }
 
 .important-link {
@@ -238,4 +238,10 @@ blockquote {
 	color: blueviolet;
 	padding: 0.3em 1em 0.3em 2em;
 	border-left: 2px solid orange;
+}
+
+hr {
+    width: 80%;
+    height: 0;
+    border: 1px solid var(--theme-color);
 }
