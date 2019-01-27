@@ -6,7 +6,7 @@ const { getBot } = require(path.join(__dirname, '../modules/discord'));
 function get(req, res) {
 	const bot = getBot();
 	// if the guild does not exist, return a 404 error
-	const guild = bot.guilds.find(guild => guild.name === req.params.guildName.replace(/_/g, ' '));
+	const guild = bot.guilds.find(guild => guild.name === decodeURIComponent(req.params.guildName).replace(/_/g, ' '));
 	if (!guild) {
 		res.status(404).render("pages/unavaliable", {
 			...req,

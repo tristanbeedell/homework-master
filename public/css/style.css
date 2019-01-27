@@ -43,7 +43,7 @@ html, body {
 }
 
 .header {
-	background-color: darkcyan;
+	background-color: rgba(0,50,50,0.3);
 	color: azure;
 	font-size: larger;
 	display: flex;
@@ -88,7 +88,7 @@ div.content {
 
 .post {
 	background-color: floralwhite;
-	color: cadetblue;
+	color: var(--theme-color);
 	display: grid;
 	position: relative;
 	padding: 0.5em;
@@ -226,10 +226,6 @@ li {
 .day {
 	width: auto;
 	margin: 0.5em;
-}
-
-h2,h3,h4,h5,h6 {
-	text-align: center;
 }
 
 blockquote {

@@ -28,7 +28,7 @@ async function get(req, res) {
 	// check the user hasn't already signed up
 	const user = await database.userSignedUp(guildId, memberId);
 	if (user.exists && user.complete) {
-		res.redirect(`/guilds/${member.guild.name}/members/${member.displayName}`.replace(/ /g, '_'));
+		res.redirect(`/guilds/${encodeURIComponent(member.guild.name)}/members/${encodeURIComponent(member.displayName)}`.replace(/%20/g, '_'));
 		return;
 	} else if (user.exists && !user.complete && req.session.user) {
 		res.redirect('/signup/timetable');

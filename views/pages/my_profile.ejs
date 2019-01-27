@@ -11,7 +11,7 @@
 			<input name="username" form="update-profile" type="text" id="usernameContainer" value="<%= member.displayName%>" placeholder="<%= member.user.username%>" title="Your Username">
 		</h1>
 	</div>
-	<a href="/guilds/<%= encodeURIComponent(member.guild.name).replace(/ /g, '_') %>/members/<%= encodeURIComponent(member.displayName).replace(/ /g, '_') %>">View Profile</a>
+	<a href="<%= `/guilds/${encodeURIComponent(member.guild.name)}/members/${encodeURIComponent(member.displayName)}`.replace(/%20/g, '_') %>">View Profile</a>
 	<div class="content">
 		<% if (userData.rowCount > 0) { %>
 		<div class="post">

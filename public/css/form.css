@@ -8,7 +8,7 @@ form, .lookup {
   border-radius: 0.3em;
   grid-row-gap: 0.5em;
   overflow-x: scroll;
-  min-width: 300px;
+  min-width: 200px;
 }
 
 input {
