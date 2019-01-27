@@ -8,7 +8,7 @@
 	<div class="header">
 		<h1>
 			<img src="<%= member.user.avatarURL %>" class="profilePic" title="Your Discord Profile Picture"></img>
-			<input name="username" form="update-profile" type="text" id="usernameContainer" value="<%= member.displayName%>" placeholder="<%= member.user.username%>" title="Your Username">
+			<input name="username" maxlength="32" form="update-profile" type="text" id="usernameContainer" value="<%= member.displayName%>" placeholder="<%= member.user.username%>" title="Your Username">
 		</h1>
 	</div>
 	<a href="<%= `/guilds/${encodeURIComponent(member.guild.name)}/members/${encodeURIComponent(member.displayName)}`.replace(/%20/g, '_') %>">View Profile</a>
@@ -16,7 +16,6 @@
 		<% if (userData.rowCount > 0) { %>
 		<div class="post">
 			<div class="title">Write Bio</div>
-
 			<textarea name="bio" id="text-input" type="text" class="full-width" oninput="this.editor.update()"
 				placeholder="Tell everyone something wonderful. 
 Markdown is supported!" 

@@ -75,7 +75,7 @@ async function post(req, res) {
 			WHERE users.id = user_id('${req.session.user.member_id}', '${req.session.user.guild_id}');
 		`, [req.body.bio]);
 	}
-	if (req.body.username) {
+	if (req.body.username && req.body.username <= 32) {
 		const taken = req.member.guild.members.some(member => 
 			member.displayName.replace(/_/g, ' ') === req.body.username.replace(/_/g, ' ') && member.id !== req.member.id);
 		if (!taken) {
