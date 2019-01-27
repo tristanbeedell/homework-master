@@ -1,8 +1,7 @@
-module.exports = { giveClasses, getTimetable, getTimetableForm };
+module.exports = { giveClasses, getTimetable, getTimetableForm, empty };
 
 const path = require('path');
 const { getDB } = require(path.join(__dirname, '../modules/database'));
-const members = require(path.join(__dirname, '../modules/member'));
 const giveRoles = require(path.join(__dirname, '../bot/createClass'));
 
 async function getTimetableForm(req, res) {
@@ -18,8 +17,8 @@ async function getTimetableForm(req, res) {
 		AND complete = FALSE;
 	`).catch(console.error);
 
-	if (user.rowCount == 0)
-		return res.redirect('/signup');
+	if (user.rowCount === 0)
+		return res.redirect('/me');
 
 	pool.query(`
 		SELECT	DISTINCT
@@ -39,7 +38,7 @@ async function getTimetableForm(req, res) {
 		WHERE groups.guild_id = '${req.member.guild.id}'
 		ORDER BY division DESC;
 	`)
-	.then((sets) =>{
+	.then((sets) => {
 		// render page
 		res.render("pages/timetable", {
 			...req,
@@ -103,7 +102,7 @@ async function giveClasses(req, res) {
 	// give the user access to their classes.
 	await giveRoles(req.member, req.body);
 	// DM the user on discord
-	member.send("All done! If you want me again then type `help`");
+	req.member.send("All done! If you want me again then type `help`");
 }
 
 async function saveClasses(user, classes) {
@@ -113,7 +112,7 @@ async function saveClasses(user, classes) {
 		INSERT INTO usr_set_join
 		VALUES`;
 	for (let division in classes) {
-		if (classes[division] != 'none') {
+		if (classes[division] !== 'none') {
 			query += `
 		(user_id('${user.member_id}', '${user.guild_id}'),
 		set_id('${classes[division]}')),`; // FIXME: SQL INJECTION
@@ -129,4 +128,32 @@ async function saveClasses(user, classes) {
 		SET complete = TRUE 
 		WHERE id = user_id('${user.member_id}', '${user.guild_id}');
 	`);
+}
+
+async function empty(req, res) {
+	if (!req.member) {
+		return res.status(404).render('pages/unavaliable', {
+			...req,
+			message: 'Not logged in',
+			redirect: '/me'
+		});
+	}
+
+	const pool = getDB();
+	const roles = await pool.query(`
+		SELECT role_id FROM sets
+		INNER JOIN usr_set_join ON sets.id = usr_set_join.set_id
+		INNER JOIN users ON users.id = usr_set_join.user_id
+		WHERE users.member_id = '${req.member.id}';
+	`);
+	req.member.removeRoles(roles.rows.map(row => row.role_id));
+
+	await pool.query(`
+		DELETE FROM usr_set_join WHERE user_id = user_id('${req.member.id}', '${req.member.guild.id}');
+	`);
+	await pool.query(`
+		UPDATE users SET complete = FALSE WHERE id = user_id('${req.member.id}', '${req.member.guild.id}');
+	`);
+
+	res.redirect('/signup/timetable');
 }

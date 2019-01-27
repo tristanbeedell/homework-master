@@ -95,6 +95,7 @@ app.post('/checkNewUserPassword', signup.postPasswordIsValid);
 app.get('/signup/timetable', timetable.getTimetableForm);
 app.get('/timetabledata', timetable.getTimetable);
 app.post('/timetable', timetable.giveClasses);
+app.get('/empty_timetable', timetable.empty);
 
 app.get('/guilds/:guildName/members/:memberName', profile);
 app.get('/guilds/:guildName/', guild);
