@@ -1,4 +1,4 @@
-module.exports = { get, postPasswordIsValid, post };
+module.exports = { get, post };
 
 const path = require('path');
 const url = require('url');
@@ -88,11 +88,6 @@ async function checkNewUserPassword(req) {
 	return valid;
 }
 
-async function postPasswordIsValid(req, res) {
-	const valid = await checkNewUserPassword(req);
-	res.status(valid ? 200 : 400).end();
-}
-
 function checkValidity(err, p, passwordGiven) {
 	if (err) {
 		console.log(err);
@@ -120,8 +115,8 @@ async function post(req, res) {
 		res.redirect(u);
 		return;
 	}
-	const member = await guild.members.get(req.query.member);
-	await member.setNickname(req.body.nickname).catch(err => {
+	const member = guild.members.get(req.query.member)
+		.setNickname(req.body.nickname).catch(err => {
 		// bot cannot change an administrator's nickname, ignore this error.
 		if (!err.message === "Missing Permissions") 
 			console.error(err);
@@ -133,11 +128,15 @@ async function post(req, res) {
 	req.session.user = {
 		memberId: req.query.member,
 		guildId: req.query.guild,
-		passwordhash: passwordhash,
-		name: member.displayName
 	};
 
-	await save(req.session.user);
+	req.member = member;
+
+	await save({
+		memberId: req.query.member,
+		guildId: req.query.guild,
+		passwordhash: passwordhash,
+	});
 	res.redirect('/signup/timetable');
 }
 

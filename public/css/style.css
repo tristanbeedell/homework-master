@@ -43,7 +43,7 @@ html, body {
 }
 
 .header {
-	background-color: rgba(0,50,50,0.3);
+	background-color: rgba(52, 245, 245, 0.3);
 	color: azure;
 	font-size: larger;
 	display: flex;
@@ -169,11 +169,17 @@ td {
 .profilePic {
 	border-radius: 50%;
 	height: 3em;
+	border: 2px solid var(--member-color);
 }
 
 #usernameContainer {
 	display: inline-block;
-	color: var(--member-color);
+    color: azure;
+	text-shadow:
+	1px 1px 0px var(--member-color),
+	-1px 1px 0px var(--member-color),
+	1px -1px 0px var(--member-color),
+	-1px -1px 0px var(--member-color);
 }
 
 .important-link {

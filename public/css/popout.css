@@ -90,7 +90,7 @@
 	}
 
 	to {
-		margin-top: 30vh;
+		margin-top: 20vh;
 	}
 }
 
@@ -175,7 +175,7 @@
 }
 
 /* open menu */
-.menu-container:hover{
+.menu-container:hover {
 	right: 0vw !important;
 }
 

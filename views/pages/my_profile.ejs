@@ -8,7 +8,7 @@
 	<div class="header">
 		<h1>
 			<img src="<%= member.user.avatarURL %>" class="profilePic" title="Your Discord Profile Picture"></img>
-			<input name="username" maxlength="32" form="update-profile" type="text" id="usernameContainer" value="<%= member.displayName%>" placeholder="<%= member.user.username%>" title="Your Username">
+			<input name="username" maxlength="32" form="update-profile" type="text" id="usernameContainer" value="<%= member.displayName%>" placeholder="<%= member.displayName%>" title="Your Username">
 		</h1>
 	</div>
 	<a href="<%= `/guilds/${encodeURIComponent(member.guild.name)}/members/${encodeURIComponent(member.displayName)}`.replace(/%20/g, '_') %>">View Profile</a>

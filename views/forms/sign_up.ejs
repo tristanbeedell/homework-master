@@ -4,7 +4,7 @@
 	<label for="nickname">Your Name: 
 		<span class="error"><%= query.nameerror %></span>
 	</label>
-	<input type="text" name="nickname" id="nickname" placeholder="<%= member.displayName%>">
+	<input type="text" name="nickname" id="nickname" placeholder="<%= member.user.username%>">
 
 	<label for="newpassword">New Password:
 		<span class="error"></span>
@@ -15,8 +15,8 @@
 		<span class="error"></span>
 	</label>
 	<input type="password" name="checkPassword" id="checkPassword" onchange="check('checkPassword')">
-	<input type="hidden" name="guild" value="<%= member.guild%>">
-	<input type="hidden" name="member" value="<%= member%>">
+	<input type="hidden" name="guild" value="<%= member.guild.id%>">
+	<input type="hidden" name="member" value="<%= member.id%>">
 	<input type="hidden" name="password" id="password" value="<%= query.password%>" placeholder="(sent by the bot in DM)">
 	<br>
 	<input type="button" value="OK" onclick="signup('signup')">

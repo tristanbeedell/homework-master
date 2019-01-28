@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-vars */
+/* eslint-env browser */
 
 function choose(set, notset) {
 	const options = document.getElementsByTagName('option');
-	for (option of options) {
+	for (const option of options) {
 		if (option.value === set) {
 			option.selected = true;
 			option.parentNode.classList.add('flash');
@@ -26,10 +28,12 @@ function sync () {
 		const set = subject.split('&');
 		let p = document.createElement('input');
 		p.value = set[1];
-		p.placeholder = p.name = set[0];
+		p.placeholder = set[0];
+		p.name = set[0];
 		p.className = 'full-width';
 		p.onchange = (event) => {
-			choose(`${event.target.placeholder}&${event.target.value}`, `${event.target.placeholder}&${set[1]}`)
+			choose(`${event.target.placeholder}&${event.target.value}`,
+				`${event.target.placeholder}&${set[1]}`);
 		};
 		document.forms['timetable-form'].appendChild(p);
 	}
