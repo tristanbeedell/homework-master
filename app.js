@@ -91,10 +91,8 @@ app.get('/invite', require('./controllers/invite').invite);
 app.get('/signup', signup.get);
 app.post('/signup', signup.post);
 
-app.post('/checkNewUserPassword', signup.postPasswordIsValid);
 app.get('/signup/timetable', timetable.getTimetableForm);
-app.get('/timetabledata', timetable.getTimetable);
-app.post('/signup/timetable', timetable.giveClasses);
+app.post('/timetable', timetable.giveClasses);
 
 app.get('/guilds/:guildName/members/:memberName', profile);
 app.get('/guilds/:guildName/', guild);
@@ -105,7 +103,6 @@ app.post('/me', myProfile.post);
 
 app.get('/login', login.getForm);
 app.post('/login', login.login);
-app.post('/validateLogin', login.validate);
 // TODO: rules and guidlines page.
 
 const port = process.env.PORT || 8080;

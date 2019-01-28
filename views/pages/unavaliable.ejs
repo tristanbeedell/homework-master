@@ -10,9 +10,18 @@
 	</div>
 	<div class="content">
 		<div class="post">
-			You cannot see this page because you do not have access to this group, or it does not exist.
-			<a href="/login?redirect=<%= redirect || '/'%>">Login here</a>
-			<a href="/">Home</a>
+			<div class="title">
+				<% if (message) { %>
+					<p><%= message%></p>
+				<% } else { %>
+					You either do not have access to this page, or it does not exist.
+				<% } %>
+			</div>
+			<div class="message">
+				<a href="/login?redirect=<%= redirect || '/'%>">Login here</a>
+				<br>
+				<a href="/">Home</a>
+			</div>
 		</div>
 	</div>
 	<% include ../partials/menu %>

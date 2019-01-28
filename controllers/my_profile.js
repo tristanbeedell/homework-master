@@ -14,21 +14,28 @@ async function get(req, res) {
 		return;
 	}
 
-	const userData = (await pool.query(`
-	SELECT DISTINCT 
-		name AS set_name,
-		complete,
-		set,
-		bio
-		
-	FROM (
-		SELECT * FROM users 
-		WHERE users.id = user_id('${req.session.user.member_id}', '${req.session.user.guild_id}')
-	) AS users
-
-	LEFT JOIN usr_set_join ON users.id = usr_set_join.user_id
-	LEFT JOIN sets ON usr_set_join.set_id = sets.id;
-	`));
+	const userData = await pool.query(`
+	SELECT DISTINCT
+		sets.set	AS set,
+		divisions.name	AS division,
+		sets.name	AS name,
+		timetable.day,
+		timetable.period,
+		subject.name	AS subject,
+		teachers.name	AS teacher,
+		users.complete,
+		users.bio,
+		users.color
+	FROM sets
+	INNER JOIN divisions	ON divisions.id = sets.division_id
+	INNER JOIN groups	ON divisions.group_id = groups.id
+	INNER JOIN timetable	ON sets.id = timetable.set_id
+	INNER JOIN subject	ON timetable.subject_id = subject.id
+	INNER JOIN usr_set_join ON usr_set_join.set_id = sets.id
+	INNER JOIN users		ON usr_set_join.user_id = users.id
+		LEFT JOIN teachers	ON timetable.teacher_id = teachers.id
+		WHERE users.id = user_id('${req.member.id}', '${req.member.guild.id}');
+	`);
 
 	res.render("pages/my_profile", {
 		bot,
@@ -68,15 +75,20 @@ async function post(req, res) {
 			WHERE users.id = user_id('${req.session.user.member_id}', '${req.session.user.guild_id}');
 		`, [req.body.bio]);
 	}
-	if (req.body.username) {
+	if (req.body.username && req.body.username <= 32) {
 		const taken = req.member.guild.members.some(member => 
-			member.displayName === req.body.username && member.id !== req.member.id);
+			member.displayName.replace(/_/g, ' ') === req.body.username.replace(/_/g, ' ') && member.id !== req.member.id);
 		if (!taken) {
 			await req.member.setNickname(req.body.username).catch(error => {
 				if (error.message !== 'Missing Permissions')
 					throw error;
 			});
 		}
+	}
+	if (req.body.color) {
+		await pool.query(`
+		UPDATE users SET color = $1 WHERE users.id = user_id('${req.member.id}', '${req.member.guild.id}');
+		`, [req.body.color]);
 	}
 	res.redirect('/me');
 }

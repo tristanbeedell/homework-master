@@ -3,7 +3,7 @@ module.exports = { get };
 const guilds = require('./guild.js');
 
 function get(guildId, memberId) {
-	const guild = typeof guildId == 'string' ? guilds.get(guildId) : guildId;
+	const guild = typeof guildId === 'string' ? guilds.get(guildId) : guildId;
 	if (!guild) {
 		return { error: 'guild not found' };
 	}

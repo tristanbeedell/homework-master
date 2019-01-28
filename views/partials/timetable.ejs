@@ -1,0 +1,30 @@
+
+<div class="title">
+	<h2 colspan="10">Your Timetable</h2>
+</div>
+<div id="table" class="message">
+	<div class="timetable">
+		<% for (let day = 1; day <= 10; day++) { %>
+		<% if (day % 5 === 1){ %>
+			<h3 class="full-width"><%= ((day-1)/5)+1 %></h3>
+		<% } %>
+		<div class="day">
+		<span>
+			<%= ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri'][(day-1)%5]%>
+		</span>
+		<% for (let period = 1; period <= 5; period++) { %>
+		<div height="2em">
+			<select class="add" onchange="choose(this.value, previous)" onfocus="previous = this.value">
+				<option value="none">RESET</option>
+				<% for (const row of rows) {
+					if (row.day === day && row.period === period) { -%>
+				<option value="<%= row.division%>&<%= row.set%>"><%= row.subject%> - <%= row.teacher%></option>
+					<% }
+				} -%>
+			</select>
+		</div>
+		<% } %>
+		</div>
+		<% } %>
+	</div>
+</div>

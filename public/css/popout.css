@@ -90,7 +90,7 @@
 	}
 
 	to {
-		margin-top: 30vh;
+		margin-top: 20vh;
 	}
 }
 
@@ -175,13 +175,13 @@
 }
 
 /* open menu */
-.menu-container:hover{
+.menu-container:hover {
 	right: 0vw !important;
 }
 
 .menu-content {
 	position: relative;
-	width: 30vw;
+	width: auto;
 	height: 100vh;
 	overflow: hidden;
 	transition: width 0.7s;
@@ -201,6 +201,8 @@
 	top: 1em;
 	padding-right: 25px;
 	margin-right: 10px;
+	max-height: 20vh;
+	overflow-y: hidden;
 }
 
 @-moz-document url-prefix() {
