@@ -5,63 +5,68 @@
 <% include ../partials/head %>
 
 <body>
-	<a href="/guilds/<%= member.guild.name.replace(/ /g, '_') %>/members/<%= member.displayName.replace(/ /g, '_') %>">View Profile</a>
 	<div class="header">
 		<h1>
 			<img src="<%= member.user.avatarURL %>" class="profilePic" title="Your Discord Profile Picture"></img>
-			<input name="username" form="update-profile" type="text" id="usernameContainer" value="<%= member.displayName%>" placeholder="<%= member.user.username%>" title="Your Username">
+			<input name="username" maxlength="32" form="update-profile" type="text" id="usernameContainer" value="<%= member.displayName%>" placeholder="<%= member.displayName%>" title="Your Username">
 		</h1>
 	</div>
+	<a href="<%= `/guilds/${encodeURIComponent(member.guild.name)}/members/${encodeURIComponent(member.displayName)}`.replace(/%20/g, '_') %>">View Profile</a>
 	<div class="content">
+		<% if (userData.rowCount > 0) { %>
 		<div class="post">
-				<div class="title">Set Bio</div>
-				<textarea name="bio" type="text" class="full-width" 
-			placeholder="Tell everyone something wonderful. 
-Markdown is supported!" form="update-profile" rows="<%= userData.rows[0].bio ? userData.rows[0].bio.split('\n').length : 5 %>" maxlength="500" title="Your Bio"><%= userData.rows[0].bio%></textarea>
+			<div class="title">Write Bio</div>
+			<textarea name="bio" id="text-input" type="text" class="full-width" oninput="this.editor.update()"
+				placeholder="Tell everyone something wonderful. 
+Markdown is supported!" 
+				form="update-profile" rows="<%= userData.rows[0].bio ? userData.rows[0].bio.split('\n').length : 5 %>" 
+				maxlength="500" title="Your Bio"><%= userData.rows[0].bio%></textarea>
 		</div>
-
 		<div class="post">
-			<div class="title">What should go here?</div>
-			<div class="message">
-				If you have any ideas, please tell me what you think I should put here.<br>
-				<h4>My ideas:</h4>
-				Customise Timetable<br>
-				Reset password<br>
-				Background colour
-			</div>
+			<div class="title">Preview Bio</div>
+			<div class="message" id="preview"> </div>
 		</div>
-
-		<% if (!userData.rows[0].complete) { %>
-			<a href="/signup/timetable">You haven't completed your signup!</a>
-		<% } else { %>
-			<% userData.rows.forEach(row => { %>
-				<%= row.set_name%><br>
-			<% }) %>
+		<div class="lookup">
+			<div>Background Color</div>
+			<input type="color" name="color" value="<%= color || '#5F9EA0'%>" form="update-profile" oninput="document.body.style.setProperty('--theme-color', this.value)"/>
+		</div>
+		<form id="update-profile" method="POST" style="padding:0;display:block;height:3em">
+			<input type="submit" value="Save Changes" class="full-width accept-button" style="height:inherit">
+		</form>	
 		<% } %>
-	</div>
-
-	<form id="update-profile" method="POST" style="padding:0;display:block">
-		<input type="submit" value="Save Changes" class="full-width accept-button">
-	</form>
 	
-	<button class="important-link delete-account-modal delete-button">Delete This Account.</button>
 
+		<div class="post">
+			<div class="title">Timetable</div>
+			<% if (userData.rowCount < 1 || !userData.rows[0].complete) { %>
+				<a href="/signup/timetable">You haven't completed your signup!</a>
+			<% } else { %>
+				<a href="/signup/timetable">RESET TIMETABLE</a>
+
+				<% include ../partials/user_timetable %>
+
+			<% } %>
+		</div>
+		
+
+	</div>
+	
 	<% include ../partials/menu %>
 
-	<div id="delete-account-modal" class="modal">
-		<div class="modal-content slide-down">
-			<form method="DELETE" id="delete-account-form">
-				<h4>Are you sure?</h4>
-				<p>
-				You will be kicked from <%= member.guild.name%> on discord and your classes will be wiped. Any ranks achieved will also be removed.
-				</p>
-			</form>
-			<span class="close">&times;</span>
-			<input type="submit" class="delete-button" form="delete-account-form" value="I understand and would like to continue.">
-		</div>
-	</div>
-
 	<script src="/js/index.js"></script>
+
+	<script src="js/markdown.js"></script> 
+	<script>
+		function Editor(input, preview) {
+			this.update = function () {
+				preview.innerHTML = markdown.toHTML(input.value);
+			};
+			input.editor = this;
+			this.update();
+		}
+		new Editor(document.getElementById("text-input"), document.getElementById("preview"));
+	</script>
+
 </body>
 
 </html>

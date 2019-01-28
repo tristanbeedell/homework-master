@@ -13,12 +13,12 @@ async function giveRoles(member, chosenSubjects) {
 	// iterate through the classes
 	for (let division in chosenSubjects) {
 		let set = chosenSubjects[division];
-		if (set == 'none') { continue; }
+		if (set === 'none') { continue; }
 		// get or create the role
 		let role = await getOrMakeRole(guild, set);
 		role.setColor('88c65a');
 		// give that role to the member if they do not already have it
-		if (!member.roles.some((hasRole) => hasRole.id == role.id)) {
+		if (!member.roles.some((hasRole) => hasRole.id === role.id)) {
 			roles.push(role);
 		}
 		// update channels, categories in the discord guild.
@@ -70,7 +70,7 @@ async function updateClasses(role, set, division) {
 
 	// make voice channel
 	const name = `${role.name}-voice`.toLowerCase().replace(/ /g, '-');
-	if (!guild.channels.find(channel => channel.name == name))
+	if (!guild.channels.find(channel => channel.name === name))
 		createChannel(role, name, cat, 'voice');
 }
 
@@ -101,13 +101,13 @@ async function setupGeneral(guild, room, cat, role) {
 		`).catch(console.error);
 	} else {
 		// ammend channel position error
-		if (channel.parent != cat) {
+		if (channel.parent !== cat) {
 			console.log(`moved ${channel.name} into ${cat.name}`);
 			channel.setParent(cat);
 		}
 
 		// ammend incorrect name
-		if (channel.name != name) {
+		if (channel.name !== name) {
 			console.log(`update ${channel.name} to ${name}`);
 			channel.setName(name);
 		}
@@ -126,7 +126,7 @@ async function setupCat(guild, room) {
 		cat = await createCatagory(guild, room.subject);
 	} 
 	// amend misnamed catagory
-	else if (cat.name != room.subject) {
+	else if (cat.name !== room.subject) {
 		await cat.setName(room.subject);
 	}
 
@@ -146,12 +146,11 @@ async function updatePunishRoles(guild) {
 
 async function getOrMakeRole(guild, name) {
 	// check is the role exists already
-	function matches(role) { return role.name == name; }
+	function matches(role) { return role.name === name; }
 	let exists = guild.roles.some(matches);
 	if (exists) {
 		return guild.roles.find(matches);
 	}
-	// IDEA: could make role prefs adjustable
 	// role preferences
 	let prefs = {
 		name: name,
@@ -160,8 +159,15 @@ async function getOrMakeRole(guild, name) {
 	};
 	console.log(`created: ${name} role`.green);
 	// create the role on the guild
-	return guild.createRole(prefs)
+	const role = await guild.createRole(prefs)
 		.catch(console.error);
+
+	const pool = database.getDB();
+	pool.query(`
+	UPDATE sets SET role_id = '${role.id}'
+	WHERE sets.id = set_id('${name}', '${guild.id}');
+	`);
+	return role;
 }
 
 async function createCatagory(guild, name) {

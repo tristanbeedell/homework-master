@@ -1,5 +1,5 @@
 body {
-	background-color: cadetblue;
+	background-color: var(--theme-color);
 	text-align: center;
 	font-family: Avenir, Helvetica;
 	margin: 0;
@@ -43,7 +43,7 @@ html, body {
 }
 
 .header {
-	background-color: darkcyan;
+	background-color: rgba(52, 245, 245, 0.3);
 	color: azure;
 	font-size: larger;
 	display: flex;
@@ -88,7 +88,7 @@ div.content {
 
 .post {
 	background-color: floralwhite;
-	color: cadetblue;
+	color: var(--theme-color);
 	display: grid;
 	position: relative;
 	padding: 0.5em;
@@ -129,14 +129,13 @@ code {
 
 .post>.message {
 	grid-area: message;
+	min-height: 2em;
 }
 
 .post>.author {
 	grid-area: author;
 	margin-bottom: 1em;
 }
-
-/* .post>.message {} */
 
 tr {
 	height: 40px;
@@ -170,10 +169,17 @@ td {
 .profilePic {
 	border-radius: 50%;
 	height: 3em;
+	border: 2px solid var(--member-color);
 }
 
 #usernameContainer {
 	display: inline-block;
+    color: azure;
+	text-shadow:
+	1px 1px 0px var(--member-color),
+	-1px 1px 0px var(--member-color),
+	1px -1px 0px var(--member-color),
+	-1px -1px 0px var(--member-color);
 }
 
 .important-link {
@@ -192,10 +198,6 @@ a {
 
 .content a:hover {
 	color: darkblue;
-}
-
-.content a:active {
-	background-color: ivory;
 }
 
 .widget {
@@ -222,10 +224,26 @@ ul, ol {
 	margin: auto;
 }
 
+li {
+    border: 1px solid;
+    padding: 0.5em;
+}
+
+.day {
+	width: auto;
+	margin: 0.5em;
+}
+
 blockquote {
 	text-align: left;
 	background-color: antiquewhite;
 	color: blueviolet;
 	padding: 0.3em 1em 0.3em 2em;
 	border-left: 2px solid orange;
+}
+
+hr {
+    width: 80%;
+    height: 0;
+    border: 1px solid var(--theme-color);
 }

@@ -1,8 +1,7 @@
-module.exports = { getForm, login, validate };
+module.exports = { getForm, login };
 
 const path = require('path');
 const discord = require(path.join(__dirname, '../modules/discord'));
-const members = require(path.join(__dirname, '../modules/member'));
 const { getDB } = require(path.join(__dirname, '../modules/database'));
 const bcrypt = require('bcrypt');
 
@@ -61,12 +60,4 @@ async function validatePassword(member, password) {
 		.catch(console.error);
 	// compare given pass with hash stored in the database
 	return bcrypt.compare(password, passwords.rows[0].passwordhash);
-}
-
-async function validate(req, res) {
-	let member = await members.get(req.body.guild, req.body.name);
-	let valid = await validatePassword(member, req.body.password)
-		.catch(console.error);
-	if (!valid) { res.status(401).send('Username or Password are incorrect'); return; }
-	res.end();
 }
