@@ -1,0 +1,26 @@
+
+<div class="message">
+		<div class="timetable">
+			<% for (let day = 1; day <= 10; day++) { %>
+			<% if (day % 5 === 1){ %>
+				<h3 class="full-width"><%= ((day-1)/5)+1 %></h3>
+			<% } %>
+			<ol class="day">
+			<h4>
+				<%= ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri'][(day-1)%5]%>
+			</h4>
+			<% for (let period = 1; period <= 5; period++) { %>
+			<li>
+				<% for (const row of userData.rows) {
+					if (row.day === day && row.period === period) { -%>
+				<%= row.subject%> - <%= row.teacher%>
+					<% }
+				} -%>
+			</li>
+			<% } %>
+			</ol>
+			<% } %>
+	</div>
+</div>
+
+

@@ -151,7 +151,6 @@ async function getOrMakeRole(guild, name) {
 	if (exists) {
 		return guild.roles.find(matches);
 	}
-	// IDEA: could make role prefs adjustable
 	// role preferences
 	let prefs = {
 		name: name,
@@ -160,8 +159,15 @@ async function getOrMakeRole(guild, name) {
 	};
 	console.log(`created: ${name} role`.green);
 	// create the role on the guild
-	return guild.createRole(prefs)
+	const role = await guild.createRole(prefs)
 		.catch(console.error);
+
+	const pool = database.getDB();
+	pool.query(`
+	UPDATE sets SET role_id = '${role.id}'
+	WHERE sets.id = set_id('${name}', '${guild.id}');
+	`);
+	return role;
 }
 
 async function createCatagory(guild, name) {
@@ -211,9 +217,9 @@ async function getChannelData(set, division, guild) {
 		INNER JOIN teachers  ON timetable.teacher_id = teachers.id
 		INNER JOIN divisions ON sets.division_id = divisions.id
 		INNER JOIN groups ON sets.group_id = groups.id
-		WHERE sets.set = '${set}' AND divisions.name = '${division}' 
+		WHERE sets.set = $1 AND divisions.name = $2
 		AND groups.guild_id = '${guild.id}' AND timetable.usual;
-	`).catch(console.error);
+	`, [set, division]).catch(console.error);
 	return rooms;
 }
 

@@ -1,62 +1,47 @@
-function updateTable(subject, set) {
-	if (set == 'none') {
-		reloadTable();
-		return;
-	}
-	// send a requst to the server for timtable data from the database.
-	const xhttp = new XMLHttpRequest();
-	xhttp.onload = use;
-	xhttp.open("GET", `/timetabledata?set=${set}&sub=${subject}`, true);
-	xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	xhttp.send();
-}
+/* eslint-disable no-unused-vars */
+/* eslint-env browser */
 
-function use(data) {
-	rows = JSON.parse(data.target.response).rows;
-	for (item of rows) {
-		t = document.getElementById("table");
-		row = t.firstElementChild.children[2 + parseInt(item.period)];
-		box = row.children[parseInt(item.day) - 1];
-		teacher = item.teacher == null ? "" : "<br>" + item.teacher;
-		box.innerHTML = item.class + teacher;
-		box.style.cssText = `background-color: ${colours[item.division]};`;
-		if (item.override) {
-			// reset disabled selects
-			let selects = document.getElementsByTagName('select');
-			for (i = 0; i < selects.length; i++) {
-				selects[i].disabled = false;
-			}
-			// disable the overriden one
-			document.getElementById(item.override).value = 'none';
-			document.getElementById(item.override).disabled = true;
+function choose(set, notset) {
+	const options = document.getElementsByTagName('option');
+	for (const option of options) {
+		if (option.value === set) {
+			option.selected = true;
+			option.parentNode.classList.add('flash');
+		} else if (option.value === notset) {
+			option.selected = false;
 		}
 	}
+	sync();
 }
+let previous;
 
-const colours = {
-	'Maths': 'lavenderblush',
-	'English': 'lavender',
-	'Science': 'aquamarine'
-};
-
-function reloadTable(){
-
-	t = document.getElementById("table");
-	for (const row of Array.from(t.firstElementChild.children).slice(3)){
-		for (const box of row.children) {
-			box.innerHTML = '';
-			box.style.cssText = '';
-		}
-	}
-	
-
+function sync () {
 	const selects = document.getElementsByTagName('select');
-	for (select of selects) {
-		if (select.value !== 'none') {
-			select.onchange();
+	let taken = [];
+	for (const select of selects) {
+		if (select.value !== 'none' && !taken.includes(select.value)) {
+			taken.push(select.value);
 		}
 	}
-}
-reloadTable();
+	document.forms['timetable-form'].innerHTML = '';
+	for (const subject of taken) {
+		const set = subject.split('&');
+		let p = document.createElement('input');
+		p.value = set[1];
+		p.placeholder = set[0];
+		p.name = set[0];
+		p.className = 'full-width';
+		p.onchange = (event) => {
+			choose(`${event.target.placeholder}&${event.target.value}`,
+				`${event.target.placeholder}&${set[1]}`);
+		};
+		document.forms['timetable-form'].appendChild(p);
+	}
+	let submit = document.createElement('input');
+	submit.type = "submit";
+	submit.className = 'full-width';
+	document.forms['timetable-form'].appendChild(submit);
 
-// TODO: Cashe timetale data or my server will die.
+}
+
+sync();
