@@ -1,5 +1,5 @@
 const path = require('path');
-const commands = require(path.join(__dirname, './get_commands'));
+const commands = require(path.join(__dirname, './get_commands'))();
 
 function respond({ msg, tokens, dest, selected }) {
 	let command;

@@ -1,7 +1,8 @@
-module.exports = { initBot, getBot, createEmbed };
+module.exports = { initBot, getBot, createEmbed, toHTML };
 
 const Discord = require('discord.js');
 const assert = require('assert');
+const markdown = require('markdown').markdown;
 const token = process.env.DISCORD_BOT_SECRET;
 
 let bot;
@@ -28,5 +29,24 @@ function createEmbed(member) {
 			.setAuthor(member.displayName, member.user.avatarURL, url);
 	} else {
 		return new Discord.RichEmbed();
+	}
+}
+
+async function toHTML(msg) {
+	let html = markdown.toHTML(msg);
+	let id = true;
+	while (id) {
+		id = html.match(/&lt;@(.?)(\d{18})&gt;/);
+		if (!id) {
+			return html;
+		}
+		switch (id[1]) {
+			case '':
+			case '!':
+				html = html.replace(/&lt;@.?(\d{18})&gt;/, `<span class="mention">@${(await getBot().fetchUser(id[2])).username.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</span>`);
+				break;
+			default:
+				html = html.replace(/&lt;@.?(\d{18})&gt;/, `<span class="mention">${markdown.toHTML(id[2])}</span>`);
+		}
 	}
 }

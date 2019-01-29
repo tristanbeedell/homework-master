@@ -102,9 +102,8 @@ div.content {
 
 code {
 	font-family: monospace;
-	color: azure;
-	background-color: gray;
-	padding: 2px;
+	color: #dcddde;
+	background-color: #2f3136;
 }
 
 .multiline {
@@ -246,4 +245,19 @@ hr {
     width: 80%;
     height: 0;
     border: 1px solid var(--theme-color);
+}
+
+.docs {
+    font-family: monospace;
+    text-align: left;
+}
+
+.mention {
+	background-color: rgba(114,137,218,.1);
+	color: #7289da;
+}
+
+.mention:hover {
+    background-color: rgba(114,137,218,.7);
+    color: #fff;
 }

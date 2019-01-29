@@ -18,5 +18,5 @@ module.exports = {
 			msg.channel.send(':thinking_face: Nothing to say...');
 		}
 	}, 
-	instructions: 'This will echo back whatever text is put after. The text must be wrapped in quote marks'
+	instructions: 'This will echo back whatever text is put after. The text must be wrapped in quote marks.'
 };

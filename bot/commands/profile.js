@@ -6,11 +6,11 @@ const send = require(path.join(__dirname, '../send'));
 module.exports = {
 	name: 'profile',
 	rule: /^\s*profile/i, 
-	usage: 'profile __[username|usertag|@user|me]__', 
+	usage: 'profile (__username__|__usertag__|__@user__|__me__)', 
 	summary: 'Gets a profile', 
 	func: profile, 
 	instructions: 'The user\'s profile is printed with a link to the website.\n' +
-	`A user can be found by a mention [${discord.getBot().user.toString()}], their discord tag [${discord.getBot().user.tag}], their discord username [${discord.getBot().user.username}] or get your own with [me].`
+	`A user can be found by a mention [__${discord.getBot().user.toString()}__], their discord tag [__${discord.getBot().user.tag}__], their discord username [__${discord.getBot().user.username}__] or get your own with [__me__].`
 };
 
 async function profile ({ msg, dest, tokens }) {

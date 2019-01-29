@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = {
 	rule: /^\s*(DM|message|send)\s+(<[@#]!?\d+>|me)/i,
-	usage: '(message|DM|send) __(@user|#channel)__ __command__',
+	usage: '(message|DM|send) __channel__ __command__',
 	summary: 'Redirect a message',
 	func: async ({ msg, tokens, selected }) => {
 		let id = tokens.match(/<(@!?|#)(\d+)>/)[2];

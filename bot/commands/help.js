@@ -6,17 +6,18 @@ module.exports = {
 	name: 'help',
 	rule: /^\s*help/i, 
 	func, 
-	usage: 'help __[command]__', 
+	usage: 'help [ __command__ ]', 
 	summary: 'Gets help.',
-	instructions: 'Prints out all the commands, or detail on one if provided in __command__.\n\n' +
-	'Variables, such as the __command__ in this command are underlined.\n' +
-	'Optional phrases or words are wrapped in square brackets `[]`\n'+
-	'Where there are multiple choices, they will be separated by bars `|`'
+	instructions: `To use the commands, ping the bot like ${discord.getBot().user.toString()}, (which can be done by sending \`@${discord.getBot().user.tag}\`) and then type a command after.\n\n` +
+	'This help command prints out all the commands, or detail on one if provided in __command__.\n\n' +
+	'Variables, such as the __command__ in this command are written strong.\n' +
+	'Optional phrases or words are wrapped in square brackets `[]`.\n'+
+	'Where there are multiple choices, they will be separated by bars `|`.'
 };
 
 let commands;
 function func ({ msg, dest, tokens }) {
-	commands = require(path.join(__dirname, '../get_commands'));
+	commands = require(path.join(__dirname, '../get_commands'))();
 	let reply;
 	let com = tokens.match(/help\s+([^.]+)/);
 	if (!com) {
