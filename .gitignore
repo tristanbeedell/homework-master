@@ -3,7 +3,7 @@ node_modules
 
 # Local development
 *.env
-_test.js
+_*
 .vscode
 
 # SSH artifacts

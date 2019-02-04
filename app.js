@@ -47,30 +47,25 @@ const profile = require(path.join(__dirname, './controllers/profile'));
 const myProfile = require(path.join(__dirname, './controllers/my_profile'));
 const guild = require(path.join(__dirname, './controllers/guild'));
 const login = require(path.join(__dirname, './controllers/login'));
+const botHelp = require(path.join(__dirname, './controllers/bot_help'));
 
 console.log('Connecting Controllers...');
-app.get("/", (req, res) => {
-	res.render("pages/home", {
+app.get('/', (req, res) => {
+	res.render('pages/home', {
 		...req,
 		bot: getBot()
 	});
 });
-app.get("/help", (req, res) => {
-	res.render("pages/help", {
+app.get('/help', (req, res) => {
+	res.render('pages/help', {
 		...req,
 		bot: getBot()
 	});
 });
-app.get("/help/bot", (req, res) => {
-	res.render("pages/bot_help", {
-		...req,
-		bot: getBot()
-	});
-});
-app.get("/logout", (req, res) => {
+app.get('/logout', (req, res) => {
 	delete req.session.user;
 	delete req.member;
-	res.redirect("back");
+	res.redirect('back');
 });
 app.get('/join', (req, res) => {
 	// if already invited, show the invite, else let the user join
@@ -85,6 +80,7 @@ app.get('/join', (req, res) => {
 	}
 });
 
+app.get('/help/bot', botHelp.get);
 app.post('/join', require('./controllers/join').join);
 app.get('/invite', require('./controllers/invite').invite);
 

@@ -2,8 +2,8 @@ const RichEmbed = require('discord.js').RichEmbed;
 const path = require('path');
 const database = require(path.join(__dirname, '../modules/database'));
 const bot = require(path.join(__dirname, '../modules/discord')).getBot();
-const respond = require(path.join(__dirname, './commands.js'));
-const bcrypt = require("bcrypt");
+const respond = require(path.join(__dirname, './respond.js'));
+const bcrypt = require('bcrypt');
 const urlname = process.env.WEBSITE_URL;
 
 module.exports = { newMember, dmRespond };
@@ -33,7 +33,7 @@ async function checkMemberFromSchool(pin, id, callback) {
 	const pool = database.getDB();
 	const groups = await pool.query(`SELECT pin_hash FROM groups WHERE guild_id = '${id}';`)
 		.catch(console.error);
-	if (groups.rows.length === 0) { return callback(false); }
+	if (groups.rowCount === 0) { return callback(false); }
 	const group = groups.rows[0];
 	const valid = bcrypt.compareSync(pin, group.pin_hash);
 	callback(valid, group);
@@ -45,9 +45,9 @@ function sendSetupLink(member) {
 	let embed;
 	embed = new RichEmbed()
 		.setURL(setupURL)
-		.setTitle("CLICK TO SET UP")
+		.setTitle('CLICK TO SET UP')
 		.setColor(0xFF00FF)
-		.setDescription("Give your classes, and you'll be put into text and voice chat rooms with everyone else in those classes!");
+		.setDescription('Give your classes, and you\'ll be put into text and voice chat rooms with everyone else in those classes!');
 
 	member.send(embed);
 }
@@ -57,9 +57,9 @@ function sendTimetableLink(member) {
 	const setupURL = `${urlname}/signup/timetable`;
 	const embed = new RichEmbed()
 		.setURL(setupURL)
-		.setTitle("CLICK TO ENTER YOUR TIMETABLE")
+		.setTitle('CLICK TO ENTER YOUR TIMETABLE')
 		.setColor(0xFF00FF)
-		.setDescription("Give your classes, and you'll be put into text and voice chat rooms with everyone else in those classes!");
+		.setDescription('Give your classes, and you\'ll be put into text and voice chat rooms with everyone else in those classes!');
 
 	member.send(embed);
 }
@@ -71,7 +71,17 @@ async function dmRespond(msg) {
 		member = members[0];
 	}
 	if (member) {
-		checkMemberFromSchool(msg.content, member.guild.id, (valid) => {
+		if (msg.content === 'exit') {
+			membersAwaiting = membersAwaiting.filter(member => member.id !== msg.author.id);
+			msg.channel.send(`You have stopped attepting to signup for ${member.group.name}. Try again with \`signup Group Name\``);
+			return;
+		}
+		checkMemberFromSchool(msg.content, member.guild.id, (valid, group) => {
+			if (!group) {
+				membersAwaiting = membersAwaiting.filter(member => member.id !== msg.author.id);
+				msg.channel.send(`There was an error! I couldn't find a database entry for ${member.group.name}`);
+				return;
+			}
 			if (valid) {
 				sendSetupLink(member);
 				membersAwaiting = membersAwaiting.filter(member => member.id !== msg.author.id);
