@@ -12,6 +12,7 @@ async function get (req, res) {
 			// convert the docs to html
 			html.instructions = await discord.toHTML(v.instructions);
 			html.usage = await discord.toHTML(v.usage);
+			html.summary = await discord.toHTML(v.summary);
 			return html;
 		}));
 
