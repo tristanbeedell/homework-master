@@ -185,7 +185,7 @@
 	height: 100vh;
 	overflow: hidden;
 	transition: width 0.7s;
-	padding: 2em 0;
+	padding: 2em 0 0 2em;
 	right: 0;
 }
 
@@ -230,21 +230,17 @@
 	margin-left: auto;
 }
 
-@media screen and (min-width: 600px) {
+/* @media screen and (min-width: 600px) { */
 	.menu a:hover, .menu .important-link:hover {
 		text-decoration: none;
 		color: red;
 		display: block;
 	}
-}
+/* } */
 
 @media screen and (max-width: 600px) {
 	.menu-container {
 		right: -80vw;
 		width: 80vw;
-	}
-
-	.menu-content {
-		padding: 2em 0 0 2em;
 	}
 }

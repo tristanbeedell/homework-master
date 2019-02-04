@@ -7,31 +7,37 @@ function popout(ele) {
 }
 
 forEach('menu-container', (tag) => {
-	tag.addEventListener('touchstart', popout);
+	tag.addEventListener('touchend', popout);
+});
+
+// toggle menus
+forEachTag('a', link => {
+	link.addEventListener('touchend', touch);
+	// if its a regular link then do a swipe when it's clicked.
+	if (link.attributes.href.textContent[0] === '/'){
+		link.onclick = click;
+	}
 });
 
 function openInNewTab(url) {
-	let win = window.open(url, '_blank');
+	const win = window.open(url, '_blank');
 	win.focus();
+}
+
+window.addEventListener('resize', alignMenus);
+
+function alignMenus() {
+	const totalHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+	forEach('menu-item', item => {
+		const tagheight = item.firstElementChild.firstElementChild.firstElementChild.clientHeight;
+		item.style.height = tagheight + (totalHeight * 0.05) + "px";
+	});
 }
 
 window.onpageshow = () => {
 	// page swipe
-	let pageWipeEle = document.getElementsByClassName('page-wipe')[0];
+	const pageWipeEle = document.getElementsByClassName('page-wipe')[0];
 	pageWipeEle.style.width = '0vw';
-
-	// toggle menus
-	forEachTag('a', link => {
-		link.addEventListener('touchend', touch);
-		link.onclick = (e) => {
-			e.preventDefault();
-			return 0;
-		};
-		// if its a regular link then do a swipe when it's clicked.
-		if (link.attributes.href.textContent[0] === '/'){
-			link.onclick = click;
-		}
-	});
 
 	forEachTag('input', input => {
 		if (input.type === 'submit') {
@@ -41,17 +47,18 @@ window.onpageshow = () => {
 			};
 		}
 	});
+	alignMenus();
+
+	let time = 0;
+	forEach('menu-container', (tag) => {
+		tag.style['transition-delay'] = time + 's';
+		time += 0.1;
+	});
 	
 	// header
 	forEach('header', header => {
 		let head = header.firstElementChild;
 		animate(head, 'slide-in', 0.5, 0.6);
-	});
-
-	const totalHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-	forEach('menu-item', item => {
-		const tagheight = item.firstElementChild.firstElementChild.firstElementChild.clientHeight;
-		item.style.height = tagheight + (totalHeight * 0.05) + "px";
 	});
 
 	forEach('close', close => {
@@ -148,10 +155,7 @@ function redirect(url, delay) {
 
 function toggleEntireMenu() {
 	// close menu
-	let time = 0;
 	forEach('menu-container', (tag) => {
-		tag.style['transition-delay'] = time + 's';
-		time += 0.1;
 		if (window.innerWidth <= 600)
 			tag.style.right = tag.style.right === '-100vw' ? '-80vw' : '-100vw';
 		else 

@@ -1,10 +1,11 @@
-<div id="spacer"></div>
+<% if (session.user) {%>
 <div id="logout-modal" class="modal">
 	<div class="modal-content slide-down">
 		<span class="close">&times;</span>
 		<a href="/logout">Logout</a>
 	</div>
 </div>
+<% } %>
 <div class="entire-menu">
 	<div class="menu">
 		<div id="toggle-menu">
@@ -20,7 +21,7 @@
 					<div class="menu-tag-content">Home</div>
 				</div>
 				<div class="menu-content">
-					<a href="/">home</a>
+					<a href="/">Home</a>
 				</div>
 			</div>
 		</div>
@@ -37,8 +38,8 @@
 					<a href="/guilds/<%= encodeURIComponent(member.guild.name).replace(/%20/g, '_') %>/members/<%= encodeURIComponent(member.displayName).replace(/%20/g, '_') %>">My Profile</a>
 					<span class="important-link logout-modal">Log Out</span>
 					<% } else { %>
-					<a href="/login">login</a>
-					<a href="/join">join</a>
+					<a href="/login">Login</a>
+					<a href="/join">Join a Group</a>
 					<%}%>
 				</div>
 			</div>
@@ -59,6 +60,7 @@
 		</div>
 	</div>
 </div>
+<div id="spacer"></div>
 <div class="page-wipe">
 	<div class="loader-container">
 		loading
