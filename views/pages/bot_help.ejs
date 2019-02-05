@@ -9,6 +9,14 @@
 		<h1>Bot Help</h1>
 	</div>
 	<div class="content">
+		<div class="post">
+			<div class="title">
+				Meet our bot
+			</div>
+			<div class="message">
+				<span class="mention"><%= bot.user.username%></span>
+			</div>
+		</div>
 		<% for (const command of commands) { %>
 			<div class="post" id="<%= command.name%>">
 				<div class="title">

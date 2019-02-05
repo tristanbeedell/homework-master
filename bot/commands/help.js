@@ -7,7 +7,7 @@ module.exports = {
 	rule: /^\s*help/i, 
 	func, 
 	usage: 'help [ __command__ ]', 
-	summary: 'Gets help.',
+	summary: 'Gets help',
 	instructions: `To use the commands, ping the bot like ${discord.getBot().user.toString()} (which can be done by sending \`@${discord.getBot().user.tag}\`), and then type a command after.\n\n` +
 	'This help command prints out all the commands, or detail on one if provided in __command__.\n\n' +
 	'Variables, such as the __command__ in this command are written strong.\n' +

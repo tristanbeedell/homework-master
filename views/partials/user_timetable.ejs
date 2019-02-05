@@ -3,7 +3,7 @@
 		<div class="timetable">
 			<% for (let day = 1; day <= 10; day++) { %>
 			<% if (day % 5 === 1){ %>
-				<h3 class="full-width"><%= ((day-1)/5)+1 %></h3>
+				<h3 class="full-width">WEEK <%= ((day-1)/5)+1 %></h3>
 			<% } %>
 			<ol class="day">
 			<h4>
@@ -13,7 +13,7 @@
 			<li>
 				<% for (const row of userData.rows) {
 					if (row.day === day && row.period === period) { -%>
-				<%= row.subject%> - <%= row.teacher%>
+				<%= row.subject%><br><%= row.teacher%>
 					<% }
 				} -%>
 			</li>

@@ -90,8 +90,8 @@ app.post('/signup', signup.post);
 app.get('/signup/timetable', timetable.getTimetableForm);
 app.post('/timetable', timetable.giveClasses);
 
-app.get('/guilds/:guildName/members/:memberName', profile);
-app.get('/guilds/:guildName/', guild);
+app.get('/:guildName/@:memberName', profile);
+app.get('/:guildName/server', guild);
 
 app.get('/me', myProfile.get);
 app.delete('/me', myProfile.del);

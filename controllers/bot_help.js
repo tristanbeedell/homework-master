@@ -18,6 +18,7 @@ async function get (req, res) {
 
 	res.render('pages/bot_help', {
 		...req,
-		commands
+		commands,
+		bot: discord.getBot()
 	});
 }

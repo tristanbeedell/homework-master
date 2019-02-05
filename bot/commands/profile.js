@@ -43,7 +43,7 @@ async function profile ({ msg, dest, tokens }) {
 		bio = bio.replace(/(?:#)+([^\n]+)/g, '**$1**');
 	}
 	const embed = discord.createEmbed(msg.author)
-		.setAuthor(selected.displayName, selected.user.avatarURL, `${process.env.WEBSITE_URL}/guilds/${encodeURIComponent(selected.guild.name).replace(/%20/g, '_')}/members/${encodeURIComponent(selected.displayName).replace(/%20/g, '_')}`)
+		.setAuthor(selected.displayName, selected.user.avatarURL, `${process.env.WEBSITE_URL}/${encodeURIComponent(selected.guild.name).replace(/%20/g, '_')}/@${encodeURIComponent(selected.displayName).replace(/%20/g, '_')}`)
 		.setColor(0xFFFFFF)
 		.setDescription(bio);
 	send(embed, msg, dest);

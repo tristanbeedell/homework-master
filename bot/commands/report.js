@@ -29,7 +29,7 @@ module.exports = {
 	name: 'report',
 	rule: /^\s*report/i,
 	usage: 'report __@user__ for __reason__',
-	summary: 'Reports __@user__.',
+	summary: 'Reports a user',
 	func,
 	instructions: 'Mention the user you wan\'t to report. Please give a reason. Abusing this comands will lead to punishments'
 };

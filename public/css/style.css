@@ -1,8 +1,9 @@
 body {
 	background-color: var(--theme-color);
 	text-align: center;
-	font-family: Avenir, Helvetica;
+	font-family: Whitney, Helvetica Neue, Helvetica, Arial, sans-serif;
 	margin: 0;
+	font-size: large;
 }
 
 html, body {
@@ -118,22 +119,24 @@ code {
     margin-top: 20vh;
 }
 
-.post>.title {
+.title {
 	grid-area: title;
-	color: #246f72;
+	color: var(--member-color);
 	font-size: 20px;
 	padding: 1em;
 	padding-bottom: 0;
 }
 
-.post>.message {
+.message {
 	grid-area: message;
 	min-height: 2em;
 }
 
-.post>.author {
+.author {
 	grid-area: author;
-	margin-bottom: 1em;
+	font-size: 1rem;
+    font-weight: lighter;
+	display: block;
 }
 
 tr {
@@ -255,6 +258,12 @@ hr {
 .mention {
 	background-color: rgba(114,137,218,.1);
 	color: #7289da;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+}
+
+.mention::before {
+	content: "@"
 }
 
 .mention:hover {

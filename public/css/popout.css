@@ -132,7 +132,7 @@
 }
 
 .menu {
-	user-select: none;
+	-moz-user-select: none;
 	-webkit-user-select: none;
 	width: 2em;
 	height: 100vh;

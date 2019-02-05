@@ -24,7 +24,7 @@ function getBot() {
 
 function createEmbed(member) {
 	if (member && member.guild){
-		const url = `${process.env.WEBSITE_URL}/guilds/${encodeURIComponent(member.guild.name)}/members/${encodeURIComponent(member.displayName)}`.replace(/%20/g, '_');
+		const url = `${process.env.WEBSITE_URL}/${encodeURIComponent(member.guild.name)}/@${encodeURIComponent(member.displayName)}`.replace(/%20/g, '_');
 		return new Discord.RichEmbed()
 			.setAuthor(member.displayName, member.user.avatarURL, url);
 	} else {
@@ -43,7 +43,7 @@ async function toHTML(msg) {
 		switch (id[1]) {
 			case '':
 			case '!':
-				html = html.replace(/&lt;@.?(\d{18})&gt;/, `<span class="mention">@${(await getBot().fetchUser(id[2])).username.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</span>`);
+				html = html.replace(/&lt;@.?(\d{18})&gt;/, `<span class="mention">${(await getBot().fetchUser(id[2])).username.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</span>`);
 				break;
 			default:
 				html = html.replace(/&lt;@.?(\d{18})&gt;/, `<span class="mention">${markdown.toHTML(id[2])}</span>`);
