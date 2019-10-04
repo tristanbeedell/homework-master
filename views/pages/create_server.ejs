@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<% title = 'Create Server' %>
+<% include ../partials/head %>
+
+<body>
+	<div class="header">
+		<h1>Create a Server</h1>
+	</div>
+	<div class="content">
+		<div>
+			Please create an empty discord server and use
+			<a href="https://discordapp.com/api/oauth2/authorize?client_id=<%= bot.user.id %>&permissions=8&scope=bot" target="blank">this link</a>
+			to allow out bot to join.
+			<br>
+			Then paste an invite to the server in this form and the bot will set up your school server.
+			<form method="POST">
+				<label for="invite">Server Invite</label>
+				<input name="invite" id="invite">
+				<br>
+				<input type="submit" value="Send Invite">
+			</form>
+		</div>
+	</div>
+	<% include ../partials/menu %>
+	<script src="/js/check.js"></script>
+	<script src="/js/index.js"></script>
+</body>
+
+</html>

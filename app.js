@@ -42,6 +42,7 @@ const { initDB } = require(path.join(__dirname, './modules/database'));
 
 // my controllers
 const signup = require(path.join(__dirname, './controllers/signup'));
+const create_server = require(path.join(__dirname, './controllers/create_server'));
 const timetable = require(path.join(__dirname, './controllers/timetable'));
 const profile = require(path.join(__dirname, './controllers/profile'));
 const myProfile = require(path.join(__dirname, './controllers/my_profile'));
@@ -83,6 +84,9 @@ app.get('/join', (req, res) => {
 app.get('/help/bot', botHelp.get);
 app.post('/join', require('./controllers/join').join);
 app.get('/invite', require('./controllers/invite').invite);
+
+app.get('/create_guild/create_server', create_server.get);
+app.post('/create_guild/create_server', create_server.post);
 
 app.get('/signup', signup.get);
 app.post('/signup', signup.post);
